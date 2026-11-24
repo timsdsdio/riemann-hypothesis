@@ -1,0 +1,48 @@
+name: ProofMiner staging integrity
+on:
+  push:
+    branches: [proofminer/ci]
+    paths:
+      - 'proofminer-ci/**'
+      - '.github/workflows/proofminer-staging.yml'
+permissions:
+  contents: read
+concurrency:
+  group: proofminer-staging-integrity
+  cancel-in-progress: false
+jobs:
+  static-guard:
+    if: ${{ github.repository == 'timsdsdio/riemann-hypothesis' }}
+    name: Static integrity only (not a build)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+          sparse-checkout: proofminer-ci
+          fetch-depth: 1
+      - name: Regression tests for guard
+        run: python3 proofminer-ci/test_guard.py
+      - name: Fetch pinned commit trees, not candidate code
+        run: |
+          set -euo pipefail
+          readarray -t pins < <(python3 - <<'PY'
+          import json,re
+          m=json.load(open('proofminer-ci/candidate.json'))
+          for k in ('baseline','candidate'):
+              assert re.fullmatch(r'[0-9a-f]{40}',m[k])
+              print(m[k])
+          PY
+          )
+          test "${#pins[@]}" = 2
+          git fetch --no-tags --depth=1 --filter=blob:none origin "${pins[0]}" "${pins[1]}"
+      - name: Verify challenge files, toolchain, and proof-only changes
+        run: |
+          python3 proofminer-ci/check_stage.py --repo . --manifest proofminer-ci/candidate.json --output stage-integrity.json
+          cat stage-integrity.json >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: stage-integrity-${{ github.run_id }}
+          path: stage-integrity.json
+          retention-days: 30
