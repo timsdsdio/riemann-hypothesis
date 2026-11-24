@@ -384,10 +384,10 @@ variable {k ρ : ℕ}
 theorem eB_mid (i : Fin (2 * ρ + k + 1)) : U.eB k 1 ρ (Sum.inl (Sum.inr i)) = levPos k 1 ρ i := by
   ext; rw [Ux3.block_index_middle_val]; simp [levPos]; omega
 
-theorem eB_first_val : (U.eB k 1 ρ (Sum.inl (Sum.inl 0))).val = 0 := by rw [Ux3.block_index_first_val]; rfl
+theorem eB_first_val : (U.eB k 1 ρ (Sum.inl (Sum.inl 0))).val = 0 := by rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_first_val_eq]; rfl
 
 theorem eB_last_eq : U.eB k 1 ρ (Sum.inr 0) = B2x4.lastI k ρ := by
-  ext; rw [Ux3.block_index_last_val]; simp [B2x4.lastI]; omega
+  ext; rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_last_val_eq]; simp [B2x4.lastI]; omega
 
 theorem herm_bvec_lift (y : Fin (2 * ρ + k + 1) → ℂ) (q : Fin (2 * (1 + ρ) + k + 1)) :
     herm (Hpk k (1 + ρ)) (bvec q) (liftVec k 1 ρ y) = ∑ j, star (y j) * Hpk k (1 + ρ) (levPos k 1 ρ j) q := by
@@ -432,7 +432,7 @@ theorem rn_heis (x : U.RC k 1 ρ) : U.Rn k 1 ρ x = B2.heis0 k ρ (fun i => x.1 
   rw [← (U.eB k 1 ρ).apply_symm_apply p, ← (U.eB k 1 ρ).apply_symm_apply q]
   generalize (U.eB k 1 ρ).symm p = a
   generalize (U.eB k 1 ρ).symm q = b
-  rw [Ux3.rn_eq, Ux3.block3_apply]
+  rw [Ux3.rn_eq, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
   simp only [B2.heis0, B2x4.heisG_apply, B2x4.goodRowsProjector_apply_eq_sum]
   have hlast : (B2x4.lastI k ρ).val = 2 * (1 + ρ) + k := rfl
   rcases a with ((a | a) | a) <;> rcases b with ((b | b) | b)
@@ -536,9 +536,9 @@ theorem embG_eq (y : B.Mat k ρ) : U.embG k 1 ρ y = ιLev k 1 ρ y := by
   rw [← (U.eB k 1 ρ).apply_symm_apply p, ← (U.eB k 1 ρ).apply_symm_apply q]
   generalize (U.eB k 1 ρ).symm p = a
   generalize (U.eB k 1 ρ).symm q = b
-  rw [U.embG, Ux3.block3_apply]
+  rw [U.embG, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
   rcases a with ((a | a) | a) <;> rcases b with ((b | b) | b) <;>
-    simp [ιLev, Ux3.block_index_first_val, Ux3.block_index_middle_val, Ux3.block_index_last_val, Matrix.one_apply]
+    simp [ιLev, _root_.Formalism.FourierDecayAlt.P.Ux4.block_index_first_val_eq, Ux3.block_index_middle_val, _root_.Formalism.FourierDecayAlt.P.Ux4.block_index_last_val_eq, Matrix.one_apply]
   all_goals (have := a.isLt; have := b.isLt; rw [if_pos (by omega), if_pos (by omega)])
 
 def heisM (x : B2.HPar k ρ) : Mt k (1 + ρ) := B2.heis0 k ρ x
@@ -709,16 +709,16 @@ theorem lev_eq_embG (o ρ : ℕ) (y : B.Mat k ρ) : ιLev k o ρ y = U.embG k o 
   rw [← (U.eB k o ρ).apply_symm_apply p, ← (U.eB k o ρ).apply_symm_apply q]
   generalize (U.eB k o ρ).symm p = a
   generalize (U.eB k o ρ).symm q = b
-  rw [U.embG, Ux3.block3_apply]
+  rw [U.embG, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
   rcases a with ((a | a) | a) <;> rcases b with ((b | b) | b) <;>
-    simp [ιLev, Ux3.block_index_first_val, Ux3.block_index_middle_val, Ux3.block_index_last_val, Matrix.one_apply]
+    simp [ιLev, _root_.Formalism.FourierDecayAlt.P.Ux4.block_index_first_val_eq, Ux3.block_index_middle_val, _root_.Formalism.FourierDecayAlt.P.Ux4.block_index_last_val_eq, Matrix.one_apply]
   all_goals (first | (have := a.isLt; have := b.isLt; rw [if_pos (by omega), if_pos (by omega)]) | (intros; exfalso; omega))
 
 theorem lev_one (o ρ : ℕ) : ιLev k o ρ (1 : B.Mat k ρ) = 1 := by
   rw [lev_eq_embG, U.embG, Ux3.block3_one]
 
 theorem lev_mul (o ρ : ℕ) (a b : B.Mat k ρ) : ιLev k o ρ (a * b) = ιLev k o ρ a * ιLev k o ρ b := by
-  rw [lev_eq_embG, lev_eq_embG, lev_eq_embG, U.embG, U.embG, U.embG, Ux3.block3_mul]
+  rw [lev_eq_embG, lev_eq_embG, lev_eq_embG, U.embG, U.embG, U.embG, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul]
   congr 1 <;> simp
 
 theorem lev_GV (o ρ : ℕ) (y : B.Mat k ρ) (hy : y ∈ B.GV k ρ) : ιLev k o ρ y ∈ B.GV k (o + ρ) := by
@@ -2303,7 +2303,7 @@ theorem skewOf_TX (x1 : U.RC k 1 (j + ρ)) (x : U.RC k j ρ) : U.skewOf (TX x1 x
     | cast a =>
       simp only [Sm, Fin.lastCases_castSucc]
       apply Complex.ext <;> simp [skew_diag_re]
-  · have hs := congrFun (congrFun (Ux2.skewOf_ct (TX x1 x).2) a) b
+  · have hs := congrFun (congrFun (_root_.Formalism.FourierDecayAlt.P.Ux4.skewOf_conjTranspose (TX x1 x).2) a) b
     simp only [Matrix.conjTranspose_apply, Matrix.neg_apply] at hs
     have h1 : U.skewOf (TX x1 x).2 a b = -star (U.skewOf (TX x1 x).2 b a) := by rw [hs]; simp
     rw [h1, Ux2.skewOf_lt _ h]
@@ -2318,7 +2318,7 @@ theorem skewOf_TX (x1 : U.RC k 1 (j + ρ)) (x : U.RC k j ρ) : U.skewOf (TX x1 x
       | last => exact absurd h (not_lt.mpr (Fin.castSucc_lt_last a).le)
       | cast b =>
         simp only [Sm, Fin.lastCases_castSucc]
-        have hs2 := congrFun (congrFun (Ux2.skewOf_ct x.2) a) b
+        have hs2 := congrFun (congrFun (_root_.Formalism.FourierDecayAlt.P.Ux4.skewOf_conjTranspose x.2) a) b
         simp only [Matrix.conjTranspose_apply, Matrix.neg_apply] at hs2
         rw [hs2]; simp
 
@@ -2402,11 +2402,11 @@ theorem castM_apply {a b : ℕ} (h : a = b) (g : B.Mat k a) (p q : Fin (2 * b + 
 theorem hh (k j ρ : ℕ) : 2 * ((j + 1) + ρ) + k + 1 = 2 * (1 + (j + ρ)) + k + 1 := by omega
 
 theorem pos0 : Fin.cast (hh k j ρ) (U.eB k (j + 1) ρ (Sum.inl (Sum.inl 0))) = U.eB k 1 (j + ρ) (Sum.inl (Sum.inl 0)) := by
-  ext; simp [Ux3.block_index_first_val]
+  ext; simp [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_first_val_eq]
 
 theorem posX (a : Fin j) : Fin.cast (hh k j ρ) (U.eB k (j + 1) ρ (Sum.inl (Sum.inl a.succ))) =
     U.eB k 1 (j + ρ) (Sum.inl (Sum.inr (U.eB k j ρ (Sum.inl (Sum.inl a))))) := by
-  ext; simp [Ux3.block_index_first_val, Ux3.block_index_middle_val]; omega
+  ext; simp [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_first_val_eq, Ux3.block_index_middle_val]; omega
 
 theorem posV (v : Fin (2 * ρ + k + 1)) : Fin.cast (hh k j ρ) (U.eB k (j + 1) ρ (Sum.inl (Sum.inr v))) =
     U.eB k 1 (j + ρ) (Sum.inl (Sum.inr (U.eB k j ρ (Sum.inl (Sum.inr v))))) := by
@@ -2414,17 +2414,17 @@ theorem posV (v : Fin (2 * ρ + k + 1)) : Fin.cast (hh k j ρ) (U.eB k (j + 1) �
 
 theorem posS (b : Fin j) : Fin.cast (hh k j ρ) (U.eB k (j + 1) ρ (Sum.inr b.castSucc)) =
     U.eB k 1 (j + ρ) (Sum.inl (Sum.inr (U.eB k j ρ (Sum.inr b)))) := by
-  ext; simp [Ux3.block_index_middle_val, Ux3.block_index_last_val]; omega
+  ext; simp [Ux3.block_index_middle_val, _root_.Formalism.FourierDecayAlt.P.Ux4.block_index_last_val_eq]; omega
 
 theorem posL : Fin.cast (hh k j ρ) (U.eB k (j + 1) ρ (Sum.inr (Fin.last j))) = U.eB k 1 (j + ρ) (Sum.inr 0) := by
-  ext; simp [Ux3.block_index_last_val]; omega
+  ext; simp [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_last_val_eq]; omega
 
 theorem lhs_form (x1 : U.RC k 1 (j + ρ)) (Q : B.Mat k (j + ρ)) :
     U.Rn k 1 (j + ρ) x1 * U.embG k 1 (j + ρ) Q =
       U.blk3 1 (-(G.wMat 1 * (Matrix.of x1.1)ᴴ * Hpk k (j + ρ)) * Q)
         (G.wMat 1 * ((-(1 / 2 : ℂ)) • ((Matrix.of x1.1)ᴴ * Hpk k (j + ρ) * Matrix.of x1.1) + U.skewOf x1.2))
         0 Q (Matrix.of x1.1) 0 0 1 := by
-  rw [Ux3.rn_eq, U.embG, Ux3.block3_mul]
+  rw [Ux3.rn_eq, U.embG, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul]
   congr 1 <;> simp
 
 theorem rhs_form (X : U.RC k (j + 1) ρ) (V : Matrix (Fin (j + 1)) (Fin (j + 1)) ℂ) :
@@ -2433,14 +2433,14 @@ theorem rhs_form (X : U.RC k (j + 1) ρ) (V : Matrix (Fin (j + 1)) (Fin (j + 1))
         (G.wMat (j + 1) * ((-(1 / 2 : ℂ)) • ((Matrix.of X.1)ᴴ * Hpk k ρ * Matrix.of X.1) + U.skewOf X.2) *
           (G.wMat (j + 1) * Vᴴ⁻¹ * G.wMat (j + 1)))
         0 1 (Matrix.of X.1 * (G.wMat (j + 1) * Vᴴ⁻¹ * G.wMat (j + 1))) 0 0 (G.wMat (j + 1) * Vᴴ⁻¹ * G.wMat (j + 1)) := by
-  rw [Ux3.rn_eq, U.muP, Ux3.block3_mul]
+  rw [Ux3.rn_eq, U.muP, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul]
   congr 1 <;> simp
 
 theorem hrn_form (x : U.RC k j ρ) :
     Hpk k (j + ρ) * U.Rn k j ρ x =
       U.blk3 0 0 (G.wMat j) 0 (Hpk k ρ) (Hpk k ρ * Matrix.of x.1) (G.wMat j) (-((Matrix.of x.1)ᴴ * Hpk k ρ))
         ((-(1 / 2 : ℂ)) • ((Matrix.of x.1)ᴴ * Hpk k ρ * Matrix.of x.1) + U.skewOf x.2) := by
-  rw [Ux3.hpkBlocks k j ρ, Ux3.rn_eq, Ux3.block3_mul]
+  rw [_root_.Formalism.FourierDecayAlt.P.Ux4.hpkBlocks k j ρ, Ux3.rn_eq, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul]
   congr 1 <;> simp [← Matrix.mul_assoc, Ux3.wMat_mul_self]
 
 theorem vecMul_block3_first_coords (y : Fin (2 * (j + ρ) + k + 1) → ℂ)
@@ -2454,7 +2454,7 @@ theorem vecMul_block3_first_coords (y : Fin (2 * (j + ρ) + k + 1) → ℂ)
         Matrix.vecMul (fun a => y (U.eB k j ρ (Sum.inr a))) A31 a := by
   simp only [Matrix.vecMul, dotProduct]
   rw [← (U.eB k j ρ).sum_comp]
-  simp only [Fintype.sum_sum_type, Ux3.block3_apply]
+  simp only [Fintype.sum_sum_type, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
   simp
 
 theorem vecMul_block3_middle_coords (y : Fin (2 * (j + ρ) + k + 1) → ℂ)
@@ -2468,7 +2468,7 @@ theorem vecMul_block3_middle_coords (y : Fin (2 * (j + ρ) + k + 1) → ℂ)
         Matrix.vecMul (fun a => y (U.eB k j ρ (Sum.inr a))) A32 v := by
   simp only [Matrix.vecMul, dotProduct]
   rw [← (U.eB k j ρ).sum_comp]
-  simp only [Fintype.sum_sum_type, Ux3.block3_apply]
+  simp only [Fintype.sum_sum_type, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
   simp
 
 theorem vecMul_block3_last_coord (y : Fin (2 * (j + ρ) + k + 1) → ℂ)
@@ -2482,7 +2482,7 @@ theorem vecMul_block3_last_coord (y : Fin (2 * (j + ρ) + k + 1) → ℂ)
         Matrix.vecMul (fun a => y (U.eB k j ρ (Sum.inr a))) A33 b := by
   simp only [Matrix.vecMul, dotProduct]
   rw [← (U.eB k j ρ).sum_comp]
-  simp only [Fintype.sum_sum_type, Ux3.block3_apply]
+  simp only [Fintype.sum_sum_type, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
   simp
 
 theorem rowP (x1 : U.RC k 1 (j + ρ)) (Q : B.Mat k (j + ρ)) (z : Fin (2 * (j + ρ) + k + 1)) :
@@ -2564,9 +2564,9 @@ theorem kl0 (x1 : U.RC k 1 (j + ρ)) (x : U.RC k j ρ) :
     D.castM (by omega : 1 + (j + ρ) = (j + 1) + ρ) (U.Rn k 1 (j + ρ) x1 * U.embG k 1 (j + ρ) (U.Rn k j ρ x)) =
       U.Rn k (j + 1) ρ (TX x1 x) * U.muP k (j + 1) ρ (Um x1) := by
   rw [lhs_form, rhs_form, ut_eq, skewOf_TX]
-  apply Ux2.mat_ext_eB (k := k) (j := j + 1) (ρ := ρ)
+  apply _root_.Formalism.FourierDecayAlt.P.Ux4.ext_eB (k := k) (j := j + 1) (ρ := ρ)
   intro x y
-  rw [castM_apply, Ux3.block3_apply]
+  rw [castM_apply, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
   have e1 := (star_column_components x1).1
   have e2 := (star_column_components x1).2.1
   have e3 := (star_column_components x1).2.2
@@ -2574,19 +2574,19 @@ theorem kl0 (x1 : U.RC k 1 (j + ρ)) (x : U.RC k j ρ) :
   · cases a using Fin.cases with
     | zero =>
       cases a' using Fin.cases with
-      | zero => simp only [pos0, Ux3.block3_apply]; simp [Um]
+      | zero => simp only [pos0, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]; simp [Um]
       | succ a' =>
-        simp only [pos0, posX, Ux3.block3_apply]
+        simp only [pos0, posX, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
         simp only [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.neg_apply, Matrix.neg_mul]
         rw [rowP, hrn_form, vecMul_block3_first_coords, e1, e2, e3]
         simp [Um]
     | succ a =>
       cases a' using Fin.cases with
-      | zero => simp only [posX, pos0, Ux3.block3_apply]; simp [Um]
-      | succ a' => simp only [posX, Ux3.block3_apply]; simp [Um, Ux3.rn_eq, Ux3.block3_apply]
+      | zero => simp only [posX, pos0, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]; simp [Um]
+      | succ a' => simp only [posX, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]; simp [Um, Ux3.rn_eq, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
   · cases a using Fin.cases with
     | zero =>
-      simp only [pos0, posV, Ux3.block3_apply]
+      simp only [pos0, posV, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
       simp only [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.neg_apply, Matrix.neg_mul]
       rw [rowP, hrn_form, vecMul_block3_middle_coords, e1, e2, e3, Matrix.mul_assoc, Ux3.wMat_mul_apply, Fin.rev_zero]
       simp only [TX, Cm, Matrix.vecMul, dotProduct, Matrix.mul_apply, Matrix.conjTranspose_apply, Matrix.of_apply,
@@ -2598,15 +2598,15 @@ theorem kl0 (x1 : U.RC k 1 (j + ρ)) (x : U.RC k j ρ) :
       rw [sub_eq_add_neg]; congr 2
       apply Finset.sum_congr rfl; intro i _; apply Finset.sum_congr rfl; intro l _; ring
     | succ a =>
-      simp only [posX, posV, Ux3.block3_apply]
-      simp only [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, Matrix.neg_apply, Ux3.rn_eq, Ux3.block3_apply]
+      simp only [posX, posV, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
+      simp only [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, Matrix.neg_apply, Ux3.rn_eq, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
       rw [Matrix.mul_assoc, Ux3.wMat_mul_apply, Matrix.mul_assoc, Ux3.wMat_mul_apply, Fin.rev_succ]
       simp [TX, Cm, Matrix.mul_apply]
   · cases a using Fin.cases with
     | zero =>
       cases b' using Fin.lastCases with
       | last =>
-        simp only [pos0, posL, Ux3.block3_apply]
+        simp only [pos0, posL, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
         simp only [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr]
         rw [Matrix.mul_assoc (G.wMat (j + 1)), Ux3.wMat_mul_apply (n := j + 1), Fin.rev_zero, mul_unitriangular_last_col]
         simp only [Z_lc, Z_ll]
@@ -2614,7 +2614,7 @@ theorem kl0 (x1 : U.RC k 1 (j + ρ)) (x : U.RC k j ρ) :
         rw [hw1, Matrix.one_mul]
         have hH : (Hpk k ρ)ᴴ = Hpk k ρ := Ux4.hpk_conjTranspose k ρ
         have hw : (G.wMat j)ᴴ = G.wMat j := Ux4.wMat_conjTranspose j
-        have hS : (U.skewOf x.2)ᴴ = -U.skewOf x.2 := Ux2.skewOf_ct x.2
+        have hS : (U.skewOf x.2)ᴴ = -U.skewOf x.2 := _root_.Formalism.FourierDecayAlt.P.Ux4.skewOf_conjTranspose x.2
         set c := Matrix.of x.1 with hc
         set S := U.skewOf x.2 with hSdef
         set Cl := cV x1 - c *ᵥ cS x1 with hCl
@@ -2631,7 +2631,7 @@ theorem kl0 (x1 : U.RC k 1 (j + ρ)) (x : U.RC k j ρ) :
           rw [Finset.sum_comm]
           apply Finset.sum_congr rfl; intro i _; apply Finset.sum_congr rfl; intro l _; ring
         have hL2 : star (c1v x1) ⬝ᵥ (Hpk k (j + ρ) *ᵥ c1v x1) = star P + Q0 + P := by
-          rw [Matrix.dotProduct_mulVec, Ux3.hpkBlocks k j ρ]
+          rw [Matrix.dotProduct_mulVec, _root_.Formalism.FourierDecayAlt.P.Ux4.hpkBlocks k j ρ]
           simp only [dotProduct]
           rw [← (U.eB k j ρ).sum_comp]
           simp only [Fintype.sum_sum_type, vecMul_block3_first_coords, vecMul_block3_middle_coords, vecMul_block3_last_coord, e1, e2, e3]
@@ -2659,7 +2659,7 @@ theorem kl0 (x1 : U.RC k 1 (j + ρ)) (x : U.RC k j ρ) :
             Matrix.conjTranspose_conjTranspose, add_dotProduct, sub_dotProduct, smul_dotProduct, smul_eq_mul]
           rw [← Matrix.dotProduct_mulVec, ← Matrix.dotProduct_mulVec, ← Matrix.dotProduct_mulVec]
           have h2 : star (1 / 2 : ℂ) = 1 / 2 := by simp
-          rw [Ux2.skewOf_ct, Matrix.neg_mulVec, dotProduct_neg, ← Matrix.mulVec_mulVec, h2]
+          rw [_root_.Formalism.FourierDecayAlt.P.Ux4.skewOf_conjTranspose, Matrix.neg_mulVec, dotProduct_neg, ← Matrix.mulVec_mulVec, h2]
           rw [hP, hCc, hB0, hSdef, hc]; ring
         have hC1 : Matrix.vecMul (star Cl) (Hpk k ρ * c) ⬝ᵥ cS x1 = B0 - E0 := by
           rw [← Matrix.dotProduct_mulVec, ← Matrix.mulVec_mulVec, hCl, star_sub, sub_dotProduct, Matrix.star_mulVec]
@@ -2683,13 +2683,13 @@ theorem kl0 (x1 : U.RC k 1 (j + ρ)) (x : U.RC k j ρ) :
         rw [hq]
         apply Complex.ext <;> simp [Complex.mul_re, Complex.mul_im, hCre] <;> ring
       | cast b' =>
-        simp only [pos0, posS, Ux3.block3_apply]
+        simp only [pos0, posS, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
         simp only [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, Matrix.neg_mul, Matrix.neg_apply]
         rw [rowP, hrn_form, vecMul_block3_last_coord, e1, e2, e3, Matrix.mul_assoc (G.wMat (j + 1)), Ux3.wMat_mul_apply, Fin.rev_zero,
           mul_unitriangular_castSucc_col, Z_lc]
         have hH : (Hpk k ρ)ᴴ = Hpk k ρ := Ux4.hpk_conjTranspose k ρ
         have hw : (G.wMat j)ᴴ = G.wMat j := Ux4.wMat_conjTranspose j
-        have hS : (U.skewOf x.2)ᴴ = -U.skewOf x.2 := Ux2.skewOf_ct x.2
+        have hS : (U.skewOf x.2)ᴴ = -U.skewOf x.2 := _root_.Formalism.FourierDecayAlt.P.Ux4.skewOf_conjTranspose x.2
         have key : -(Matrix.vecMul (star (cX x1)) (G.wMat j) + Matrix.vecMul (star (cV x1)) (Hpk k ρ * Matrix.of x.1) +
             Matrix.vecMul (star (cS x1)) ((-(1 / 2 : ℂ)) • ((Matrix.of x.1)ᴴ * Hpk k ρ * Matrix.of x.1) + U.skewOf x.2)) =
             (-(1 / 2 : ℂ)) • Matrix.vecMul (star (cV x1 - Matrix.of x.1 *ᵥ cS x1)) (Hpk k ρ * Matrix.of x.1) -
@@ -2706,7 +2706,7 @@ theorem kl0 (x1 : U.RC k 1 (j + ρ)) (x : U.RC k j ρ) :
     | succ a =>
       cases b' using Fin.lastCases with
       | last =>
-        simp only [posX, posL, Ux3.block3_apply]
+        simp only [posX, posL, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
         simp only [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr]
         rw [Matrix.mul_assoc, Ux3.wMat_mul_apply, Fin.rev_succ, mul_unitriangular_last_col]
         simp only [Z_cc, Z_cl]
@@ -2721,59 +2721,59 @@ theorem kl0 (x1 : U.RC k 1 (j + ρ)) (x : U.RC k j ρ) :
         rw [← this]
         simp [Matrix.mulVec, dotProduct, add_assoc]
       | cast b' =>
-        simp only [posX, posS, Ux3.block3_apply]
-        simp only [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, Ux3.rn_eq, Ux3.block3_apply]
+        simp only [posX, posS, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
+        simp only [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, Ux3.rn_eq, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
         rw [Ux3.wMat_mul_apply]
         rw [Matrix.mul_assoc (G.wMat (j + 1)), Ux3.wMat_mul_apply, Fin.rev_succ, mul_unitriangular_castSucc_col, Z_cc]
   ·
     cases a' using Fin.cases with
-    | zero => simp only [posV, pos0, Ux3.block3_apply]; simp
-    | succ a' => simp only [posV, posX, Ux3.block3_apply]; simp [Ux3.rn_eq, Ux3.block3_apply]
+    | zero => simp only [posV, pos0, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]; simp
+    | succ a' => simp only [posV, posX, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]; simp [Ux3.rn_eq, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
   ·
-    simp only [posV, Ux3.block3_apply]; simp [Ux3.rn_eq, Ux3.block3_apply]
+    simp only [posV, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]; simp [Ux3.rn_eq, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
   ·
     cases b' using Fin.lastCases with
     | last =>
-      simp only [posV, posL, Ux3.block3_apply]
+      simp only [posV, posL, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
       simp only [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, mul_unitriangular_last_col, Matrix.of_apply, Cm_cs, Cm_last]
       simp [c1v, cV, Matrix.mulVec, dotProduct]
     | cast b' =>
-      simp only [posV, posS, Ux3.block3_apply]
-      simp only [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, mul_unitriangular_castSucc_col, Matrix.of_apply, Cm_cs, Ux3.rn_eq, Ux3.block3_apply]
+      simp only [posV, posS, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
+      simp only [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, mul_unitriangular_castSucc_col, Matrix.of_apply, Cm_cs, Ux3.rn_eq, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
   ·
     cases b using Fin.lastCases with
     | last =>
       cases a' using Fin.cases with
-      | zero => simp only [posL, pos0, Ux3.block3_apply]; simp
-      | succ a' => simp only [posL, posX, Ux3.block3_apply]; simp
+      | zero => simp only [posL, pos0, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]; simp
+      | succ a' => simp only [posL, posX, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]; simp
     | cast b =>
       cases a' using Fin.cases with
-      | zero => simp only [posS, pos0, Ux3.block3_apply]; simp
-      | succ a' => simp only [posS, posX, Ux3.block3_apply]; simp [Ux3.rn_eq, Ux3.block3_apply]
+      | zero => simp only [posS, pos0, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]; simp
+      | succ a' => simp only [posS, posX, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]; simp [Ux3.rn_eq, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
   ·
     cases b using Fin.lastCases with
-    | last => simp only [posL, posV, Ux3.block3_apply]; simp
-    | cast b => simp only [posS, posV, Ux3.block3_apply]; simp [Ux3.rn_eq, Ux3.block3_apply]
+    | last => simp only [posL, posV, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]; simp
+    | cast b => simp only [posS, posV, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]; simp [Ux3.rn_eq, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
   ·
     cases b using Fin.lastCases with
     | last =>
       cases b' using Fin.lastCases with
-      | last => simp only [posL, Ux3.block3_apply]; simp [Ut0]
-      | cast b' => simp only [posL, posS, Ux3.block3_apply]; simp [Ut0]
+      | last => simp only [posL, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]; simp [Ut0]
+      | cast b' => simp only [posL, posS, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]; simp [Ut0]
     | cast b =>
       cases b' using Fin.lastCases with
-      | last => simp only [posS, posL, Ux3.block3_apply]; simp [Ut0, c1v, cS]
-      | cast b' => simp only [posS, Ux3.block3_apply]; simp [Ut0, Ux3.rn_eq, Ux3.block3_apply]
+      | last => simp only [posS, posL, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]; simp [Ut0, c1v, cS]
+      | cast b' => simp only [posS, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]; simp [Ut0, Ux3.rn_eq, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
 
 theorem castM_mul {a b : ℕ} (h : a = b) (A B' : B.Mat k a) : D.castM h (A * B') = D.castM h A * D.castM h B' := by
   simp only [D.castM, Matrix.reindex_apply, Matrix.submatrix_mul_equiv]
 
 theorem embG_mul {j' ρ' : ℕ} (A B' : B.Mat k ρ') : U.embG k j' ρ' (A * B') = U.embG k j' ρ' A * U.embG k j' ρ' B' := by
-  rw [U.embG, U.embG, U.embG, Ux3.block3_mul]; congr 1 <;> simp
+  rw [U.embG, U.embG, U.embG, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul]; congr 1 <;> simp
 
 theorem leviElement_mul {j' ρ' : ℕ} (q1 q2 : Matrix (Fin j') (Fin j') ℂ) :
     U.muP k j' ρ' q1 * U.muP k j' ρ' q2 = U.muP k j' ρ' (q1 * q2) := by
-  rw [U.muP, U.muP, U.muP, Ux3.block3_mul]
+  rw [U.muP, U.muP, U.muP, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul]
   congr 1 <;> simp [Matrix.conjTranspose_mul, Matrix.mul_inv_rev, Matrix.mul_assoc]
   simp [← Matrix.mul_assoc, Ux3.wMat_mul_self]
 
@@ -2804,54 +2804,54 @@ theorem emb_muP (q : Matrix (Fin j) (Fin j) ℂ) (hq : IsUnit q.det) :
   have hq' : IsUnit qᴴ.det := by rw [Matrix.det_conjTranspose]; exact hq.star
   rw [show U.muP k (j + 1) ρ (Dm q) = U.blk3 (Dm q) 0 0 0 1 0 0 0 (G.wMat (j + 1) * (Dm q)ᴴ⁻¹ * G.wMat (j + 1)) from rfl,
     Dm_ct, Dm_inv _ hq']
-  apply Ux2.mat_ext_eB (k := k) (j := j + 1) (ρ := ρ)
+  apply _root_.Formalism.FourierDecayAlt.P.Ux4.ext_eB (k := k) (j := j + 1) (ρ := ρ)
   intro x y
-  rw [castM_apply, Ux3.block3_apply]
+  rw [castM_apply, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
   rcases x with ((a | v) | b) <;> rcases y with ((a' | v') | b')
   · cases a using Fin.cases <;> cases a' using Fin.cases <;>
-      simp only [pos0, posX, U.embG, U.muP, Ux3.block3_apply] <;> simp [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, Dm, Ux3.block3_apply]
-  · cases a using Fin.cases <;> simp only [pos0, posX, posV, U.embG, U.muP, Ux3.block3_apply] <;>
-      simp [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, Ux3.block3_apply]
+      simp only [pos0, posX, U.embG, U.muP, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply] <;> simp [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, Dm, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
+  · cases a using Fin.cases <;> simp only [pos0, posX, posV, U.embG, U.muP, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply] <;>
+      simp [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
   · cases a using Fin.cases <;> cases b' using Fin.lastCases <;>
-      simp only [pos0, posX, posS, posL, U.embG, U.muP, Ux3.block3_apply] <;> simp [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, Ux3.block3_apply]
-  · cases a' using Fin.cases <;> simp only [pos0, posX, posV, U.embG, U.muP, Ux3.block3_apply] <;>
-      simp [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, Ux3.block3_apply]
-  · simp only [posV, U.embG, U.muP, Ux3.block3_apply]; simp [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, Ux3.block3_apply]
-  · cases b' using Fin.lastCases <;> simp only [posV, posS, posL, U.embG, U.muP, Ux3.block3_apply] <;>
-      simp [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, Ux3.block3_apply]
+      simp only [pos0, posX, posS, posL, U.embG, U.muP, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply] <;> simp [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
+  · cases a' using Fin.cases <;> simp only [pos0, posX, posV, U.embG, U.muP, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply] <;>
+      simp [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
+  · simp only [posV, U.embG, U.muP, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]; simp [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
+  · cases b' using Fin.lastCases <;> simp only [posV, posS, posL, U.embG, U.muP, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply] <;>
+      simp [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
   · cases b using Fin.lastCases <;> cases a' using Fin.cases <;>
-      simp only [pos0, posX, posS, posL, U.embG, U.muP, Ux3.block3_apply] <;> simp [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, Ux3.block3_apply]
-  · cases b using Fin.lastCases <;> simp only [posV, posS, posL, U.embG, U.muP, Ux3.block3_apply] <;>
-      simp [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, Ux3.block3_apply]
+      simp only [pos0, posX, posS, posL, U.embG, U.muP, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply] <;> simp [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
+  · cases b using Fin.lastCases <;> simp only [posV, posS, posL, U.embG, U.muP, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply] <;>
+      simp [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
   · cases b using Fin.lastCases <;> cases b' using Fin.lastCases <;>
-      simp only [posS, posL, U.embG, U.muP, Ux3.block3_apply] <;>
-      simp [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, Ux3.block3_apply, w_conj_apply, Fin.rev_last, Fin.rev_castSucc, Dm]
+      simp only [posS, posL, U.embG, U.muP, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply] <;>
+      simp [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply, w_conj_apply, Fin.rev_last, Fin.rev_castSucc, Dm]
 
 theorem emb_emb (y : B.Mat k ρ) :
     D.castM (by omega : 1 + (j + ρ) = (j + 1) + ρ) (U.embG k 1 (j + ρ) (U.embG k j ρ y)) = U.embG k (j + 1) ρ y := by
-  apply Ux2.mat_ext_eB (k := k) (j := j + 1) (ρ := ρ)
+  apply _root_.Formalism.FourierDecayAlt.P.Ux4.ext_eB (k := k) (j := j + 1) (ρ := ρ)
   intro x y'
-  rw [show U.embG k (j + 1) ρ y = U.blk3 1 0 0 0 y 0 0 0 1 from rfl, castM_apply, Ux3.block3_apply]
+  rw [show U.embG k (j + 1) ρ y = U.blk3 1 0 0 0 y 0 0 0 1 from rfl, castM_apply, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
   rcases x with ((a | v) | b) <;> rcases y' with ((a' | v') | b')
   · cases a using Fin.cases <;> cases a' using Fin.cases <;>
-      simp only [pos0, posX, U.embG, Ux3.block3_apply] <;> simp [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, Ux3.block3_apply, Matrix.one_apply, Fin.succ_ne_zero] <;>
+      simp only [pos0, posX, U.embG, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply] <;> simp [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply, Matrix.one_apply, Fin.succ_ne_zero] <;>
       exact (Fin.succ_ne_zero _).symm
-  · cases a using Fin.cases <;> simp only [pos0, posX, posV, U.embG, Ux3.block3_apply] <;>
-      simp [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, Ux3.block3_apply]
+  · cases a using Fin.cases <;> simp only [pos0, posX, posV, U.embG, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply] <;>
+      simp [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
   · cases a using Fin.cases <;> cases b' using Fin.lastCases <;>
-      simp only [pos0, posX, posS, posL, U.embG, Ux3.block3_apply] <;> simp [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, Ux3.block3_apply]
-  · cases a' using Fin.cases <;> simp only [pos0, posX, posV, U.embG, Ux3.block3_apply] <;>
-      simp [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, Ux3.block3_apply]
-  · simp only [posV, U.embG, Ux3.block3_apply]; simp [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, Ux3.block3_apply]
-  · cases b' using Fin.lastCases <;> simp only [posV, posS, posL, U.embG, Ux3.block3_apply] <;>
-      simp [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, Ux3.block3_apply]
+      simp only [pos0, posX, posS, posL, U.embG, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply] <;> simp [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
+  · cases a' using Fin.cases <;> simp only [pos0, posX, posV, U.embG, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply] <;>
+      simp [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
+  · simp only [posV, U.embG, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]; simp [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
+  · cases b' using Fin.lastCases <;> simp only [posV, posS, posL, U.embG, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply] <;>
+      simp [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
   · cases b using Fin.lastCases <;> cases a' using Fin.cases <;>
-      simp only [pos0, posX, posS, posL, U.embG, Ux3.block3_apply] <;> simp [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, Ux3.block3_apply]
-  · cases b using Fin.lastCases <;> simp only [posV, posS, posL, U.embG, Ux3.block3_apply] <;>
-      simp [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, Ux3.block3_apply]
+      simp only [pos0, posX, posS, posL, U.embG, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply] <;> simp [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
+  · cases b using Fin.lastCases <;> simp only [posV, posS, posL, U.embG, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply] <;>
+      simp [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
   · cases b using Fin.lastCases <;> cases b' using Fin.lastCases <;>
-      simp only [posS, posL, U.embG, Ux3.block3_apply] <;>
-      simp [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, Ux3.block3_apply, Matrix.one_apply] <;> exact (Fin.castSucc_lt_last _).ne'
+      simp only [posS, posL, U.embG, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply] <;>
+      simp [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply, Matrix.one_apply] <;> exact (Fin.castSucc_lt_last _).ne'
 
 def TUU (x1 : U.RC k 1 (j + ρ)) (u : G.UT j → ℂ) : G.UT (j + 1) → ℂ :=
   fun p => (Um x1 * Dm (G.upper u)) p.1.1 p.1.2
@@ -3373,10 +3373,10 @@ theorem block_three_zero_size_eq {ρ : ℕ} (A11 : Matrix (Fin 0) (Fin 0) ℂ) (
     (A23 : Matrix (Fin (2 * ρ + k + 1)) (Fin 0) ℂ) (A31 : Matrix (Fin 0) (Fin 0) ℂ)
     (A32 : Matrix (Fin 0) (Fin (2 * ρ + k + 1)) ℂ) (A33 : Matrix (Fin 0) (Fin 0) ℂ) :
     U.blk3 A11 A12 A13 A21 A22 A23 A31 A32 A33 = D.castM (by omega : ρ = 0 + ρ) A22 := by
-  apply Ux2.mat_ext_eB (k := k) (j := 0) (ρ := ρ)
+  apply _root_.Formalism.FourierDecayAlt.P.Ux4.ext_eB (k := k) (j := 0) (ρ := ρ)
   rintro ((a | v) | a) ((b | w) | b)
   all_goals first | exact a.elim0 | exact b.elim0 | skip
-  rw [Ux3.block3_apply, Split.castM_apply]
+  rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply, Split.castM_apply]
   simp only [Matrix.fromBlocks_apply₂₂, Matrix.fromBlocks_apply₁₁]
   try (congr 1 <;> ext <;> simp [Ux3.block_index_middle_val])
 
@@ -3425,7 +3425,7 @@ theorem continuous_block3_matrix {X : Type*} [TopologicalSpace X] {j ρ : ℕ}
   refine continuous_pi fun p => continuous_pi fun q => ?_
   obtain ⟨a, rfl⟩ := (U.eB k j ρ).surjective p
   obtain ⟨b, rfl⟩ := (U.eB k j ρ).surjective q
-  simp only [Ux3.block3_apply]
+  simp only [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
   rcases a with ((a | a) | a) <;> rcases b with ((b | b) | b) <;>
     simp only [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁,
       Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl,
@@ -5864,7 +5864,7 @@ theorem headH_split (v : U.LW (sigP (n := n) σ) → ℂ) (u : G.UT (ph + (n + 1
         (G.wMat (n + 1) * Am σ v * Matrix.diagonal d * Bm u + t • (G.wMat (n + 1) * G.upper (u2 u))) := by
   unfold U.headH
   rw [permutationMatrix_extend_eq_fromBlocks, lowW_sigP, diag_dP, upper_split]
-  simp only [Ux2.symmetricScalarBlockMatrix_mul, Matrix.mul_zero, Matrix.zero_mul, add_zero, zero_add, Matrix.mul_one, Matrix.mul_smul,
+  simp only [_root_.Formalism.FourierDecayAlt.P.Ux4.symmetricScalarBlockMatrix_mul, Matrix.mul_zero, Matrix.zero_mul, add_zero, zero_add, Matrix.mul_one, Matrix.mul_smul,
     Matrix.smul_mul, smul_zero]
   rfl
 
@@ -5941,7 +5941,7 @@ theorem conj_split (v : U.LW (sigP (n := n) σ) → ℂ) :
       U.blk2 1 0 (Matrix.of (Matrix.of.symm (aN σ v))) 1 *
         U.blk2 (U.wP σ * U.lowW σ (v1 σ v) * (U.wP σ)⁻¹) 0 0 1 := by
   rw [Ux2.permutationMatrix_inv, blockPerm_symm₂, permutationMatrix_extend_eq_fromBlocks, permutationMatrix_extend_eq_fromBlocks, lowW_sigP, Ux2.permutationMatrix_inv]
-  simp only [Ux2.symmetricScalarBlockMatrix_mul, Matrix.mul_zero, Matrix.zero_mul, add_zero, zero_add, Matrix.mul_one, Matrix.one_mul,
+  simp only [_root_.Formalism.FourierDecayAlt.P.Ux4.symmetricScalarBlockMatrix_mul, Matrix.mul_zero, Matrix.zero_mul, add_zero, zero_add, Matrix.mul_one, Matrix.one_mul,
     Equiv.apply_symm_apply, Ux3.wMat_mul_self]
   congr 1
   have hL := Matrix.nonsing_inv_mul _ (isUnit_low σ (v1 σ v))
@@ -5954,7 +5954,7 @@ theorem conj_split (v : U.LW (sigP (n := n) σ) → ℂ) :
 
 theorem upper_fact (u : G.UT (ph + (n + 1)) → ℂ) :
     G.upper u = U.blk2 (G.upper (u1 u)) 0 0 (G.upper (u2 u)) * U.blk2 1 (Matrix.of (Matrix.of.symm (bN u))) 0 1 := by
-  rw [upper_split, Ux2.symmetricScalarBlockMatrix_mul]
+  rw [upper_split, _root_.Formalism.FourierDecayAlt.P.Ux4.symmetricScalarBlockMatrix_mul]
   simp only [Matrix.mul_zero, Matrix.zero_mul, add_zero, zero_add, Matrix.mul_one, Equiv.apply_symm_apply]
   congr 1
   unfold bN

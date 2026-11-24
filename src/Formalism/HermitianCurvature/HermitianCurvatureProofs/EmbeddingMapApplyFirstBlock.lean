@@ -78,15 +78,15 @@ theorem embedding_map_apply_last_block {k p ρ : ℕ} (Z : Matrix (Fin p) (Fin p
     U.mMap k p ρ Z γ (U.eB k p ρ (Sum.inr c)) j =
       if hj : j.val < p then Z c.rev ⟨j.val, hj⟩ else 0 := by
   obtain ⟨y, rfl⟩ := (U.eB k p ρ).surjective j
-  rw [U.mMap, Ux3.block3_apply]
+  rw [U.mMap, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
   rcases y with (y | y) | y
-  · rw [dite_eq_left (by rw [Ux3.block_index_first_val]; exact y.isLt)]
+  · rw [dite_eq_left (by rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_first_val_eq]; exact y.isLt)]
     simp only [Matrix.fromBlocks_apply₂₁, Matrix.fromCols_apply_inl]
     rw [Ux3.wMat_mul_apply]
-    exact congrArg (Z c.rev) (Fin.ext (Ux3.block_index_first_val (k := k) (ρ := ρ) y).symm)
+    exact congrArg (Z c.rev) (Fin.ext (_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_first_val_eq (k := k) (ρ := ρ) y).symm)
   · rw [dite_eq_right (by rw [Ux3.block_index_middle_val]; omega)]
     simp [Matrix.fromBlocks_apply₂₁, Matrix.fromCols_apply_inr]
-  · rw [dite_eq_right (by rw [Ux3.block_index_last_val]; omega)]
+  · rw [dite_eq_right (by rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_last_val_eq]; omega)]
     simp [Matrix.fromBlocks_apply₂₂]
 
 theorem embedding_map_apply_first_block {k p ρ : ℕ} (Z : Matrix (Fin p) (Fin p) ℂ) (γ : B.Mat k ρ) (b : Fin p)
@@ -95,17 +95,17 @@ theorem embedding_map_apply_first_block {k p ρ : ℕ} (Z : Matrix (Fin p) (Fin 
       if hi : p + (2 * ρ + k + 1) ≤ i.val then
         (G.wMat p * Z) ⟨i.val - (p + (2 * ρ + k + 1)), by omega⟩ b else 0 := by
   obtain ⟨y, rfl⟩ := (U.eB k p ρ).surjective i
-  rw [U.mMap, Ux3.block3_apply]
+  rw [U.mMap, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
   rcases y with (y | y) | y
-  · rw [dite_eq_right (by rw [Ux3.block_index_first_val]; omega)]
+  · rw [dite_eq_right (by rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_first_val_eq]; omega)]
     simp [Matrix.fromBlocks_apply₁₁]
   · rw [dite_eq_right (by rw [Ux3.block_index_middle_val]; omega)]
     simp [Matrix.fromBlocks_apply₁₁]
-  · rw [dite_eq_left (by rw [Ux3.block_index_last_val]; omega)]
+  · rw [dite_eq_left (by rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_last_val_eq]; omega)]
     simp only [Matrix.fromBlocks_apply₂₁, Matrix.fromCols_apply_inl]
     exact congrArg (fun c => (G.wMat p * Z) c b) (Fin.ext (by
       show (U.eB k p ρ (Sum.inr y)).val - (p + (2 * ρ + k + 1)) = y.val
-      rw [Ux3.block_index_last_val]; omega)).symm
+      rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_last_val_eq]; omega)).symm
 
 theorem normal_form_left_hypothesis : NFHypL := by
   intro k r a hle g' hg' hloc
@@ -121,7 +121,7 @@ theorem normal_form_left_hypothesis : NFHypL := by
     rw [castM_apply']
     have hi : (Fin.cast (by omega) (esI k r a') : Fin (2 * (D.ptSize a + (r - D.ptSize a)) + k + 1)) =
         U.eB k (D.ptSize a) (r - D.ptSize a) (Sum.inr ⟨D.ptSize a - 1 - a'.val, by omega⟩) := by
-      ext; rw [Ux3.block_index_last_val]; simp [esI]; omega
+      ext; rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_last_val_eq]; simp [esI]; omega
     rw [hi, embedding_map_apply_last_block]
     by_cases hq : q.val < D.ptSize a
     · rw [dite_eq_left (by simpa using hq), dite_eq_left hq]
@@ -134,7 +134,7 @@ theorem normal_form_left_hypothesis : NFHypL := by
     rw [← Formalism.FourierDecayAlt.P.PBH.asm_castM_inv, Formalism.FourierDecayAlt.P.PBM.mMap_inv _ _ (isUnit_iff_ne_zero.mpr hZ) hgu, castM_apply']
     have hj : (Fin.cast (by omega) (eI k r a') : Fin (2 * (D.ptSize a + (r - D.ptSize a)) + k + 1)) =
         U.eB k (D.ptSize a) (r - D.ptSize a) (Sum.inl (Sum.inl ⟨a'.val, ha'⟩)) := by
-      ext; rw [Ux3.block_index_first_val]; simp [eI]
+      ext; rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_first_val_eq]; simp [eI]
     rw [hj, embedding_map_apply_first_block]
     by_cases hq : r + k < q.val ∧ 2 * r + k - q.val < D.ptSize a
     · rw [dite_eq_left (by simp; omega), dite_eq_left hq, Ux3.wMat_mul_apply, Matrix.conjTranspose_apply]

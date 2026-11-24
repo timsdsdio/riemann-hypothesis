@@ -72,9 +72,9 @@ theorem block_three_mul_apply_last (A11 : Matrix (Fin p) (Fin p) ℂ) (A12 : Mat
     (U.blk3 A11 A12 A13 A21 A22 A23 0 0 1 * g) (U.eB k p ρ (Sum.inr a)) c = g (U.eB k p ρ (Sum.inr a)) c := by
   rw [Matrix.mul_apply, ← (U.eB k p ρ).sum_comp]
   rw [Finset.sum_eq_single (Sum.inr a)]
-  · rw [Ux3.block3_apply]; simp
+  · rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]; simp
   · intro q _ hq
-    rw [Ux3.block3_apply]
+    rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
     rcases q with (q | q) | q
     · simp
     · simp
@@ -84,7 +84,7 @@ theorem block_three_mul_apply_last (A11 : Matrix (Fin p) (Fin p) ℂ) (A12 : Mat
 
 theorem zh_row (a : Fin p) : (⟨2 * (p + ρ) + k - a.val, by omega⟩ : Fin (2 * (p + ρ) + k + 1)) =
     U.eB k p ρ (Sum.inr ⟨p - 1 - a.val, by omega⟩) := by
-  ext; rw [Ux3.block_index_last_val]; simp; omega
+  ext; rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_last_val_eq]; simp; omega
 
 theorem corner_matrix_block_three_mul (A11 : Matrix (Fin p) (Fin p) ℂ) (A12 : Matrix (Fin p) (Fin (2 * ρ + k + 1)) ℂ)
     (A13 : Matrix (Fin p) (Fin p) ℂ) (A21 : Matrix (Fin (2 * ρ + k + 1)) (Fin p) ℂ) (A22 : B.Mat k ρ)

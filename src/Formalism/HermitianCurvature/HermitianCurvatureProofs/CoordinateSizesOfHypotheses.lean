@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.DirectionsInParabolic
 public import Formalism.HermitianCurvature.StatementU
 public import Formalism.FormalDegreeBessel.FinalG
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaSesquilinearity
@@ -68,89 +69,16 @@ section blocks
 
 variable {k j ρ : ℕ}
 
-theorem block_index_first_val_eq (a : Fin j) : ((eB k j ρ) (Sum.inl (Sum.inl a))).val = a.val := by
-  simp [eB]
 
-theorem block_index_middle_val_eq (v : Fin (2 * ρ + k + 1)) : ((eB k j ρ) (Sum.inl (Sum.inr v))).val = j + v.val := by
-  simp [eB]
 
-theorem block_index_last_val_eq (a : Fin j) : ((eB k j ρ) (Sum.inr a)).val = j + (2 * ρ + k + 1) + a.val := by
-  simp [eB]
 
-theorem block3_apply
-    (A11 : Matrix (Fin j) (Fin j) ℂ) (A12 : Matrix (Fin j) (Fin (2 * ρ + k + 1)) ℂ) (A13 : Matrix (Fin j) (Fin j) ℂ)
-    (A21 : Matrix (Fin (2 * ρ + k + 1)) (Fin j) ℂ) (A22 : B.Mat k ρ) (A23 : Matrix (Fin (2 * ρ + k + 1)) (Fin j) ℂ)
-    (A31 : Matrix (Fin j) (Fin j) ℂ) (A32 : Matrix (Fin j) (Fin (2 * ρ + k + 1)) ℂ) (A33 : Matrix (Fin j) (Fin j) ℂ)
-    (x y : Ix k j ρ) :
-    blk3 A11 A12 A13 A21 A22 A23 A31 A32 A33 (eB k j ρ x) (eB k j ρ y) =
-      Matrix.fromBlocks (Matrix.fromBlocks A11 A12 A21 A22) (Matrix.fromRows A13 A23) (Matrix.fromCols A31 A32) A33 x y := by
-  simp [blk3, Matrix.reindex_apply]
 
-theorem ext_eB {M N : B.Mat k (j + ρ)} (h : ∀ x y : Ix k j ρ, M (eB k j ρ x) (eB k j ρ y) = N (eB k j ρ x) (eB k j ρ y)) :
-    M = N := by
-  ext i b
-  simpa using h ((eB k j ρ).symm i) ((eB k j ρ).symm b)
 
-theorem block3_mul
-    (A11 : Matrix (Fin j) (Fin j) ℂ) (A12 : Matrix (Fin j) (Fin (2 * ρ + k + 1)) ℂ) (A13 : Matrix (Fin j) (Fin j) ℂ)
-    (A21 : Matrix (Fin (2 * ρ + k + 1)) (Fin j) ℂ) (A22 : B.Mat k ρ) (A23 : Matrix (Fin (2 * ρ + k + 1)) (Fin j) ℂ)
-    (A31 : Matrix (Fin j) (Fin j) ℂ) (A32 : Matrix (Fin j) (Fin (2 * ρ + k + 1)) ℂ) (A33 : Matrix (Fin j) (Fin j) ℂ)
-    (ToralGalois : Matrix (Fin j) (Fin j) ℂ) (cocyclesToWachVectorsExponent : Matrix (Fin j) (Fin (2 * ρ + k + 1)) ℂ) (B13 : Matrix (Fin j) (Fin j) ℂ)
-    (B21 : Matrix (Fin (2 * ρ + k + 1)) (Fin j) ℂ) (B22 : B.Mat k ρ) (B23 : Matrix (Fin (2 * ρ + k + 1)) (Fin j) ℂ)
-    (B31 : Matrix (Fin j) (Fin j) ℂ) (B32 : Matrix (Fin j) (Fin (2 * ρ + k + 1)) ℂ) (B33 : Matrix (Fin j) (Fin j) ℂ) :
-    blk3 A11 A12 A13 A21 A22 A23 A31 A32 A33 * blk3 ToralGalois cocyclesToWachVectorsExponent B13 B21 B22 B23 B31 B32 B33 =
-      blk3 (A11 * ToralGalois + A12 * B21 + A13 * B31) (A11 * cocyclesToWachVectorsExponent + A12 * B22 + A13 * B32) (A11 * B13 + A12 * B23 + A13 * B33)
-        (A21 * ToralGalois + A22 * B21 + A23 * B31) (A21 * cocyclesToWachVectorsExponent + A22 * B22 + A23 * B32) (A21 * B13 + A22 * B23 + A23 * B33)
-        (A31 * ToralGalois + A32 * B21 + A33 * B31) (A31 * cocyclesToWachVectorsExponent + A32 * B22 + A33 * B32) (A31 * B13 + A32 * B23 + A33 * B33) := by
-  unfold blk3
-  rw [Matrix.reindex_apply, Matrix.reindex_apply, Matrix.submatrix_mul_equiv, Matrix.reindex_apply]
-  congr 1
-  ext (((a | a) | a)) (((b | b) | b)) <;>
-    simp [Matrix.mul_apply, Fintype.sum_sum_type, add_assoc]
 
-theorem block3_conjTranspose
-    (A11 : Matrix (Fin j) (Fin j) ℂ) (A12 : Matrix (Fin j) (Fin (2 * ρ + k + 1)) ℂ) (A13 : Matrix (Fin j) (Fin j) ℂ)
-    (A21 : Matrix (Fin (2 * ρ + k + 1)) (Fin j) ℂ) (A22 : B.Mat k ρ) (A23 : Matrix (Fin (2 * ρ + k + 1)) (Fin j) ℂ)
-    (A31 : Matrix (Fin j) (Fin j) ℂ) (A32 : Matrix (Fin j) (Fin (2 * ρ + k + 1)) ℂ) (A33 : Matrix (Fin j) (Fin j) ℂ) :
-    (blk3 A11 A12 A13 A21 A22 A23 A31 A32 A33)ᴴ =
-      blk3 A11ᴴ A21ᴴ A31ᴴ A12ᴴ A22ᴴ A32ᴴ A13ᴴ A23ᴴ A33ᴴ := by
-  apply ext_eB
-  rintro (((a | a) | a)) (((b | b) | b)) <;> simp [block3_apply, Matrix.conjTranspose_apply]
 
-theorem wMat_mul_self (d : ℕ) : G.wMat d * G.wMat d = 1 := by
-  ext i j
-  have key : ∀ k : Fin d, (if k = i.rev then (1:ℂ) else 0) * (if j = k.rev then (1:ℂ) else 0) =
-      if k = i.rev then (if i = j then 1 else 0) else 0 := by
-    intro k
-    by_cases hk : k = i.rev
-    · simp [hk, eq_comm]
-    · simp [hk]
-  simp [G.wMat, Matrix.mul_apply, Matrix.one_apply, Matrix.of_apply, key]
 
-theorem wMat_conjTranspose (d : ℕ) : (G.wMat d)ᴴ = G.wMat d := by
-  ext i b
-  simp only [G.wMat, Matrix.conjTranspose_apply, Matrix.of_apply]
-  by_cases h : i = b.rev
-  · have h' : b = i.rev := by rw [h, Fin.rev_rev]
-    rw [if_pos h, if_pos h', star_one]
-  · have h' : ¬ b = i.rev := by
-      intro h'; apply h; rw [h', Fin.rev_rev]
-    rw [if_neg h, if_neg h', star_zero]
 
-theorem hpk_conjTranspose (k r : ℕ) : (Hpk k r)ᴴ = Hpk k r := by
-  ext i b
-  simp only [Matrix.conjTranspose_apply, Hpk, Fin.ext_iff]
-  split_ifs <;> (try simp) <;> omega
 
-theorem hpkBlocks : HpkBlocks := by
-  intro k j ρ
-  apply ext_eB
-  rintro (((a | a) | a)) (((b | b) | b)) <;>
-    simp only [block3_apply, Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁,
-      Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl,
-      Matrix.fromCols_apply_inr, Matrix.zero_apply, G.wMat, Matrix.of_apply, Hpk, Fin.ext_iff, block_index_first_val_eq, block_index_middle_val_eq, block_index_last_val_eq,
-      Fin.val_rev] <;>
-    split_ifs <;> first | rfl | omega
 
 end blocks
 
@@ -158,32 +86,9 @@ section rad
 
 variable {k j ρ : ℕ}
 
-theorem w_w_mul (M : Matrix (Fin j) (Fin j) ℂ) : G.wMat j * (G.wMat j * M) = M := by
-  rw [← Matrix.mul_assoc, wMat_mul_self, Matrix.one_mul]
 
-theorem w_w_mul' {n : ℕ} (M : Matrix (Fin j) (Fin n) ℂ) : G.wMat j * (G.wMat j * M) = M := by
-  rw [← Matrix.mul_assoc, wMat_mul_self, Matrix.one_mul]
 
-theorem skewOf_conjTranspose (q : (G.UT j → ℂ) × (Fin j → ℝ)) : (skewOf q)ᴴ = -skewOf q := by
-  unfold skewOf
-  rw [Matrix.conjTranspose_add, Matrix.conjTranspose_sub, Matrix.conjTranspose_conjTranspose,
-    Matrix.diagonal_conjTranspose]
-  have : (star fun i => Complex.I * ((q.2 i : ℝ) : ℂ)) = (fun i => -(Complex.I * ((q.2 i : ℝ) : ℂ))) := by
-    funext i
-    simp [Complex.conj_ofReal]
-  rw [this, ← Matrix.diagonal_neg]
-  abel
 
-theorem Rn_unitary (x : RC k j ρ) : (Rn k j ρ x)ᴴ * Hpk k (j + ρ) * Rn k j ρ x = Hpk k (j + ρ) := by
-  rw [hpkBlocks k j ρ]
-  unfold Rn
-  rw [block3_conjTranspose, block3_mul, block3_mul]
-  congr 1 <;> simp only [Matrix.one_mul, Matrix.mul_one, Matrix.zero_mul, Matrix.mul_zero, add_zero, zero_add,
-    Matrix.conjTranspose_one, Matrix.conjTranspose_zero, Matrix.conjTranspose_neg, Matrix.conjTranspose_mul,
-    Matrix.conjTranspose_add, Matrix.conjTranspose_smul, Matrix.conjTranspose_conjTranspose, wMat_conjTranspose, hpk_conjTranspose, skewOf_conjTranspose,
-    Matrix.mul_neg, Matrix.neg_mul, Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc, w_w_mul, w_w_mul', wMat_mul_self,
-    neg_zero, neg_add_cancel, Matrix.smul_mul, star_neg, star_div₀, star_one, star_ofNat]
-  all_goals module
 
 end rad
 
@@ -210,20 +115,20 @@ theorem wMat_mul_apply' {n : ℕ} (M : Matrix (Fin j) (Fin n) ℂ) (a : Fin j) (
 
 theorem Rn_23 (x : RC k j ρ) (i : Fin (2 * ρ + k + 1)) (b : Fin j) :
     Rn k j ρ x (eB k j ρ (Sum.inl (Sum.inr i))) (eB k j ρ (Sum.inr b)) = x.1 i b := by
-  simp [Rn, block3_apply]
+  simp [Rn, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
 
 theorem Rn_13 (x : RC k j ρ) (a b : Fin j) :
     Rn k j ρ x (eB k j ρ (Sum.inl (Sum.inl a))) (eB k j ρ (Sum.inr b)) =
       (G.wMat j * ((-(1 / 2 : ℂ)) • ((Matrix.of x.1)ᴴ * Hpk k ρ * Matrix.of x.1) + skewOf x.2)) a b := by
-  simp [Rn, block3_apply]
+  simp [Rn, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
 
 theorem skew_entry_le (x : RC k j ρ) (a b : Fin j) : ‖skewOf x.2 a b‖ ≤ B.gN (Rn k j ρ x) := by
   set X := (Matrix.of x.1)ᴴ * Hpk k ρ * Matrix.of x.1 with hXdef
   set W := (-(1 / 2 : ℂ)) • X + skewOf x.2 with hWdef
   have hX : Xᴴ = X := by
-    simp only [hXdef, Matrix.conjTranspose_mul, Matrix.conjTranspose_conjTranspose, hpk_conjTranspose, Matrix.mul_assoc]
+    simp only [hXdef, Matrix.conjTranspose_mul, Matrix.conjTranspose_conjTranspose, _root_.Formalism.FourierDecayAlt.P.Ux4.hpk_conjTranspose, Matrix.mul_assoc]
   have hWh : Wᴴ = (-(1 / 2 : ℂ)) • X - skewOf x.2 := by
-    simp only [hWdef, Matrix.conjTranspose_add, Matrix.conjTranspose_smul, hX, skewOf_conjTranspose]
+    simp only [hWdef, Matrix.conjTranspose_add, Matrix.conjTranspose_smul, hX, _root_.Formalism.FourierDecayAlt.P.Ux4.skewOf_conjTranspose]
     have : star (-(1 / 2 : ℂ)) = -(1 / 2 : ℂ) := by simp
     rw [this]; abel
   have hS : skewOf x.2 = (1 / 2 : ℂ) • (W - Wᴴ) := by
@@ -265,7 +170,7 @@ theorem norm_le_gN_Rn (x : RC k j ρ) : ‖x‖ ≤ B.gN (Rn k j ρ x) := by
     rw [hu, norm_mul, Complex.norm_I, one_mul, Complex.norm_real] at h
     exact h
 
-theorem Rn_mem (x : RC k j ρ) : Rn k j ρ x ∈ B.GV k (j + ρ) := Rn_unitary x
+theorem Rn_mem (x : RC k j ρ) : Rn k j ρ x ∈ B.GV k (j + ρ) := _root_.Formalism.FourierDecayAlt.P.Ux4.Rn_unitary x
 
 end sizes
 
@@ -276,10 +181,6 @@ theorem block2_det_lower_triangular {p s : ℕ} (A : Matrix (Fin p) (Fin p) ℂ)
   unfold blk2
   rw [Matrix.det_reindex_self, Matrix.det_fromBlocks_zero₁₂]
 
-theorem block2_det_upper_triangular {p s : ℕ} (A : Matrix (Fin p) (Fin p) ℂ) (B : Matrix (Fin p) (Fin s) ℂ)
-    (D : Matrix (Fin s) (Fin s) ℂ) : (blk2 A B 0 D).det = A.det * D.det := by
-  unfold blk2
-  rw [Matrix.det_reindex_self, Matrix.det_fromBlocks_zero₂₁]
 
 theorem det_upper {p : ℕ} (u : G.UT p → ℂ) : (G.upper u).det = 1 := by
   have h : (G.upper u).BlockTriangular id := by
@@ -301,7 +202,7 @@ theorem det_lowW {p : ℕ} (σ : Equiv.Perm (Fin p)) (v : LW σ → ℂ) : (lowW
 theorem detZj : DetZj := by
   intro p s σ d η Z
   unfold ZjH Zj headH hMat G.detM
-  rw [Matrix.det_mul, Matrix.det_mul, block2_det_lower_triangular, block2_det_lower_triangular, block2_det_upper_triangular]
+  rw [Matrix.det_mul, Matrix.det_mul, block2_det_lower_triangular, block2_det_lower_triangular, _root_.Formalism.FourierDecayAlt.P.Ux4.block2_det_upper_triangular]
   simp only [Matrix.det_mul, det_upper, det_lowW, Matrix.det_one]
   ring
 

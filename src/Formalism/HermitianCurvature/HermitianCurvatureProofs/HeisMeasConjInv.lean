@@ -69,7 +69,7 @@ private theorem iotaLev_one_eq_blk3 (ρ : ℕ) (g : B.Mat k ρ) :
   ext p q
   obtain ⟨x, rfl⟩ := (U.eB k 1 ρ).surjective p
   obtain ⟨y, rfl⟩ := (U.eB k 1 ρ).surjective q
-  rw [Ux3.block3_apply]
+  rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
   have vX : ∀ x : Fin 1, ((U.eB k 1 ρ) (Sum.inl (Sum.inl x))).val = 0 := fun x => by
     simp [U.eB]
   have vV : ∀ v : Fin (2 * ρ + k + 1), ((U.eB k 1 ρ) (Sum.inl (Sum.inr v))).val = 1 + v.val := fun v => by

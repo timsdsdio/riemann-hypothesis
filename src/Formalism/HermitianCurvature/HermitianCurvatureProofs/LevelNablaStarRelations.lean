@@ -58,135 +58,37 @@ open Formalism.FourierDecayAlt.M Formalism.FourierDecayAlt Finset
 
 namespace Formalism.FourierDecayAlt.P.Mx2
 
-theorem eulerLeibniz : EulerLeibniz := by
-  apply Formalism.FourierDecayAlt.P.Mx4.eulerLeibniz
-
-theorem eulerCoord : EulerCoord := by
-  intro r v w z
-  constructor
-  · ext γ
-    simp only [euler, coord, LinearMap.coe_mk, AddHom.coe_mk]
-    by_cases h : γ = toLex (Pi.single w (1 : ℤ))
-    · subst h
-      by_cases hv : v = w
-      · subst hv; simp
-      · simp [hv]
-    · split_ifs <;> simp [HahnSeries.coeff_single_of_ne h]
-  · ext γ
-    simp only [euler, LinearMap.coe_mk, AddHom.coe_mk, HahnSeries.algebraMap_apply]
-    by_cases h : γ = 0
-    · subst h; simp; left; rfl
-    · simp [HahnSeries.coeff_single_of_ne h]
-
-theorem eulerMul : EulerMul := by
-  intro r v f
-  ext g : 1
-  simp only [Module.End.mul_apply, LinearMap.add_apply, mulOp, LinearMap.mulLeft_apply]
-  rw [eulerLeibniz, add_comm]
-
-theorem coord_ne (r : ℕ) (v : Var r) : coord v ≠ 0 := by
-  simp [coord]
-
 variable {r : ℕ}
 
-theorem mulOp_mul (f g : Fn r) : mulOp f * mulOp g = mulOp (f * g) := by
-  ext h : 1; simp [mulOp]
-theorem mulOp_add (f g : Fn r) : mulOp f + mulOp g = mulOp (f + g) := by
-  ext h : 1; simp [mulOp, add_mul]
-
-theorem multiplierPair_mul (f fb g gb : Fn r) : fnP f fb * fnP g gb = fnP (f * g) (fb * gb) := by
-  refine Prod.ext ?_ ?_
-  · exact mulOp_mul f g
-  · show MulOpposite.op (mulOp gb * mulOp fb) = MulOpposite.op (mulOp (fb * gb))
-    rw [mulOp_mul, mul_comm]
-theorem multiplierPair_add (f fb g gb : Fn r) : fnP f fb + fnP g gb = fnP (f + g) (fb + gb) := by
-  refine Prod.ext (mulOp_add f g) ?_
-  show MulOpposite.op (mulOp fb + mulOp gb) = MulOpposite.op (mulOp (fb + gb))
-  rw [mulOp_add]
 theorem multiplierPair_one : (fnP 1 1 : Pr r) = 1 := by
   have : mulOp (1 : Fn r) = 1 := by ext h : 1; simp [mulOp]
   refine Prod.ext ?_ ?_
   · exact this
   · exact congrArg MulOpposite.op this
-theorem multiplierPair_neg (f fb : Fn r) : -fnP f fb = fnP (-f) (-fb) := by
-  rw [neg_eq_iff_add_eq_zero, multiplierPair_add]; simp
-  refine Prod.ext ?_ ?_
-  · show mulOp (0 : Fn r) = 0
-    ext h : 1; simp [mulOp]
-  · show MulOpposite.op (mulOp (0 : Fn r)) = 0
-    have : mulOp (0 : Fn r) = 0 := by ext h : 1; simp [mulOp]
-    rw [this]; rfl
-theorem multiplierPair_comm (f fb g gb : Fn r) : fnP f fb * fnP g gb = fnP g gb * fnP f fb := by
-  rw [multiplierPair_mul, multiplierPair_mul, mul_comm f, mul_comm fb]
-
-theorem der_fn (a b : Fn r) (v w : Var r) (f fb : Fn r) :
-    mk (mulOp a * euler v) (-(mulOp b * euler w)) * fnP f fb =
-      fnP f fb * mk (mulOp a * euler v) (-(mulOp b * euler w)) + fnP (a * euler v f) (b * euler w fb) := by
-  apply Formalism.FourierDecayAlt.P.Mx4.der_fn
-
-theorem euler_one (v : Var r) : euler v (1 : Fn r) = 0 := by
-  have := (eulerCoord r v v 1).2
-  simpa using this
-
-theorem euler_inv (v : Var r) (f : Fn r) (hf : f ≠ 0) : euler v f⁻¹ = -(f⁻¹ * f⁻¹ * euler v f) := by
-  have h := eulerLeibniz r v f f⁻¹
-  rw [mul_inv_cancel₀ hf, euler_one] at h
-  have h2 : f * euler v f⁻¹ = -(euler v f * f⁻¹) := by
-    rw [eq_neg_iff_add_eq_zero, add_comm]; exact h.symm
-  have h3 : euler v f⁻¹ = f⁻¹ * (f * euler v f⁻¹) := by rw [← mul_assoc, inv_mul_cancel₀ hf, one_mul]
-  rw [h3, h2]; ring
-
-theorem vz_ne : (vz : Var r) ≠ vzb := by
-  intro h; have := congrArg (fun p : Var r => (ofLex p).2) h; simp [vz, vzb] at this
-
-theorem euler_GG_z (TT : ℝ) : euler vz (gg TT : Fn r) = coord vz * coord vzb := by
-  unfold gg
-  rw [map_sub, eulerLeibniz, (eulerCoord r vz vz 0).1, (eulerCoord r vz vzb 0).1, (eulerCoord r vz vz _).2,
-    if_pos rfl, if_neg vz_ne]; simp
-theorem euler_gg_zb (TT : ℝ) : euler vzb (gg TT : Fn r) = coord vz * coord vzb := by
-  unfold gg
-  rw [map_sub, eulerLeibniz, (eulerCoord r vzb vz 0).1, (eulerCoord r vzb vzb 0).1, (eulerCoord r vzb vz _).2,
-    if_pos rfl, if_neg vz_ne.symm]; simp
-
-theorem gg_ne (TT : ℝ) : (gg TT : Fn r) ≠ 0 := by
-  intro h
-  have h1 := euler_GG_z (r := r) TT
-  rw [h, map_zero] at h1
-  exact mul_ne_zero (coord_ne r vz) (coord_ne r vzb) h1.symm
-
-theorem smul_fnP (a : ℝ) (f fb : Fn r) : (a : ℂ) • fnP f fb = fnP ((a : ℂ) • f) ((a : ℂ) • fb) := by
-  rw [Algebra.smul_def]
-  refine Prod.ext ?_ ?_
-  · show algebraMap ℂ (Op r) a * mulOp f = mulOp ((a : ℂ) • f)
-    ext h : 1; simp [mulOp]
-  · show (algebraMap ℂ (Op r)ᵐᵒᵖ) (starRingEnd ℂ (a : ℂ)) * MulOpposite.op (mulOp fb) = MulOpposite.op (mulOp ((a : ℂ) • fb))
-    rw [Complex.conj_ofReal, ← Algebra.smul_def, ← MulOpposite.op_smul, MulOpposite.op_inj]
-    ext h : 1; simp [mulOp]
-
 noncomputable def nabE (a TT : ℝ) : Pr r := dzP + (a : ℂ) • (zbP * ggiP TT)
 noncomputable def nabsE (a TT : ℝ) : Pr r := -dzbP + (a : ℂ) • (zP * ggiP TT)
 
 theorem nabE_fn (a TT : ℝ) (f fb : Fn r) :
     nabE a TT * fnP f fb = fnP f fb * nabE a TT + fnP ((coord vz)⁻¹ * euler vz f) ((coord vzb)⁻¹ * euler vzb fb) := by
   unfold nabE
-  rw [zbP, ggiP, multiplierPair_mul, smul_fnP, add_mul, mul_add, multiplierPair_comm, dzP, der_fn]
+  rw [zbP, ggiP, Mx4.multiplierPair_mul, Mx4.smul_fnP, add_mul, mul_add, Mx4.multiplierPair_comm, dzP, Mx4.der_fn]
   abel
 
 theorem nabsE_fn (a TT : ℝ) (f fb : Fn r) :
     nabsE a TT * fnP f fb = fnP f fb * nabsE a TT - fnP ((coord vzb)⁻¹ * euler vzb f) ((coord vz)⁻¹ * euler vz fb) := by
   unfold nabsE
-  rw [zP, ggiP, multiplierPair_mul, smul_fnP, add_mul, mul_add, multiplierPair_comm, dzbP, neg_mul, der_fn, mul_neg]
+  rw [zP, ggiP, Mx4.multiplierPair_mul, Mx4.smul_fnP, add_mul, mul_add, Mx4.multiplierPair_comm, dzbP, neg_mul, Mx4.der_fn, mul_neg]
   abel
 
 theorem nabla_zeta_comm (a TT : ℝ) : nabE a TT * (zP : Pr r) = zP * nabE a TT + 1 := by
-  rw [zP, nabE_fn, (eulerCoord r vz vz 0).1, (eulerCoord r vzb vzb 0).1, if_pos rfl, if_pos rfl,
-    inv_mul_cancel₀ (coord_ne r _), inv_mul_cancel₀ (coord_ne r _), multiplierPair_one]
+  rw [zP, nabE_fn, (Mx4.eulerCoord r vz vz 0).1, (Mx4.eulerCoord r vzb vzb 0).1, if_pos rfl, if_pos rfl,
+    inv_mul_cancel₀ (Mx4.coord_ne r _), inv_mul_cancel₀ (Mx4.coord_ne r _), multiplierPair_one]
 theorem nab_zi (a TT : ℝ) : nabE a TT * (ziP : Pr r) = ziP * nabE a TT - ziP * ziP := by
-  rw [ziP, nabE_fn, euler_inv _ _ (coord_ne r _), euler_inv _ _ (coord_ne r _), (eulerCoord r vz vz 0).1,
-    (eulerCoord r vzb vzb 0).1, if_pos rfl, if_pos rfl, multiplierPair_mul, sub_eq_add_neg, multiplierPair_neg]
-  congr 2 <;> field_simp [coord_ne r vz, coord_ne r vzb]
+  rw [ziP, nabE_fn, Mx4.euler_inv _ _ (Mx4.coord_ne r _), Mx4.euler_inv _ _ (Mx4.coord_ne r _), (Mx4.eulerCoord r vz vz 0).1,
+    (Mx4.eulerCoord r vzb vzb 0).1, if_pos rfl, if_pos rfl, Mx4.multiplierPair_mul, sub_eq_add_neg, Mx4.multiplierPair_neg]
+  congr 2 <;> field_simp [Mx4.coord_ne r vz, Mx4.coord_ne r vzb]
 theorem nab_zb (a TT : ℝ) : nabE a TT * (zbP : Pr r) = zbP * nabE a TT := by
-  rw [zbP, nabE_fn, (eulerCoord r vz vzb 0).1, (eulerCoord r vzb vz 0).1, if_neg vz_ne, if_neg vz_ne.symm]
+  rw [zbP, nabE_fn, (Mx4.eulerCoord r vz vzb 0).1, (Mx4.eulerCoord r vzb vz 0).1, if_neg Mx4.vz_ne, if_neg Mx4.vz_ne.symm]
   simp only [mul_zero]
   have h0 : mulOp (0 : Fn r) = 0 := by ext h : 1; simp [mulOp]
   have : (fnP 0 0 : Pr r) = 0 := by
@@ -195,51 +97,32 @@ theorem nab_zb (a TT : ℝ) : nabE a TT * (zbP : Pr r) = zbP * nabE a TT := by
     rw [h0]; rfl
   rw [this, add_zero]
 theorem nab_gg (a TT : ℝ) : nabE a TT * (ggP TT : Pr r) = ggP TT * nabE a TT + zbP := by
-  rw [ggP, nabE_fn, euler_GG_z, euler_gg_zb, zbP]
-  congr 2 <;> field_simp [coord_ne r vz, coord_ne r vzb]
+  rw [ggP, nabE_fn, Mx4.euler_GG_z, Mx4.euler_gg_zb, zbP]
+  congr 2 <;> field_simp [Mx4.coord_ne r vz, Mx4.coord_ne r vzb]
 theorem nab_ggi (a TT : ℝ) : nabE a TT * (ggiP TT : Pr r) = ggiP TT * nabE a TT - zbP * ggiP TT * ggiP TT := by
-  rw [ggiP, nabE_fn, euler_inv _ _ (gg_ne TT), euler_inv _ _ (gg_ne TT), euler_GG_z, euler_gg_zb, zbP, multiplierPair_mul, multiplierPair_mul,
-    sub_eq_add_neg, multiplierPair_neg]
-  congr 2 <;> field_simp [coord_ne r vz, coord_ne r vzb]
+  rw [ggiP, nabE_fn, Mx4.euler_inv _ _ (Mx4.gg_ne TT), Mx4.euler_inv _ _ (Mx4.gg_ne TT), Mx4.euler_GG_z, Mx4.euler_gg_zb, zbP, Mx4.multiplierPair_mul, Mx4.multiplierPair_mul,
+    sub_eq_add_neg, Mx4.multiplierPair_neg]
+  congr 2 <;> field_simp [Mx4.coord_ne r vz, Mx4.coord_ne r vzb]
 theorem nabs_zb (a TT : ℝ) : nabsE a TT * (zbP : Pr r) = zbP * nabsE a TT - 1 := by
-  rw [zbP, nabsE_fn, (eulerCoord r vz vz 0).1, (eulerCoord r vzb vzb 0).1, if_pos rfl, if_pos rfl,
-    inv_mul_cancel₀ (coord_ne r _), inv_mul_cancel₀ (coord_ne r _), multiplierPair_one]
+  rw [zbP, nabsE_fn, (Mx4.eulerCoord r vz vz 0).1, (Mx4.eulerCoord r vzb vzb 0).1, if_pos rfl, if_pos rfl,
+    inv_mul_cancel₀ (Mx4.coord_ne r _), inv_mul_cancel₀ (Mx4.coord_ne r _), multiplierPair_one]
 theorem nabs_gg (a TT : ℝ) : nabsE a TT * (ggP TT : Pr r) = ggP TT * nabsE a TT - zP := by
-  rw [ggP, nabsE_fn, euler_GG_z, euler_gg_zb, zP]
-  congr 2 <;> field_simp [coord_ne r vzb, coord_ne r vz]
+  rw [ggP, nabsE_fn, Mx4.euler_GG_z, Mx4.euler_gg_zb, zP]
+  congr 2 <;> field_simp [Mx4.coord_ne r vzb, Mx4.coord_ne r vz]
 theorem nabs_ggi (a TT : ℝ) : nabsE a TT * (ggiP TT : Pr r) = ggiP TT * nabsE a TT + zP * ggiP TT * ggiP TT := by
-  rw [ggiP, nabsE_fn, euler_inv _ _ (gg_ne TT), euler_inv _ _ (gg_ne TT), euler_GG_z, euler_gg_zb, zP, multiplierPair_mul, multiplierPair_mul,
-    sub_eq_add_neg, multiplierPair_neg]
-  congr 2 <;> field_simp [coord_ne r vzb, coord_ne r vz]
+  rw [ggiP, nabsE_fn, Mx4.euler_inv _ _ (Mx4.gg_ne TT), Mx4.euler_inv _ _ (Mx4.gg_ne TT), Mx4.euler_GG_z, Mx4.euler_gg_zb, zP, Mx4.multiplierPair_mul, Mx4.multiplierPair_mul,
+    sub_eq_add_neg, Mx4.multiplierPair_neg]
+  congr 2 <;> field_simp [Mx4.coord_ne r vzb, Mx4.coord_ne r vz]
 
 theorem partialDeriv_def (l : Fin r) : (pP l : Pr r) = mk (mulOp 1 * euler (vc l)) (-(mulOp 1 * euler (vcb l))) := by
   have : mulOp (1 : Fn r) = 1 := by ext h : 1; simp [mulOp]
   rw [this, one_mul, one_mul]; rfl
 theorem p_c (l : Fin r) : pP l * cP l = cP l * pP l + cP l := by
-  rw [partialDeriv_def, cP, der_fn, (eulerCoord r _ _ 0).1, (eulerCoord r _ _ 0).1, if_pos rfl, if_pos rfl, one_mul, one_mul]
+  rw [partialDeriv_def, cP, Mx4.der_fn, (Mx4.eulerCoord r _ _ 0).1, (Mx4.eulerCoord r _ _ 0).1, if_pos rfl, if_pos rfl, one_mul, one_mul]
 theorem p_ci (l : Fin r) : pP l * ciP l = ciP l * pP l - ciP l := by
-  rw [partialDeriv_def, ciP, der_fn, euler_inv _ _ (coord_ne r _), euler_inv _ _ (coord_ne r _), (eulerCoord r _ _ 0).1,
-    (eulerCoord r _ _ 0).1, if_pos rfl, if_pos rfl, one_mul, one_mul, sub_eq_add_neg, multiplierPair_neg]
-  congr 2 <;> field_simp [coord_ne r (vc l), coord_ne r (vcb l)]
-
-theorem eulerComm : EulerComm := by
-  intro r v w
-  ext f γ
-  simp only [Module.End.mul_apply, euler, LinearMap.coe_mk, AddHom.coe_mk]
-  ring
-
-theorem multiplierPair_zero : (fnP 0 0 : Pr r) = 0 := by
-  have h0 : mulOp (0 : Fn r) = 0 := by ext h : 1; simp [mulOp]
-  refine Prod.ext h0 ?_
-  show MulOpposite.op (mulOp (0 : Fn r)) = 0
-  rw [h0]; rfl
-
-theorem ec (v w : Var r) : euler v (coord w) = if v = w then coord w else 0 := (eulerCoord r v w 0).1
-theorem eci (v w : Var r) : euler v (coord w)⁻¹ = if v = w then -(coord w)⁻¹ else 0 := by
-  rw [euler_inv _ _ (coord_ne r w), ec]
-  split_ifs
-  · field_simp [coord_ne r w]
-  · simp
+  rw [partialDeriv_def, ciP, Mx4.der_fn, Mx4.euler_inv _ _ (Mx4.coord_ne r _), Mx4.euler_inv _ _ (Mx4.coord_ne r _), (Mx4.eulerCoord r _ _ 0).1,
+    (Mx4.eulerCoord r _ _ 0).1, if_pos rfl, if_pos rfl, one_mul, one_mul, sub_eq_add_neg, Mx4.multiplierPair_neg]
+  congr 2 <;> field_simp [Mx4.coord_ne r (vc l), Mx4.coord_ne r (vcb l)]
 
 theorem vc_inj (l m : Fin r) : (vc l : Var r) = vc m ↔ l = m := by
   constructor
@@ -266,86 +149,77 @@ theorem vcb_vzb (l : Fin r) : (vcb l : Var r) ≠ vzb := by
 
 theorem euler_gamma_vanish (v : Var r) (h1 : v ≠ vz) (h2 : v ≠ vzb) (TT : ℝ) : euler v (gg TT : Fn r) = 0 := by
   unfold gg
-  rw [map_sub, eulerLeibniz, ec, ec, (eulerCoord r v v _).2, if_neg h1, if_neg h2]; simp
+  rw [map_sub, Mx4.eulerLeibniz, Mx4.ec, Mx4.ec, (Mx4.eulerCoord r v v _).2, if_neg h1, if_neg h2]; simp
 theorem euler_gamma_inv_vanish (v : Var r) (h1 : v ≠ vz) (h2 : v ≠ vzb) (TT : ℝ) : euler v (gg TT : Fn r)⁻¹ = 0 := by
-  rw [euler_inv _ _ (gg_ne TT), euler_gamma_vanish v h1 h2]; simp
+  rw [Mx4.euler_inv _ _ (Mx4.gg_ne TT), euler_gamma_vanish v h1 h2]; simp
 
 def ZF (f : Fn r) : Prop := ∀ l : Fin r, euler (vc l) f = 0 ∧ euler (vcb l) f = 0
 
 def CF (f : Fn r) : Prop := euler vz f = 0 ∧ euler vzb f = 0
 
-theorem zeta_free_of_variable : ZF (coord vz : Fn r) := fun l => ⟨by rw [ec, if_neg (vc_vz l)], by rw [ec, if_neg (vcb_vz l)]⟩
-theorem zf_zb : ZF (coord vzb : Fn r) := fun l => ⟨by rw [ec, if_neg (vc_vzb l)], by rw [ec, if_neg (vcb_vzb l)]⟩
-theorem zf_zi : ZF ((coord vz)⁻¹ : Fn r) := fun l => ⟨by rw [eci, if_neg (vc_vz l)], by rw [eci, if_neg (vcb_vz l)]⟩
-theorem zf_zbi : ZF ((coord vzb)⁻¹ : Fn r) := fun l => ⟨by rw [eci, if_neg (vc_vzb l)], by rw [eci, if_neg (vcb_vzb l)]⟩
+theorem zeta_free_of_variable : ZF (coord vz : Fn r) := fun l => ⟨by rw [Mx4.ec, if_neg (vc_vz l)], by rw [Mx4.ec, if_neg (vcb_vz l)]⟩
+theorem zf_zb : ZF (coord vzb : Fn r) := fun l => ⟨by rw [Mx4.ec, if_neg (vc_vzb l)], by rw [Mx4.ec, if_neg (vcb_vzb l)]⟩
+theorem zf_zi : ZF ((coord vz)⁻¹ : Fn r) := fun l => ⟨by rw [Mx4.eci, if_neg (vc_vz l)], by rw [Mx4.eci, if_neg (vcb_vz l)]⟩
+theorem zf_zbi : ZF ((coord vzb)⁻¹ : Fn r) := fun l => ⟨by rw [Mx4.eci, if_neg (vc_vzb l)], by rw [Mx4.eci, if_neg (vcb_vzb l)]⟩
 theorem zf_gg (TT : ℝ) : ZF (gg TT : Fn r) := fun l =>
   ⟨euler_gamma_vanish _ (vc_vz l) (vc_vzb l) TT, euler_gamma_vanish _ (vcb_vz l) (vcb_vzb l) TT⟩
 theorem zf_ggi (TT : ℝ) : ZF ((gg TT)⁻¹ : Fn r) := fun l =>
   ⟨euler_gamma_inv_vanish _ (vc_vz l) (vc_vzb l) TT, euler_gamma_inv_vanish _ (vcb_vz l) (vcb_vzb l) TT⟩
 theorem zf_mul {f g : Fn r} (hf : ZF f) (hg : ZF g) : ZF (f * g) := fun l =>
-  ⟨by rw [eulerLeibniz, (hf l).1, (hg l).1]; simp, by rw [eulerLeibniz, (hf l).2, (hg l).2]; simp⟩
+  ⟨by rw [Mx4.eulerLeibniz, (hf l).1, (hg l).1]; simp, by rw [Mx4.eulerLeibniz, (hf l).2, (hg l).2]; simp⟩
 theorem zf_smul {f : Fn r} (z : ℂ) (hf : ZF f) : ZF (z • f) := fun l =>
   ⟨by rw [map_smul, (hf l).1, smul_zero], by rw [map_smul, (hf l).2, smul_zero]⟩
 
-theorem cf_c (m : Fin r) : CF (coord (vc m) : Fn r) := ⟨by rw [ec, if_neg (vc_vz m).symm], by rw [ec, if_neg (vc_vzb m).symm]⟩
-theorem cf_cb (m : Fin r) : CF (coord (vcb m) : Fn r) := ⟨by rw [ec, if_neg (vcb_vz m).symm], by rw [ec, if_neg (vcb_vzb m).symm]⟩
-theorem cf_ci (m : Fin r) : CF ((coord (vc m))⁻¹ : Fn r) := ⟨by rw [eci, if_neg (vc_vz m).symm], by rw [eci, if_neg (vc_vzb m).symm]⟩
-theorem cf_cbi (m : Fin r) : CF ((coord (vcb m))⁻¹ : Fn r) := ⟨by rw [eci, if_neg (vcb_vz m).symm], by rw [eci, if_neg (vcb_vzb m).symm]⟩
+theorem cf_c (m : Fin r) : CF (coord (vc m) : Fn r) := ⟨by rw [Mx4.ec, if_neg (vc_vz m).symm], by rw [Mx4.ec, if_neg (vc_vzb m).symm]⟩
+theorem cf_cb (m : Fin r) : CF (coord (vcb m) : Fn r) := ⟨by rw [Mx4.ec, if_neg (vcb_vz m).symm], by rw [Mx4.ec, if_neg (vcb_vzb m).symm]⟩
+theorem cf_ci (m : Fin r) : CF ((coord (vc m))⁻¹ : Fn r) := ⟨by rw [Mx4.eci, if_neg (vc_vz m).symm], by rw [Mx4.eci, if_neg (vc_vzb m).symm]⟩
+theorem cf_cbi (m : Fin r) : CF ((coord (vcb m))⁻¹ : Fn r) := ⟨by rw [Mx4.eci, if_neg (vcb_vz m).symm], by rw [Mx4.eci, if_neg (vcb_vzb m).symm]⟩
 
 theorem partialDerivBar_def (l : Fin r) : (pbP l : Pr r) = mk (mulOp 1 * euler (vcb l)) (-(mulOp 1 * euler (vc l))) := by
   have : mulOp (1 : Fn r) = 1 := by ext h : 1; simp [mulOp]
   rw [this, one_mul, one_mul]; rfl
 
 theorem partialDeriv_mul_fn (l : Fin r) (f fb : Fn r) : pP l * fnP f fb = fnP f fb * pP l + fnP (euler (vc l) f) (euler (vcb l) fb) := by
-  rw [partialDeriv_def, der_fn, one_mul, one_mul]
+  rw [partialDeriv_def, Mx4.der_fn, one_mul, one_mul]
 theorem partialDerivBar_mul_fn (l : Fin r) (f fb : Fn r) : pbP l * fnP f fb = fnP f fb * pbP l + fnP (euler (vcb l) f) (euler (vc l) fb) := by
-  rw [partialDerivBar_def, der_fn, one_mul, one_mul]
-
-theorem comm_eu (v w : Var r) (f : Fn r) (h : euler v f = 0) :
-    euler v * (mulOp f * euler w) = (mulOp f * euler w) * euler v := by
-  have h0 : mulOp (0 : Fn r) = 0 := by ext h : 1; simp [mulOp]
-  rw [← mul_assoc, eulerMul, h, h0, add_zero, mul_assoc, mul_assoc, eulerComm]
-
-theorem mk_comm (X Xs Y Ys : Op r) (h1 : X * Y = Y * X) (h2 : Xs * Ys = Ys * Xs) : mk X Xs * mk Y Ys = mk Y Ys * mk X Xs := by
-  refine Prod.ext h1 ?_
-  exact congrArg MulOpposite.op h2.symm
+  rw [partialDerivBar_def, Mx4.der_fn, one_mul, one_mul]
 
 theorem partialDeriv_commute_nab (l : Fin r) (a TT : ℝ) : pP l * nabE a TT = nabE a TT * pP l := by
   unfold nabE
-  rw [zbP, ggiP, multiplierPair_mul, smul_fnP, mul_add, add_mul, partialDeriv_mul_fn,
-    ((zf_smul _ (zf_mul zf_zb (zf_ggi TT))) l).1, ((zf_smul _ (zf_mul zeta_free_of_variable (zf_ggi TT))) l).2, multiplierPair_zero, add_zero]
+  rw [zbP, ggiP, Mx4.multiplierPair_mul, Mx4.smul_fnP, mul_add, add_mul, partialDeriv_mul_fn,
+    ((zf_smul _ (zf_mul zf_zb (zf_ggi TT))) l).1, ((zf_smul _ (zf_mul zeta_free_of_variable (zf_ggi TT))) l).2, Mx4.multiplierPair_zero, add_zero]
   congr 1
-  exact mk_comm _ _ _ _ (comm_eu _ _ _ (zf_zi l).1) (by rw [neg_mul_neg, neg_mul_neg]; exact comm_eu _ _ _ (zf_zbi l).2)
+  exact Mx4.mk_comm _ _ _ _ (Mx4.comm_eu _ _ _ (zf_zi l).1) (by rw [neg_mul_neg, neg_mul_neg]; exact Mx4.comm_eu _ _ _ (zf_zbi l).2)
 theorem partialDerivBar_commute_nab (l : Fin r) (a TT : ℝ) : pbP l * nabE a TT = nabE a TT * pbP l := by
   unfold nabE
-  rw [zbP, ggiP, multiplierPair_mul, smul_fnP, mul_add, add_mul, partialDerivBar_mul_fn,
-    ((zf_smul _ (zf_mul zf_zb (zf_ggi TT))) l).2, ((zf_smul _ (zf_mul zeta_free_of_variable (zf_ggi TT))) l).1, multiplierPair_zero, add_zero]
+  rw [zbP, ggiP, Mx4.multiplierPair_mul, Mx4.smul_fnP, mul_add, add_mul, partialDerivBar_mul_fn,
+    ((zf_smul _ (zf_mul zf_zb (zf_ggi TT))) l).2, ((zf_smul _ (zf_mul zeta_free_of_variable (zf_ggi TT))) l).1, Mx4.multiplierPair_zero, add_zero]
   congr 1
-  exact mk_comm _ _ _ _ (comm_eu _ _ _ (zf_zi l).2) (by rw [neg_mul_neg, neg_mul_neg]; exact comm_eu _ _ _ (zf_zbi l).1)
+  exact Mx4.mk_comm _ _ _ _ (Mx4.comm_eu _ _ _ (zf_zi l).2) (by rw [neg_mul_neg, neg_mul_neg]; exact Mx4.comm_eu _ _ _ (zf_zbi l).1)
 theorem partialDeriv_commute_nabs (l : Fin r) (a TT : ℝ) : pP l * nabsE a TT = nabsE a TT * pP l := by
   unfold nabsE
-  rw [zP, ggiP, multiplierPair_mul, smul_fnP, mul_add, add_mul, partialDeriv_mul_fn,
-    ((zf_smul _ (zf_mul zeta_free_of_variable (zf_ggi TT))) l).1, ((zf_smul _ (zf_mul zf_zb (zf_ggi TT))) l).2, multiplierPair_zero, add_zero,
+  rw [zP, ggiP, Mx4.multiplierPair_mul, Mx4.smul_fnP, mul_add, add_mul, partialDeriv_mul_fn,
+    ((zf_smul _ (zf_mul zeta_free_of_variable (zf_ggi TT))) l).1, ((zf_smul _ (zf_mul zf_zb (zf_ggi TT))) l).2, Mx4.multiplierPair_zero, add_zero,
     mul_neg, neg_mul]
   congr 2
-  exact mk_comm _ _ _ _ (comm_eu _ _ _ (zf_zbi l).1) (by rw [neg_mul_neg, neg_mul_neg]; exact comm_eu _ _ _ (zf_zi l).2)
+  exact Mx4.mk_comm _ _ _ _ (Mx4.comm_eu _ _ _ (zf_zbi l).1) (by rw [neg_mul_neg, neg_mul_neg]; exact Mx4.comm_eu _ _ _ (zf_zi l).2)
 theorem partialDerivBar_commute_nabs (l : Fin r) (a TT : ℝ) : pbP l * nabsE a TT = nabsE a TT * pbP l := by
   unfold nabsE
-  rw [zP, ggiP, multiplierPair_mul, smul_fnP, mul_add, add_mul, partialDerivBar_mul_fn,
-    ((zf_smul _ (zf_mul zeta_free_of_variable (zf_ggi TT))) l).2, ((zf_smul _ (zf_mul zf_zb (zf_ggi TT))) l).1, multiplierPair_zero, add_zero,
+  rw [zP, ggiP, Mx4.multiplierPair_mul, Mx4.smul_fnP, mul_add, add_mul, partialDerivBar_mul_fn,
+    ((zf_smul _ (zf_mul zeta_free_of_variable (zf_ggi TT))) l).2, ((zf_smul _ (zf_mul zf_zb (zf_ggi TT))) l).1, Mx4.multiplierPair_zero, add_zero,
     mul_neg, neg_mul]
   congr 2
-  exact mk_comm _ _ _ _ (comm_eu _ _ _ (zf_zbi l).2) (by rw [neg_mul_neg, neg_mul_neg]; exact comm_eu _ _ _ (zf_zi l).1)
+  exact Mx4.mk_comm _ _ _ _ (Mx4.comm_eu _ _ _ (zf_zbi l).2) (by rw [neg_mul_neg, neg_mul_neg]; exact Mx4.comm_eu _ _ _ (zf_zi l).1)
 
 theorem nabs_zbi (a TT : ℝ) : nabsE a TT * (zbiP : Pr r) = zbiP * nabsE a TT + zbiP * zbiP := by
-  rw [zbiP, nabsE_fn, eci, eci, if_pos rfl, if_pos rfl, multiplierPair_mul, sub_eq_add_neg, multiplierPair_neg]
+  rw [zbiP, nabsE_fn, Mx4.eci, Mx4.eci, if_pos rfl, if_pos rfl, Mx4.multiplierPair_mul, sub_eq_add_neg, Mx4.multiplierPair_neg]
   congr 2 <;> ring
 theorem nab_cf (a TT : ℝ) (f fb : Fn r) (h1 : euler vz f = 0) (h2 : euler vzb fb = 0) :
     nabE a TT * fnP f fb = fnP f fb * nabE a TT := by
-  rw [nabE_fn, h1, h2, mul_zero, mul_zero, multiplierPair_zero, add_zero]
+  rw [nabE_fn, h1, h2, mul_zero, mul_zero, Mx4.multiplierPair_zero, add_zero]
 theorem nabs_cf (a TT : ℝ) (f fb : Fn r) (h1 : euler vzb f = 0) (h2 : euler vz fb = 0) :
     nabsE a TT * fnP f fb = fnP f fb * nabsE a TT := by
-  rw [nabsE_fn, h1, h2, mul_zero, mul_zero, multiplierPair_zero, sub_zero]
+  rw [nabsE_fn, h1, h2, mul_zero, mul_zero, Mx4.multiplierPair_zero, sub_zero]
 
 theorem levNab : LevNab := by
   intro P
@@ -353,7 +227,7 @@ theorem levNab : LevNab := by
   · (simp only [zA, nabA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.add_apply, Matrix.one_apply, Matrix.diagonal_apply, hij, if_true, if_false, add_zero]); exact nabla_zeta_comm _ _
   · (simp only [ziA, nabA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.sub_apply, Matrix.diagonal_apply, hij, if_true, if_false, sub_zero]); exact nab_zi _ _
   · (simp only [zbA, nabA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.diagonal_apply, hij, if_true, if_false]); exact nab_zb _ _
-  · (simp only [zbiA, nabA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.diagonal_apply, hij, if_true, if_false]); exact nab_cf _ _ _ _ (by rw [eci, if_neg vz_ne]) (by rw [eci, if_neg vz_ne.symm])
+  · (simp only [zbiA, nabA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.diagonal_apply, hij, if_true, if_false]); exact nab_cf _ _ _ _ (by rw [Mx4.eci, if_neg Mx4.vz_ne]) (by rw [Mx4.eci, if_neg Mx4.vz_ne.symm])
   · (simp only [zbA, ggA, nabA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.add_apply, Matrix.diagonal_apply, hij, if_true, if_false, add_zero]); exact nab_gg _ _
   · (simp only [zbA, ggiA, nabA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.sub_apply, Matrix.diagonal_apply, hij, if_true, if_false, sub_zero]); exact nab_ggi _ _
   · rintro x (((⟨m, rfl⟩ | ⟨m, rfl⟩) | ⟨m, rfl⟩) | ⟨m, rfl⟩)
@@ -367,8 +241,8 @@ theorem levNabs : LevNabs := by
   refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · (simp only [zbA, nabsA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.sub_apply, Matrix.one_apply, Matrix.diagonal_apply, hij, if_true, if_false, sub_zero]); exact nabs_zb _ _
   · (simp only [zbiA, nabsA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.add_apply, Matrix.diagonal_apply, hij, if_true, if_false, add_zero]); exact nabs_zbi _ _
-  · (simp only [zA, nabsA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.diagonal_apply, hij, if_true, if_false]); exact nabs_cf _ _ _ _ (by rw [ec, if_neg vz_ne.symm]) (by rw [ec, if_neg vz_ne])
-  · (simp only [ziA, nabsA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.diagonal_apply, hij, if_true, if_false]); exact nabs_cf _ _ _ _ (by rw [eci, if_neg vz_ne.symm]) (by rw [eci, if_neg vz_ne])
+  · (simp only [zA, nabsA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.diagonal_apply, hij, if_true, if_false]); exact nabs_cf _ _ _ _ (by rw [Mx4.ec, if_neg Mx4.vz_ne.symm]) (by rw [Mx4.ec, if_neg Mx4.vz_ne])
+  · (simp only [ziA, nabsA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.diagonal_apply, hij, if_true, if_false]); exact nabs_cf _ _ _ _ (by rw [Mx4.eci, if_neg Mx4.vz_ne.symm]) (by rw [Mx4.eci, if_neg Mx4.vz_ne])
   · (simp only [zA, ggA, nabsA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.sub_apply, Matrix.diagonal_apply, hij, if_true, if_false, sub_zero]); exact nabs_gg _ _
   · (simp only [zA, ggiA, nabsA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.add_apply, Matrix.diagonal_apply, hij, if_true, if_false, add_zero]); exact nabs_ggi _ _
   · rintro x (((⟨m, rfl⟩ | ⟨m, rfl⟩) | ⟨m, rfl⟩) | ⟨m, rfl⟩)
@@ -380,18 +254,18 @@ theorem levNabs : LevNabs := by
 theorem levPP : LevPP := by
   intro P l m
   refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
-  · (simp only [pA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.diagonal_apply, hij, if_true, if_false]); exact mk_comm _ _ _ _ (eulerComm _ _ _) (by rw [neg_mul_neg, neg_mul_neg]; exact eulerComm _ _ _)
-  · (simp only [pA, pbA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.diagonal_apply, hij, if_true, if_false]); exact mk_comm _ _ _ _ (eulerComm _ _ _) (by rw [neg_mul_neg, neg_mul_neg]; exact eulerComm _ _ _)
-  · (simp only [pbA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.diagonal_apply, hij, if_true, if_false]); exact mk_comm _ _ _ _ (eulerComm _ _ _) (by rw [neg_mul_neg, neg_mul_neg]; exact eulerComm _ _ _)
+  · (simp only [pA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.diagonal_apply, hij, if_true, if_false]); exact Mx4.mk_comm _ _ _ _ (Mx4.eulerComm _ _ _) (by rw [neg_mul_neg, neg_mul_neg]; exact Mx4.eulerComm _ _ _)
+  · (simp only [pA, pbA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.diagonal_apply, hij, if_true, if_false]); exact Mx4.mk_comm _ _ _ _ (Mx4.eulerComm _ _ _) (by rw [neg_mul_neg, neg_mul_neg]; exact Mx4.eulerComm _ _ _)
+  · (simp only [pbA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.diagonal_apply, hij, if_true, if_false]); exact Mx4.mk_comm _ _ _ _ (Mx4.eulerComm _ _ _) (by rw [neg_mul_neg, neg_mul_neg]; exact Mx4.eulerComm _ _ _)
   · (simp only [pA, nabA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.diagonal_apply, hij, if_true, if_false]); exact partialDeriv_commute_nab _ _ _
   · (simp only [pbA, nabA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.diagonal_apply, hij, if_true, if_false]); exact partialDerivBar_commute_nab _ _ _
   · (simp only [pA, nabsA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.diagonal_apply, hij, if_true, if_false]); exact partialDeriv_commute_nabs _ _ _
   · (simp only [pbA, nabsA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.diagonal_apply, hij, if_true, if_false]); exact partialDerivBar_commute_nabs _ _ _
 
 theorem pP_0 (l : Fin r) (f fb : Fn r) (h1 : euler (vc l) f = 0) (h2 : euler (vcb l) fb = 0) :
-    pP l * fnP f fb = fnP f fb * pP l := by rw [partialDeriv_mul_fn, h1, h2, multiplierPair_zero, add_zero]
+    pP l * fnP f fb = fnP f fb * pP l := by rw [partialDeriv_mul_fn, h1, h2, Mx4.multiplierPair_zero, add_zero]
 theorem pbP_0 (l : Fin r) (f fb : Fn r) (h1 : euler (vcb l) f = 0) (h2 : euler (vc l) fb = 0) :
-    pbP l * fnP f fb = fnP f fb * pbP l := by rw [partialDerivBar_mul_fn, h1, h2, multiplierPair_zero, add_zero]
+    pbP l * fnP f fb = fnP f fb * pbP l := by rw [partialDerivBar_mul_fn, h1, h2, Mx4.multiplierPair_zero, add_zero]
 
 theorem levP : LevP := by
   intro P l
@@ -400,15 +274,15 @@ theorem levP : LevP := by
     by_cases h : l = m
     · subst h; rw [if_pos rfl]; (simp only [pA, cA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.add_apply, Matrix.diagonal_apply, hij, if_true, if_false, add_zero]); exact p_c l
     · rw [if_neg h, add_zero]; (simp only [pA, cA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.diagonal_apply, hij, if_true, if_false])
-      exact pP_0 _ _ _ (by rw [ec, if_neg (fun e => h ((vc_inj _ _).1 e))]) (by rw [ec, if_neg (fun e => h ((vcb_inj _ _).1 e))])
+      exact pP_0 _ _ _ (by rw [Mx4.ec, if_neg (fun e => h ((vc_inj _ _).1 e))]) (by rw [Mx4.ec, if_neg (fun e => h ((vcb_inj _ _).1 e))])
   · intro m
     by_cases h : l = m
     · subst h; rw [if_pos rfl]; (simp only [pA, ciA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.sub_apply, Matrix.diagonal_apply, hij, if_true, if_false, sub_zero]); exact p_ci l
     · rw [if_neg h, sub_zero]; (simp only [pA, ciA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.diagonal_apply, hij, if_true, if_false])
-      exact pP_0 _ _ _ (by rw [eci, if_neg (fun e => h ((vc_inj _ _).1 e))]) (by rw [eci, if_neg (fun e => h ((vcb_inj _ _).1 e))])
+      exact pP_0 _ _ _ (by rw [Mx4.eci, if_neg (fun e => h ((vc_inj _ _).1 e))]) (by rw [Mx4.eci, if_neg (fun e => h ((vcb_inj _ _).1 e))])
   · rintro x ((⟨m, rfl⟩ | ⟨m, rfl⟩) | hx)
-    · (simp only [pA, cbA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.diagonal_apply, hij, if_true, if_false]); exact pP_0 _ _ _ (by rw [ec, if_neg (vc_vcb _ _)]) (by rw [ec, if_neg (vc_vcb _ _).symm])
-    · (simp only [pA, cbiA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.diagonal_apply, hij, if_true, if_false]); exact pP_0 _ _ _ (by rw [eci, if_neg (vc_vcb _ _)]) (by rw [eci, if_neg (vc_vcb _ _).symm])
+    · (simp only [pA, cbA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.diagonal_apply, hij, if_true, if_false]); exact pP_0 _ _ _ (by rw [Mx4.ec, if_neg (vc_vcb _ _)]) (by rw [Mx4.ec, if_neg (vc_vcb _ _).symm])
+    · (simp only [pA, cbiA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.diagonal_apply, hij, if_true, if_false]); exact pP_0 _ _ _ (by rw [Mx4.eci, if_neg (vc_vcb _ _)]) (by rw [Mx4.eci, if_neg (vc_vcb _ _).symm])
     · simp only [zfnsA, Set.mem_insert_iff, Set.mem_singleton_iff] at hx
       rcases hx with rfl | rfl | rfl | rfl | rfl | rfl
       · (simp only [pA, zA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.diagonal_apply, hij, if_true, if_false]); exact pP_0 _ _ _ (zeta_free_of_variable l).1 (zf_zb l).2
@@ -424,18 +298,18 @@ theorem levPb : LevPb := by
   · intro m
     by_cases h : l = m
     · subst h; rw [if_pos rfl]; (simp only [pbA, cbA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.add_apply, Matrix.diagonal_apply, hij, if_true, if_false, add_zero])
-      rw [cbP, partialDerivBar_mul_fn, ec, ec, if_pos rfl, if_pos rfl]
+      rw [cbP, partialDerivBar_mul_fn, Mx4.ec, Mx4.ec, if_pos rfl, if_pos rfl]
     · rw [if_neg h, add_zero]; (simp only [pbA, cbA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.diagonal_apply, hij, if_true, if_false])
-      exact pbP_0 _ _ _ (by rw [ec, if_neg (fun e => h ((vcb_inj _ _).1 e))]) (by rw [ec, if_neg (fun e => h ((vc_inj _ _).1 e))])
+      exact pbP_0 _ _ _ (by rw [Mx4.ec, if_neg (fun e => h ((vcb_inj _ _).1 e))]) (by rw [Mx4.ec, if_neg (fun e => h ((vc_inj _ _).1 e))])
   · intro m
     by_cases h : l = m
     · subst h; rw [if_pos rfl]; (simp only [pbA, cbiA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.sub_apply, Matrix.diagonal_apply, hij, if_true, if_false, sub_zero])
-      rw [cbiP, partialDerivBar_mul_fn, eci, eci, if_pos rfl, if_pos rfl, sub_eq_add_neg, multiplierPair_neg]
+      rw [cbiP, partialDerivBar_mul_fn, Mx4.eci, Mx4.eci, if_pos rfl, if_pos rfl, sub_eq_add_neg, Mx4.multiplierPair_neg]
     · rw [if_neg h, sub_zero]; (simp only [pbA, cbiA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.diagonal_apply, hij, if_true, if_false])
-      exact pbP_0 _ _ _ (by rw [eci, if_neg (fun e => h ((vcb_inj _ _).1 e))]) (by rw [eci, if_neg (fun e => h ((vc_inj _ _).1 e))])
+      exact pbP_0 _ _ _ (by rw [Mx4.eci, if_neg (fun e => h ((vcb_inj _ _).1 e))]) (by rw [Mx4.eci, if_neg (fun e => h ((vc_inj _ _).1 e))])
   · rintro x ((⟨m, rfl⟩ | ⟨m, rfl⟩) | hx)
-    · (simp only [pbA, cA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.diagonal_apply, hij, if_true, if_false]); exact pbP_0 _ _ _ (by rw [ec, if_neg (vc_vcb _ _).symm]) (by rw [ec, if_neg (vc_vcb _ _)])
-    · (simp only [pbA, ciA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.diagonal_apply, hij, if_true, if_false]); exact pbP_0 _ _ _ (by rw [eci, if_neg (vc_vcb _ _).symm]) (by rw [eci, if_neg (vc_vcb _ _)])
+    · (simp only [pbA, cA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.diagonal_apply, hij, if_true, if_false]); exact pbP_0 _ _ _ (by rw [Mx4.ec, if_neg (vc_vcb _ _).symm]) (by rw [Mx4.ec, if_neg (vc_vcb _ _)])
+    · (simp only [pbA, ciA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.diagonal_apply, hij, if_true, if_false]); exact pbP_0 _ _ _ (by rw [Mx4.eci, if_neg (vc_vcb _ _).symm]) (by rw [Mx4.eci, if_neg (vc_vcb _ _)])
     · simp only [zfnsA, Set.mem_insert_iff, Set.mem_singleton_iff] at hx
       rcases hx with rfl | rfl | rfl | rfl | rfl | rfl
       · (simp only [pbA, zA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.diagonal_apply, hij, if_true, if_false]); exact pbP_0 _ _ _ (zeta_free_of_variable l).2 (zf_zb l).1
@@ -455,9 +329,9 @@ theorem form (P : Par) (x : A P) (hx : x ∈ fnsA P) : ∃ f fb, x = sc P (fnP f
     rcases hx with rfl | rfl | rfl | rfl | rfl | rfl <;> exact ⟨_, _, rfl⟩
 
 theorem inv1 (f fb : Fn r) (h : f ≠ 0) (hb : fb ≠ 0) : fnP f fb * fnP f⁻¹ fb⁻¹ = 1 := by
-  rw [multiplierPair_mul, mul_inv_cancel₀ h, mul_inv_cancel₀ hb, multiplierPair_one]
+  rw [Mx4.multiplierPair_mul, mul_inv_cancel₀ h, mul_inv_cancel₀ hb, multiplierPair_one]
 theorem inv2 (f fb : Fn r) (h : f ≠ 0) (hb : fb ≠ 0) : fnP f⁻¹ fb⁻¹ * fnP f fb = 1 := by
-  rw [multiplierPair_mul, inv_mul_cancel₀ h, inv_mul_cancel₀ hb, multiplierPair_one]
+  rw [Mx4.multiplierPair_mul, inv_mul_cancel₀ h, inv_mul_cancel₀ hb, multiplierPair_one]
 
 theorem levFns : LevFns := by
   intro P
@@ -465,23 +339,23 @@ theorem levFns : LevFns := by
   · intro x hx y hy
     obtain ⟨f, fb, rfl⟩ := form P x hx
     obtain ⟨g, gb, rfl⟩ := form P y hy
-    (simp only [sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.diagonal_apply, hij, if_true, if_false]); exact multiplierPair_comm _ _ _ _
+    (simp only [sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.diagonal_apply, hij, if_true, if_false]); exact Mx4.multiplierPair_comm _ _ _ _
   · intro l
     refine ⟨?_, ?_, ?_, ?_⟩
-    · (simp only [cA, ciA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.one_apply, Matrix.diagonal_apply, hij, if_true, if_false]); exact inv1 _ _ (coord_ne _ _) (coord_ne _ _)
-    · (simp only [cA, ciA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.one_apply, Matrix.diagonal_apply, hij, if_true, if_false]); exact inv2 _ _ (coord_ne _ _) (coord_ne _ _)
-    · (simp only [cbA, cbiA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.one_apply, Matrix.diagonal_apply, hij, if_true, if_false]); exact inv1 _ _ (coord_ne _ _) (coord_ne _ _)
-    · (simp only [cbA, cbiA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.one_apply, Matrix.diagonal_apply, hij, if_true, if_false]); exact inv2 _ _ (coord_ne _ _) (coord_ne _ _)
-  · (simp only [zA, ziA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.one_apply, Matrix.diagonal_apply, hij, if_true, if_false]); exact inv1 _ _ (coord_ne _ _) (coord_ne _ _)
-  · (simp only [zA, ziA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.one_apply, Matrix.diagonal_apply, hij, if_true, if_false]); exact inv2 _ _ (coord_ne _ _) (coord_ne _ _)
-  · (simp only [zbA, zbiA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.one_apply, Matrix.diagonal_apply, hij, if_true, if_false]); exact inv1 _ _ (coord_ne _ _) (coord_ne _ _)
-  · (simp only [zbA, zbiA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.one_apply, Matrix.diagonal_apply, hij, if_true, if_false]); exact inv2 _ _ (coord_ne _ _) (coord_ne _ _)
-  · (simp only [ggA, ggiA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.one_apply, Matrix.diagonal_apply, hij, if_true, if_false]); exact inv1 _ _ (gg_ne _) (gg_ne _)
-  · (simp only [ggA, ggiA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.one_apply, Matrix.diagonal_apply, hij, if_true, if_false]); exact inv2 _ _ (gg_ne _) (gg_ne _)
+    · (simp only [cA, ciA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.one_apply, Matrix.diagonal_apply, hij, if_true, if_false]); exact inv1 _ _ (Mx4.coord_ne _ _) (Mx4.coord_ne _ _)
+    · (simp only [cA, ciA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.one_apply, Matrix.diagonal_apply, hij, if_true, if_false]); exact inv2 _ _ (Mx4.coord_ne _ _) (Mx4.coord_ne _ _)
+    · (simp only [cbA, cbiA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.one_apply, Matrix.diagonal_apply, hij, if_true, if_false]); exact inv1 _ _ (Mx4.coord_ne _ _) (Mx4.coord_ne _ _)
+    · (simp only [cbA, cbiA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.one_apply, Matrix.diagonal_apply, hij, if_true, if_false]); exact inv2 _ _ (Mx4.coord_ne _ _) (Mx4.coord_ne _ _)
+  · (simp only [zA, ziA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.one_apply, Matrix.diagonal_apply, hij, if_true, if_false]); exact inv1 _ _ (Mx4.coord_ne _ _) (Mx4.coord_ne _ _)
+  · (simp only [zA, ziA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.one_apply, Matrix.diagonal_apply, hij, if_true, if_false]); exact inv2 _ _ (Mx4.coord_ne _ _) (Mx4.coord_ne _ _)
+  · (simp only [zbA, zbiA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.one_apply, Matrix.diagonal_apply, hij, if_true, if_false]); exact inv1 _ _ (Mx4.coord_ne _ _) (Mx4.coord_ne _ _)
+  · (simp only [zbA, zbiA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.one_apply, Matrix.diagonal_apply, hij, if_true, if_false]); exact inv2 _ _ (Mx4.coord_ne _ _) (Mx4.coord_ne _ _)
+  · (simp only [ggA, ggiA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.one_apply, Matrix.diagonal_apply, hij, if_true, if_false]); exact inv1 _ _ (Mx4.gg_ne _) (Mx4.gg_ne _)
+  · (simp only [ggA, ggiA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.one_apply, Matrix.diagonal_apply, hij, if_true, if_false]); exact inv2 _ _ (Mx4.gg_ne _) (Mx4.gg_ne _)
   · rw [Matrix.algebraMap_eq_diagonal]
     (simp only [zA, zbA, ggA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal]; ext i j; by_cases hij : i = j <;> simp only [Matrix.sub_apply, Matrix.diagonal_apply, hij, if_true, if_false, sub_zero])
-    rw [Pi.algebraMap_apply, Algebra.algebraMap_eq_smul_one, ← multiplierPair_one, smul_fnP, zP, zbP, multiplierPair_mul, sub_eq_add_neg, multiplierPair_neg,
-      multiplierPair_add, ggP]
+    rw [Pi.algebraMap_apply, Algebra.algebraMap_eq_smul_one, ← multiplierPair_one, Mx4.smul_fnP, zP, zbP, Mx4.multiplierPair_mul, sub_eq_add_neg, Mx4.multiplierPair_neg,
+      Mx4.multiplierPair_add, ggP]
     congr 1
     · unfold gg; rw [Algebra.algebraMap_eq_smul_one, sub_eq_add_neg]
     · unfold gg; rw [Algebra.algebraMap_eq_smul_one, sub_eq_add_neg, mul_comm]

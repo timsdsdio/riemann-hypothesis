@@ -103,7 +103,7 @@ theorem upper_minor_of_level_point (hj : j + 1 ≤ r) (Z : Matrix (Fin j) (Fin j
   rw [LeftFubiniLemmas.castM_apply']
   have hi : (Fin.cast (by omega) (esI k r a') : Fin (2 * (j + 1 + (r - (j + 1))) + k + 1)) =
       U.eB k (j + 1) (r - (j + 1)) (Sum.inr ⟨j + 1 - 1 - a'.val, by omega⟩) := by
-    ext; rw [Ux3.block_index_last_val]; simp [esI]; omega
+    ext; rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_last_val_eq]; simp [esI]; omega
   rw [hi, LeftFubiniLemmas.embedding_map_apply_last_block]
   by_cases hq : q.val < j + 1
   · rw [dite_eq_left (by simpa using hq), dite_eq_left hq]
@@ -125,7 +125,7 @@ theorem lower_minor_of_level_point (hj : j + 1 ≤ r) {Z : Matrix (Fin j) (Fin j
     LeftFubiniLemmas.castM_apply']
   have hjj : (Fin.cast (by omega) (eI k r a') : Fin (2 * (j + 1 + (r - (j + 1))) + k + 1)) =
       U.eB k (j + 1) (r - (j + 1)) (Sum.inl (Sum.inl ⟨a'.val, ha'⟩)) := by
-    ext; rw [Ux3.block_index_first_val]; simp [eI]
+    ext; rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_first_val_eq]; simp [eI]
   rw [hjj, LeftFubiniLemmas.embedding_map_apply_first_block]
   by_cases hq : r + k < q.val ∧ 2 * r + k - q.val < j + 1
   · rw [dite_eq_left (by simp; omega), dite_eq_left hq, Ux3.wMat_mul_apply, Matrix.conjTranspose_apply]

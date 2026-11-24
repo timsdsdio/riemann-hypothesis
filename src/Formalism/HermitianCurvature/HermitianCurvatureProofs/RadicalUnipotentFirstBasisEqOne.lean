@@ -106,11 +106,11 @@ theorem hs (k j ρ : ℕ) : 2 * ((j + 1) + ρ) + k + 1 = 2 * (j + (1 + ρ)) + k 
 
 theorem qX (a : Fin j) : Fin.cast (hs k j ρ) (U.eB k (j + 1) ρ (Sum.inl (Sum.inl a.castSucc))) =
     U.eB k j (1 + ρ) (Sum.inl (Sum.inl a)) := by
-  ext; simp [Ux3.block_index_first_val]
+  ext; simp [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_first_val_eq]
 
 theorem qE : Fin.cast (hs k j ρ) (U.eB k (j + 1) ρ (Sum.inl (Sum.inl (Fin.last j)))) =
     U.eB k j (1 + ρ) (Sum.inl (Sum.inr (U.eB k 1 ρ (Sum.inl (Sum.inl 0))))) := by
-  ext; simp [Ux3.block_index_first_val, Ux3.block_index_middle_val]
+  ext; simp [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_first_val_eq, Ux3.block_index_middle_val]
 
 theorem qV (v : Fin (2 * ρ + k + 1)) : Fin.cast (hs k j ρ) (U.eB k (j + 1) ρ (Sum.inl (Sum.inr v))) =
     U.eB k j (1 + ρ) (Sum.inl (Sum.inr (U.eB k 1 ρ (Sum.inl (Sum.inr v))))) := by
@@ -118,10 +118,10 @@ theorem qV (v : Fin (2 * ρ + k + 1)) : Fin.cast (hs k j ρ) (U.eB k (j + 1) ρ 
 
 theorem qE' : Fin.cast (hs k j ρ) (U.eB k (j + 1) ρ (Sum.inr 0)) =
     U.eB k j (1 + ρ) (Sum.inl (Sum.inr (U.eB k 1 ρ (Sum.inr 0)))) := by
-  ext; simp [Ux3.block_index_middle_val, Ux3.block_index_last_val]; omega
+  ext; simp [Ux3.block_index_middle_val, _root_.Formalism.FourierDecayAlt.P.Ux4.block_index_last_val_eq]; omega
 
 theorem qS (b : Fin j) : Fin.cast (hs k j ρ) (U.eB k (j + 1) ρ (Sum.inr b.succ)) = U.eB k j (1 + ρ) (Sum.inr b) := by
-  ext; simp [Ux3.block_index_last_val]; omega
+  ext; simp [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_last_val_eq]; omega
 
 end Formalism.FourierDecayAlt.P.PBH
 
@@ -138,7 +138,7 @@ theorem sum_over_rank_one_basis {M : Type*} [AddCommMonoid M] (f : Fin (2 * (1 +
 theorem hpk1 (p q : U.Ix k 1 ρ) : Hpk k (1 + ρ) (U.eB k 1 ρ p) (U.eB k 1 ρ q) =
     Matrix.fromBlocks (Matrix.fromBlocks (0 : Matrix (Fin 1) (Fin 1) ℂ) 0 0 (Hpk k ρ))
       (Matrix.fromRows (G.wMat 1) 0) (Matrix.fromCols (G.wMat 1) 0) 0 p q := by
-  rw [Ux3.hpkBlocks k 1 ρ, Ux3.block3_apply]
+  rw [_root_.Formalism.FourierDecayAlt.P.Ux4.hpkBlocks k 1 ρ, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
 
 theorem weyl_lift_eq_pair : G.wMat 1 = 1 := by ext a b; fin_cases a; fin_cases b; simp [G.wMat]
 
@@ -176,7 +176,7 @@ theorem lhs_form (A : B.Mat k (1 + ρ)) (x : U.RC k j (1 + ρ)) :
       U.blk3 1 (-(G.wMat j * (Matrix.of x.1)ᴴ * Hpk k (1 + ρ)))
         (G.wMat j * ((-(1 / 2 : ℂ)) • ((Matrix.of x.1)ᴴ * Hpk k (1 + ρ) * Matrix.of x.1) + U.skewOf x.2))
         0 A (A * Matrix.of x.1) 0 0 1 := by
-  rw [Ux3.rn_eq, U.embG, Ux3.block3_mul]
+  rw [Ux3.rn_eq, U.embG, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul]
   congr 1 <;> simp
 
 theorem rhs_form (q : Matrix (Fin (j + 1)) (Fin (j + 1)) ℂ) (X : U.RC k (j + 1) ρ) :
@@ -184,7 +184,7 @@ theorem rhs_form (q : Matrix (Fin (j + 1)) (Fin (j + 1)) ℂ) (X : U.RC k (j + 1
       U.blk3 q (q * -(G.wMat (j + 1) * (Matrix.of X.1)ᴴ * Hpk k ρ))
         (q * (G.wMat (j + 1) * ((-(1 / 2 : ℂ)) • ((Matrix.of X.1)ᴴ * Hpk k ρ * Matrix.of X.1) + U.skewOf X.2)))
         0 1 (Matrix.of X.1) 0 0 (G.wMat (j + 1) * qᴴ⁻¹ * G.wMat (j + 1)) := by
-  rw [U.muP, Ux3.rn_eq, Ux3.block3_mul]
+  rw [U.muP, Ux3.rn_eq, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul]
   congr 1 <;> simp
 
 def nn (y : U.RC k 1 ρ) : ℂ := Matrix.vecMul (star (cy y)) (Hpk k ρ) ⬝ᵥ cy y
@@ -193,7 +193,7 @@ def uu (x : U.RC k j (1 + ρ)) (y : U.RC k 1 ρ) : Fin j → ℂ := Matrix.vecMu
 
 def uu' (x : U.RC k j (1 + ρ)) (y : U.RC k 1 ρ) : Fin j → ℂ := ((cm x)ᴴ * Hpk k ρ) *ᵥ cy y
 
-alias hH := _root_.Formalism.FourierDecayAlt.P.Ux3.hpk_herm
+alias hH := _root_.Formalism.FourierDecayAlt.P.Ux4.hpk_conjTranspose
 
 theorem star_uu' (x : U.RC k j (1 + ρ)) (y : U.RC k 1 ρ) (a : Fin j) : star (uu' x y a) = uu x y a := by
   simp only [uu', uu, Matrix.mulVec, Matrix.vecMul, dotProduct, Matrix.mul_apply, Matrix.conjTranspose_apply,
@@ -271,7 +271,7 @@ theorem dlt_skew (x : U.RC k j (1 + ρ)) (y : U.RC k 1 ρ) (a b : Fin j) : dlt x
   ring
 
 theorem skew_skew (q : (G.UT j → ℂ) × (Fin j → ℝ)) (a b : Fin j) : U.skewOf q a b = -star (U.skewOf q b a) := by
-  have hs := congrFun (congrFun (Ux2.skewOf_ct q) a) b
+  have hs := congrFun (congrFun (_root_.Formalism.FourierDecayAlt.P.Ux4.skewOf_conjTranspose q) a) b
   simp only [Matrix.conjTranspose_apply, Matrix.neg_apply] at hs
   rw [hs, neg_neg]
 
@@ -341,7 +341,7 @@ theorem qmul_last {m : Type*} (x : U.RC k j (1 + ρ)) (M : Matrix (Fin (j + 1)) 
 
 theorem qL_inv (x : U.RC k j (1 + ρ)) : (qL x)⁻¹ = U.blk2 1 (-(Matrix.of (aC x))ᴴ) 0 1 := by
   apply Matrix.inv_eq_right_inv
-  rw [qL, Ux3.symmetricScalarBlockMatrix_mul]
+  rw [qL, _root_.Formalism.FourierDecayAlt.P.Ux4.symmetricScalarBlockMatrix_mul]
   simp [U.blk2, Matrix.fromBlocks_one]
 
 theorem conj_inverse_block_apply (x : U.RC k j (1 + ρ)) (a b : Fin (j + 1)) :
@@ -366,7 +366,7 @@ theorem radical_unipotent_rank_one_apply (y : U.RC k 1 ρ) (p q : U.Ix k 1 ρ) :
       Matrix.fromBlocks (Matrix.fromBlocks 1 (-(G.wMat 1 * (Matrix.of y.1)ᴴ * Hpk k ρ)) 0 1)
         (Matrix.fromRows (G.wMat 1 * ((-(1 / 2 : ℂ)) • ((Matrix.of y.1)ᴴ * Hpk k ρ * Matrix.of y.1) + U.skewOf y.2))
           (Matrix.of y.1)) (Matrix.fromCols 0 0) 1 p q := by
-  rw [Ux3.rn_eq, Ux3.block3_apply]
+  rw [Ux3.rn_eq, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
 
 theorem yH (y : U.RC k 1 ρ) (v : Fin (2 * ρ + k + 1)) :
     (G.wMat 1 * (Matrix.of y.1)ᴴ * Hpk k ρ) 0 v = Matrix.vecMul (star (cy y)) (Hpk k ρ) v := by
@@ -453,7 +453,7 @@ theorem M1 (x : U.RC k j (1 + ρ)) (y : U.RC k 1 ρ) :
     D.castM (hs' k j ρ) (U.embG k j (1 + ρ) (U.Rn k 1 ρ y) * U.Rn k j (1 + ρ) x) =
       U.muP k (j + 1) ρ (qL x) * U.Rn k (j + 1) ρ (XC x y) := by
   rw [lhs_form, rhs_form, skewOf_XC]
-  apply Ux2.mat_ext_eB (k := k) (j := j + 1) (ρ := ρ)
+  apply _root_.Formalism.FourierDecayAlt.P.Ux4.ext_eB (k := k) (j := j + 1) (ρ := ρ)
   intro p q
   rw [castM_apply]
   rcases p with ((a | v) | b) <;> rcases q with ((a' | v') | b')
@@ -462,32 +462,32 @@ theorem M1 (x : U.RC k j (1 + ρ)) (y : U.RC k 1 ρ) :
     | last =>
       cases a' using Fin.lastCases with
       | last =>
-        simp only [qE, Ux3.block3_apply,
+        simp only [qE, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply,
           Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₂₂]
         rw [radical_unipotent_first_basis_eq_one, qL, block_two_apply_last_last]; rfl
       | cast a' =>
-        simp only [qE, qX, Ux3.block3_apply,
+        simp only [qE, qX, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply,
           Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₂₁]
         simp [qL, block_two_apply_last_castSucc]
     | cast a =>
       cases a' using Fin.lastCases with
       | last =>
-        simp only [qX, qE, Ux3.block3_apply,
+        simp only [qX, qE, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply,
           Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂]
         rw [reversed_adjoint_block_apply, cH_E, qL, block_two_apply_castSucc_last]
         simp [aC, Matrix.conjTranspose_apply]
       | cast a' =>
-        simp only [qX, Ux3.block3_apply,
+        simp only [qX, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply,
           Matrix.fromBlocks_apply₁₁]
         simp [qL, block_two_apply_castSucc_castSucc]
   ·
     cases a using Fin.lastCases with
     | last =>
-      simp only [qE, qV, Ux3.block3_apply,
+      simp only [qE, qV, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply,
         Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₂₂, Matrix.fromBlocks_apply₁₂]
       rw [radical_unipotent_first_middle, qmul_last, reversed_adjoint_block_apply, Fin.rev_last, cXH_zero]
     | cast a =>
-      simp only [qX, qV, Ux3.block3_apply,
+      simp only [qX, qV, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply,
         Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂]
       rw [reversed_adjoint_block_apply, cH_V, qmul_cs, reversed_adjoint_block_apply, reversed_adjoint_block_apply, Fin.rev_castSucc, Fin.rev_last, cXH_succ, cXH_zero]
       simp [aC] <;> ring
@@ -496,12 +496,12 @@ theorem M1 (x : U.RC k j (1 + ρ)) (y : U.RC k 1 ρ) :
     | last =>
       cases b' using Fin.cases with
       | zero =>
-        simp only [qE, qE', Ux3.block3_apply,
+        simp only [qE, qE', _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply,
           Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₂₂, Matrix.fromBlocks_apply₁₂, Matrix.fromRows_apply_inl]
         rw [radical_unipotent_first_last, qmul_last, _root_.Formalism.FourierDecayAlt.P.Ux3.wMat_mul_apply, Fin.rev_last, Matrix.add_apply, Matrix.smul_apply, smul_eq_mul, cXHcX_00]
         simp [SX]
       | succ b' =>
-        simp only [qE, qS, Ux3.block3_apply,
+        simp only [qE, qS, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply,
           Matrix.fromBlocks_apply₁₂, Matrix.fromRows_apply_inr, Matrix.fromRows_apply_inl]
         rw [rc_E, qmul_last, _root_.Formalism.FourierDecayAlt.P.Ux3.wMat_mul_apply, Fin.rev_last, Matrix.add_apply, Matrix.smul_apply, smul_eq_mul, cXHcX_0s]
         simp only [SX, Fin.cases_zero, Fin.cases_succ, first_coordinate_apply]
@@ -509,14 +509,14 @@ theorem M1 (x : U.RC k j (1 + ρ)) (y : U.RC k 1 ρ) :
     | cast a =>
       cases b' using Fin.cases with
       | zero =>
-        simp only [qX, qE', Ux3.block3_apply,
+        simp only [qX, qE', _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply,
           Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromRows_apply_inl]
         rw [reversed_adjoint_block_apply, cH_E', qmul_cs, _root_.Formalism.FourierDecayAlt.P.Ux3.wMat_mul_apply, _root_.Formalism.FourierDecayAlt.P.Ux3.wMat_mul_apply, Fin.rev_castSucc, Fin.rev_last]
         simp only [Matrix.add_apply, Matrix.smul_apply, smul_eq_mul, cXHcX_00, hermitian_form_column_succ_zero, SX, Fin.cases_zero,
           Fin.cases_succ, star_first_coordinate_eq, aC, star_neg]
         ring
       | succ b' =>
-        simp only [qX, qS, Ux3.block3_apply,
+        simp only [qX, qS, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply,
           Matrix.fromBlocks_apply₁₂, Matrix.fromRows_apply_inl]
         rw [_root_.Formalism.FourierDecayAlt.P.Ux3.wMat_mul_apply, qmul_cs, _root_.Formalism.FourierDecayAlt.P.Ux3.wMat_mul_apply, _root_.Formalism.FourierDecayAlt.P.Ux3.wMat_mul_apply, Fin.rev_castSucc, Fin.rev_last]
         simp only [Matrix.add_apply, Matrix.smul_apply, smul_eq_mul, cHc, cXHcX_0s, cXHcX_ss, SX, Fin.cases_zero,
@@ -525,25 +525,25 @@ theorem M1 (x : U.RC k j (1 + ρ)) (y : U.RC k 1 ρ) :
   ·
     cases a' using Fin.lastCases with
     | last =>
-      simp only [qV, qE, Ux3.block3_apply,
+      simp only [qV, qE, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply,
         Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₂₂, Matrix.fromBlocks_apply₂₁]
       simp [radical_unipotent_rank_one_apply]
     | cast a' =>
-      simp only [qV, qX, Ux3.block3_apply,
+      simp only [qV, qX, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply,
         Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₂₁]
       simp
   ·
-    simp only [qV, Ux3.block3_apply,
+    simp only [qV, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply,
       Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₂₂]
     simp [radical_unipotent_rank_one_apply]
   ·
     cases b' using Fin.cases with
     | zero =>
-      simp only [qV, qE', Ux3.block3_apply,
+      simp only [qV, qE', _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply,
         Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₂₂, Matrix.fromBlocks_apply₁₂, Matrix.fromRows_apply_inr]
       rw [radical_unipotent_middle_last]; rfl
     | succ b' =>
-      simp only [qV, qS, Ux3.block3_apply,
+      simp only [qV, qS, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply,
         Matrix.fromBlocks_apply₁₂, Matrix.fromRows_apply_inr]
       rw [rc_V]; rfl
   ·
@@ -551,31 +551,31 @@ theorem M1 (x : U.RC k j (1 + ρ)) (y : U.RC k 1 ρ) :
     | zero =>
       cases a' using Fin.lastCases with
       | last =>
-        simp only [qE', qE, Ux3.block3_apply,
+        simp only [qE', qE, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply,
           Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₂₂, Matrix.fromBlocks_apply₂₁, Matrix.fromCols_apply_inl]
         simp [radical_unipotent_rank_one_apply]
       | cast a' =>
-        simp only [qE', qX, Ux3.block3_apply,
+        simp only [qE', qX, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply,
           Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₂₁, Matrix.fromCols_apply_inl]
         simp
     | succ b =>
       cases a' using Fin.lastCases with
       | last =>
-        simp only [qS, qE, Ux3.block3_apply,
+        simp only [qS, qE, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply,
           Matrix.fromBlocks_apply₂₁, Matrix.fromCols_apply_inr, Matrix.fromCols_apply_inl]
         simp
       | cast a' =>
-        simp only [qS, qX, Ux3.block3_apply,
+        simp only [qS, qX, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply,
           Matrix.fromBlocks_apply₂₁, Matrix.fromCols_apply_inl]
         simp
   ·
     cases b using Fin.cases with
     | zero =>
-      simp only [qE', qV, Ux3.block3_apply,
+      simp only [qE', qV, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply,
         Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₂₂, Matrix.fromBlocks_apply₂₁, Matrix.fromCols_apply_inr]
       simp [radical_unipotent_rank_one_apply]
     | succ b =>
-      simp only [qS, qV, Ux3.block3_apply,
+      simp only [qS, qV, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply,
         Matrix.fromBlocks_apply₂₁, Matrix.fromCols_apply_inr]
       simp
   ·
@@ -583,22 +583,22 @@ theorem M1 (x : U.RC k j (1 + ρ)) (y : U.RC k 1 ρ) :
     | zero =>
       cases b' using Fin.cases with
       | zero =>
-        simp only [qE', Ux3.block3_apply,
+        simp only [qE', _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply,
           Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₂₂]
         rw [conj_inverse_block_apply, Fin.rev_zero, block_two_apply_last_last]; simp [radical_unipotent_rank_one_apply]
       | succ b' =>
-        simp only [qE', qS, Ux3.block3_apply,
+        simp only [qE', qS, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply,
           Matrix.fromBlocks_apply₁₂, Matrix.fromRows_apply_inr, Matrix.fromBlocks_apply₂₂]
         rw [rc_E', conj_inverse_block_apply, Fin.rev_zero, Fin.rev_succ, block_two_apply_last_castSucc]
         simp [aC]
     | succ b =>
       cases b' using Fin.cases with
       | zero =>
-        simp only [qS, qE', Ux3.block3_apply,
+        simp only [qS, qE', _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply,
           Matrix.fromBlocks_apply₂₁, Matrix.fromCols_apply_inr, Matrix.fromBlocks_apply₂₂]
         rw [conj_inverse_block_apply, Fin.rev_zero, Fin.rev_succ, block_two_apply_castSucc_last]; simp
       | succ b' =>
-        simp only [qS, Ux3.block3_apply,
+        simp only [qS, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply,
           Matrix.fromBlocks_apply₂₂]
         rw [conj_inverse_block_apply, Fin.rev_succ, Fin.rev_succ, block_two_apply_castSucc_castSucc]
         simp [Matrix.one_apply, Fin.rev_inj]
@@ -620,7 +620,7 @@ def Z1 (c : ℂ) : G.Mat 1 := fun _ _ => c
 theorem block_diagonal_inv {p s : ℕ} (A : Matrix (Fin p) (Fin p) ℂ) (D' : Matrix (Fin s) (Fin s) ℂ) (hA : IsUnit A.det)
     (hD : IsUnit D'.det) : (U.blk2 A 0 0 D')⁻¹ = U.blk2 A⁻¹ 0 0 D'⁻¹ := by
   apply Matrix.inv_eq_right_inv
-  rw [Ux3.symmetricScalarBlockMatrix_mul]
+  rw [_root_.Formalism.FourierDecayAlt.P.Ux4.symmetricScalarBlockMatrix_mul]
   simp [Matrix.mul_nonsing_inv _ hA, Matrix.mul_nonsing_inv _ hD, U.blk2, Matrix.fromBlocks_one]
 
 theorem block_diagonal_conjTranspose {p s : ℕ} (A : Matrix (Fin p) (Fin p) ℂ) (D' : Matrix (Fin s) (Fin s) ℂ) :
@@ -639,7 +639,7 @@ theorem M2 (H : Matrix (Fin j) (Fin j) ℂ) (hH : IsUnit H.det) (c : ℂ) (hc : 
   rw [show U.mMap k (j + 1) ρ (U.blk2 H 0 0 (Matrix.of (Z1 c))) γ =
       U.blk3 0 0 ((U.blk2 H 0 0 (Matrix.of (Z1 c)))ᴴ⁻¹ * G.wMat (j + 1)) 0 γ 0
         (G.wMat (j + 1) * U.blk2 H 0 0 (Matrix.of (Z1 c))) 0 0 from rfl, block_diagonal_conjTranspose, block_diagonal_inv _ _ hH' hZ']
-  apply Ux2.mat_ext_eB (k := k) (j := j + 1) (ρ := ρ)
+  apply _root_.Formalism.FourierDecayAlt.P.Ux4.ext_eB (k := k) (j := j + 1) (ρ := ρ)
   intro p q
   rw [castM_apply]
   simp only [U.mMap]
@@ -653,7 +653,7 @@ theorem M2 (H : Matrix (Fin j) (Fin j) ℂ) (hH : IsUnit H.det) (c : ℂ) (hc : 
       | cases b' using Fin.cases
       | skip
   all_goals
-    simp only [qE, qE', qX, qS, qV, Ux3.block3_apply, Matrix.fromBlocks_apply₁₁,
+    simp only [qE, qE', qX, qS, qV, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply, Matrix.fromBlocks_apply₁₁,
       Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂,
       Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl,
       Matrix.fromCols_apply_inr, Matrix.zero_apply] <;>
@@ -684,7 +684,7 @@ theorem leviElement_inv' {n : ℕ} (q : Matrix (Fin n) (Fin n) ℂ) (hq : IsUnit
 theorem M3 {n : ℕ} (q q' Z : Matrix (Fin n) (Fin n) ℂ) (hq : IsUnit q.det) (hq' : IsUnit q'.det) (γ : B.Mat k ρ) :
     (U.muP k n ρ q)⁻¹ * U.mMap k n ρ Z γ * U.muP k n ρ q' = U.mMap k n ρ (qᴴ * Z * q') γ := by
   have hqh : IsUnit qᴴ.det := by rw [Matrix.det_conjTranspose]; exact hq.star
-  rw [leviElement_inv' q hq, U.muP, U.muP, U.mMap, U.mMap, Ux3.block3_mul, Ux3.block3_mul]
+  rw [leviElement_inv' q hq, U.muP, U.muP, U.mMap, U.mMap, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul]
   congr 1 <;> simp only [Matrix.zero_mul, Matrix.mul_zero, zero_add, add_zero, Matrix.one_mul, Matrix.mul_one]
   · rw [Matrix.conjTranspose_mul, Matrix.conjTranspose_mul, Matrix.conjTranspose_conjTranspose, Matrix.mul_inv_rev,
       Matrix.mul_inv_rev]
@@ -705,7 +705,7 @@ theorem block_two_zero_size_eq {p : ℕ} (A : Matrix (Fin p) (Fin p) ℂ) (B' : 
 
 theorem mMap_sand {n ρ' : ℕ} (Z : Matrix (Fin n) (Fin n) ℂ) (A M C : B.Mat k ρ') :
     U.mMap k n ρ' Z (A * M * C) = U.embG k n ρ' A * U.mMap k n ρ' Z M * U.embG k n ρ' C := by
-  rw [U.mMap, U.mMap, U.embG, U.embG, Ux3.block3_mul, Ux3.block3_mul]
+  rw [U.mMap, U.mMap, U.embG, U.embG, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul]
   congr 1 <;> simp [Matrix.mul_assoc]
 
 theorem embG_inv' {n ρ' : ℕ} (A : B.Mat k ρ') (hA : IsUnit A.det) : (U.embG k n ρ' A)⁻¹ = U.embG k n ρ' A⁻¹ := by
@@ -720,7 +720,7 @@ theorem rn_unit {n ρ' : ℕ} (x : U.RC k n ρ') : IsUnit (U.Rn k n ρ' x).det :
   Matrix.isUnit_det_of_left_inverse (Ux3.rn_inv_mul x)
 
 theorem qL_unit (x : U.RC k j (1 + ρ)) : IsUnit (qL x).det := by
-  rw [qL, Ux3.block2_det_upper_triangular]; simp
+  rw [qL, _root_.Formalism.FourierDecayAlt.P.Ux4.block2_det_upper_triangular]; simp
 
 theorem headH_unit (σ : Equiv.Perm (Fin j)) (d : Fin j → ℂ) (hd : ∀ i, d i ≠ 0) (η : U.XiH j 0 σ) :
     IsUnit (U.headH σ d η.2.1 η.2.2).det := by

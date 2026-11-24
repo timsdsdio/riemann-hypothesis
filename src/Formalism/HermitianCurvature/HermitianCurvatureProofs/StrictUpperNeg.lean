@@ -188,7 +188,7 @@ theorem skewOf_neg (q : (G.UT j → ℂ) × (Fin j → ℝ)) : U.skewOf (-q) = -
 
 theorem rn_mul_neg (x : U.RC k j ρ) : U.Rn k j ρ x * U.Rn k j ρ (-x) = 1 := by
   unfold U.Rn
-  rw [Ux3.block3_mul, ← Ux3.block3_one]
+  rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul, ← Ux3.block3_one]
   have hc : (Matrix.of (-x).1 : Matrix (Fin (2 * ρ + k + 1)) (Fin j) ℂ) = -Matrix.of x.1 := rfl
   have hs : U.skewOf (-x).2 = -U.skewOf x.2 := skewOf_neg x.2
   rw [hc, hs]

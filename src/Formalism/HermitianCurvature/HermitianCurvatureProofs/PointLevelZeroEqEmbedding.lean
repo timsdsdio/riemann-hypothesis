@@ -90,7 +90,7 @@ theorem block_three_zero_size_eq {n : ℕ} (e : 0 + ρ = n) (A11 : Matrix (Fin 0
     ext; rw [Ux3.block_index_middle_val]; simp
   have hq : (Fin.cast (by omega) q : Fin (2 * (0 + ρ) + k + 1)) = U.eB k 0 ρ (Sum.inl (Sum.inr (Fin.cast (by omega) q))) := by
     ext; rw [Ux3.block_index_middle_val]; simp
-  rw [hp, hq, Ux3.block3_apply]
+  rw [hp, hq, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
   simp
 
 theorem rn_zero0 (x : U.RC k 0 ρ) : U.Rn k 0 ρ x = 1 := by

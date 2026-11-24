@@ -304,7 +304,7 @@ theorem embG_conj_Rn (y : B.Mat k ρ) (hy : y ∈ B.GV k ρ) (x : U.RC k j ρ) :
     congr 1
     simp only [Matrix.mul_assoc]
     rw [ha]
-  rw [embG_inv y hu, Ux3.rn_eq, Ux3.rn_eq, U.embG, U.embG, Ux3.block3_mul, Ux3.block3_mul]
+  rw [embG_inv y hu, Ux3.rn_eq, Ux3.rn_eq, U.embG, U.embG, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul]
   refine Ux2.block3_congr ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_
   · simp
   · simp only [Matrix.one_mul, Matrix.mul_one, Matrix.zero_mul, Matrix.mul_zero, add_zero, zero_add, rnAct,

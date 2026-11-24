@@ -282,7 +282,7 @@ theorem det_zj {p s : ℕ} (a : Fin s → Fin p → ℂ) (b : Fin p → Fin s �
     (C : Matrix (Fin s) (Fin s) ℂ) : (Zj a b H C).det = H.det * C.det := by
   unfold Zj
   rw [Matrix.det_mul, Matrix.det_mul, Formalism.FourierDecayAlt.P.Ux3.block2_det_lower_triangular, Formalism.FourierDecayAlt.P.Ux3.block2_det_lower_triangular,
-    Formalism.FourierDecayAlt.P.Ux3.block2_det_upper_triangular]
+    _root_.Formalism.FourierDecayAlt.P.Ux4.block2_det_upper_triangular]
   simp
 
 theorem cont_detM (n : ℕ) : Continuous (fun H : G.Mat n => G.detM H) := by

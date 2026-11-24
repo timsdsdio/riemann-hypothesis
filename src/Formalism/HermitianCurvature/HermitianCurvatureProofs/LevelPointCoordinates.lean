@@ -109,13 +109,13 @@ theorem weyl_cell_zero_eq_embedding {t : ℂ} (ht : t ≠ 0) :
   ext i l
   obtain ⟨x, rfl⟩ := (U.eB k 1 ρ).surjective i
   obtain ⟨y, rfl⟩ := (U.eB k 1 ρ).surjective l
-  rw [U.mMap, PBH.weyl_lift_eq_pair, Matrix.mul_one, Matrix.one_mul, hinv, Ux3.block3_apply]
+  rw [U.mMap, PBH.weyl_lift_eq_pair, Matrix.mul_one, Matrix.one_mul, hinv, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
   have hX : ∀ x : Fin 1, U.eB k 1 ρ (Sum.inl (Sum.inl x)) = ⟨0, by omega⟩ := fun x =>
-    Fin.ext (by rw [Ux3.block_index_first_val]; simp)
+    Fin.ext (by rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_first_val_eq]; simp)
   have hV : ∀ v : Fin (2 * ρ + k + 1), U.eB k 1 ρ (Sum.inl (Sum.inr v)) = ⟨1 + v.val, by omega⟩ := fun v =>
     Fin.ext (by rw [Ux3.block_index_middle_val])
   have hS : ∀ x : Fin 1, U.eB k 1 ρ (Sum.inr x) = ⟨2 * (1 + ρ) + k, by omega⟩ := fun x =>
-    Fin.ext (by rw [Ux3.block_index_last_val]; have := x.isLt; simp; omega)
+    Fin.ext (by rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_last_val_eq]; have := x.isLt; simp; omega)
   rcases x with ((x | x) | x) <;> rcases y with ((y | y) | y) <;>
     simp only [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁,
       Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl,

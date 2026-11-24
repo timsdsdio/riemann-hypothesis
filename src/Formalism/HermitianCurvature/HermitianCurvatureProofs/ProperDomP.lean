@@ -96,7 +96,7 @@ theorem corner_matrix_levi_block_three (z z' : Fin (2 * (p + ρ) + k + 1) → �
         ((Formalism.QuantumDeterminants.Fm k ρ (U.lowV k p ρ z))ᴴ * (Hpk k ρ * placeRankTwoOne))
         ((Formalism.QuantumDeterminants.Fm k ρ (U.lowV k p ρ z))ᴴ * (Hpk k ρ * TaylorLogMetric) * Formalism.QuantumDeterminants.Fm k ρ (U.lowV k p ρ z'))) := by
   unfold U.muP
-  rw [Ux3.block3_mul, Ux3.z_hat_of_block3 z z' hz hz']
+  rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul, Ux3.z_hat_of_block3 z z' hz hz']
   have hw : ∀ M : Matrix (Fin p) (Fin p) ℂ, G.wMat p * (G.wMat p * M * G.wMat p) = M * G.wMat p := by
     intro M
     rw [← Matrix.mul_assoc, ← Matrix.mul_assoc, Ux3.wMat_mul_self, Matrix.one_mul]
@@ -131,7 +131,7 @@ theorem zh_eq_blk (y : B.Mat k (p + ρ)) :
   rw [Ux3.wMat_mul_apply]
   simp only [Matrix.submatrix_apply, U.Zh]
   congr 1
-  all_goals (ext; first | (rw [Ux3.block_index_last_val]; simp [Fin.val_rev]; omega))
+  all_goals (ext; first | (rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_last_val_eq]; simp [Fin.val_rev]; omega))
 
 theorem minor_leviElement_mul_high (z z' : Fin (2 * (p + ρ) + k + 1) → ℂ) (hz : inWb k (p + ρ) z) (hz' : inWb k (p + ρ) z')
     (q : Matrix (Fin p) (Fin p) ℂ) (g : B.Mat k (p + ρ)) (m : ℕ) (hm : m ≤ ρ + 1) :
@@ -272,7 +272,7 @@ theorem muP_conj_unipotent (q : Matrix (Fin p) (Fin p) ℂ) (hq : IsUnit q.det) 
     U.muP k p ρ q * U.blk3 1 a b 0 1 c 0 0 1 * U.muP k p ρ q⁻¹ =
       U.blk3 1 (q * a) (q * b * (G.wMat p * (q⁻¹)ᴴ⁻¹ * G.wMat p)) 0 1 (c * (G.wMat p * (q⁻¹)ᴴ⁻¹ * G.wMat p)) 0 0 1 := by
   unfold U.muP
-  rw [Ux3.block3_mul, Ux3.block3_mul]
+  rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul]
   have hq' : IsUnit qᴴ.det := by rw [Matrix.det_conjTranspose]; exact hq.star
   have e1 : (G.wMat p * qᴴ⁻¹ * G.wMat p) * (G.wMat p * (q⁻¹)ᴴ⁻¹ * G.wMat p) = 1 := by
     rw [Matrix.conjTranspose_nonsing_inv, Matrix.nonsing_inv_nonsing_inv _ hq']
@@ -288,7 +288,7 @@ theorem embG_uni_conj (y : B.Mat k ρ) (hy : IsUnit y.det) (a : Matrix (Fin p) (
     U.embG k p ρ y * U.blk3 1 a b 0 1 c 0 0 1 * U.embG k p ρ y⁻¹ =
       U.blk3 1 (a * y⁻¹) b 0 1 (y * c) 0 0 1 := by
   unfold U.embG
-  rw [Ux3.block3_mul, Ux3.block3_mul]
+  rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul]
   congr 1 <;> simp [Matrix.mul_nonsing_inv _ hy]
 
 theorem rn_uni (x : U.RC k p ρ) : ∃ a b c, U.Rn k p ρ x = U.blk3 1 a b 0 1 c 0 0 1 :=
@@ -323,7 +323,7 @@ theorem embG_uni_mid (ν : B.Mat k ρ) (a : Matrix (Fin p) (Fin (2 * ρ + k + 1)
     (U.embG k p ρ ν * U.blk3 1 a b 0 1 c 0 0 1) (U.eB k p ρ (Sum.inl (Sum.inr i))) (U.eB k p ρ (Sum.inl (Sum.inr j))) =
       ν i j := by
   unfold U.embG
-  rw [Ux3.block3_mul, Ux3.block3_apply]
+  rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
   simp
 
 end mid

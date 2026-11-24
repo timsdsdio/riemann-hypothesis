@@ -1515,7 +1515,7 @@ theorem Ss_sc (l : ℕ) (w : D.Pr) : star (SS P D l) * sc P D w = sc P D w * sta
 
 theorem rho_up {l : ℕ} {π π' : Ty P} (h : Up P l π π') {i : ℕ} (hi : i ∈ Icc 1 (P.k - 1)) :
     (rho P π' i : ℂ) = (rho P π i : ℂ) + if i = l then 1 else 0 := by
-  rw [Mx3.rhoUp P l π π' h i hi]
+  rw [Mx4.rhoUp P l π π' h i hi]
   split_ifs <;> simp
 
 theorem xC_split (π : Ty P) (u : ℂ) {j : ℕ} (hj : j ∈ Icc 1 (P.k - 1)) :
@@ -2090,13 +2090,13 @@ theorem model_root (P : Par) (hP : P.OK) (π : Ty P) (l : ℕ) (hl : l ∈ Icc 1
       have hz : ∏ j ∈ (Icc 1 (P.k - 1)).erase j0, (rho P π j - rho P π j0 - 1) = 0 :=
         Finset.prod_eq_zero (Finset.mem_erase.2 ⟨fun e => hj0'.1 e.symm, hl⟩) (by linarith)
       rw [hz, mul_zero, div_zero]
-    have hI := Mx3.tyInterlaces P hP π
+    have hI := Mx4.tyInterlaces P hP π
     have hlt : l < j0 := by
       by_contra hcon
       have : j0 < l := lt_of_le_of_ne (not_lt.1 hcon) hj0'.1
       have := Mx3.rho_inj P hP π j0 l hj0'.2 hl this
       linarith
-    have o := (Mx3.ord P.k P.u P.u' (rho P π) hI l hl).2.2.2 j0 hj0'.2 hlt
+    have o := (Mx4.ord P.k P.u P.u' (rho P π) hI l hl).2.2.2 j0 hj0'.2 hlt
     have b := hI l hl
     have hu : P.u (l + 1) = rho P π l - 1 / 2 := by linarith [o.1, b.2.2.1]
     have hu' : P.u' (l + 1) = rho P π l - 1 / 2 := by linarith [o.2, b.2.2.2]
@@ -3884,7 +3884,7 @@ theorem nrmDown_key (P : Par) (hP : P.OK) (l : ℕ) (hl : l ∈ Icc 1 (P.k - 1))
   have hl' := Finset.mem_Icc.1 hl
   by_cases h : ∃ π', Up P l π' π
   · obtain ⟨π', hU⟩ := h
-    have hp := (Mx3.nrmFacts P hP l hl π').1 π hU
+    have hp := (Mx4.nrmFacts P hP l hl π').1 π hU
     have hpos : 0 < NrmDown P l π := by rw [hp.2]; exact hp.1
     have hD : ((∏ j ∈ (Icc 1 (P.k - 1)).erase l, (rho P π j - rho P π l + 1)) *
       ∏ j ∈ (Icc 1 (P.k - 1)).erase l, (rho P π j - rho P π l)) ≠ 0 := by
@@ -3894,8 +3894,8 @@ theorem nrmDown_key (P : Par) (hP : P.OK) (l : ℕ) (hl : l ∈ Icc 1 (P.k - 1))
       exact lt_irrefl _ hpos
     unfold NrmDown
     exact div_mul_cancel₀ _ hD
-  · rw [(Mx3.nrmFacts P hP l hl π).2.2 h]
-    have ht := Mx3.bot P l hl π h
+  · rw [(Mx4.nrmFacts P hP l hl π).2.2 h]
+    have ht := Mx4.bot P l hl π h
     have h0 : I.qpoly P.k P.T P.T' P.u P.u' (-rho P π l) = 0 := by
       unfold I.qpoly
       have : ∏ i ∈ Icc 1 P.k, ((-rho P π l + 1 / 2 + P.u i) * (-rho P π l + 1 / 2 + P.u' i)) = 0 := by
@@ -3975,8 +3975,8 @@ theorem double_root_of_adjacent_rho (P : Par) (hP : P.OK) (π : Ty P) : ∀ l �
       Finset.prod_eq_zero (i := l) (Finset.mem_erase.2 ⟨ne_of_gt hml, hl⟩) (by rw [hr]; ring)
     unfold NrmDown
     rw [this, zero_mul, div_zero, Complex.ofReal_zero]
-  · have hI := Mx3.tyInterlaces P hP π
-    have o3 := (Mx3.ord P.k P.u P.u' (rho P π) hI l hl).2.2.1 m hm hml
+  · have hI := Mx4.tyInterlaces P hP π
+    have o3 := (Mx4.ord P.k P.u P.u' (rho P π) hI l hl).2.2.1 m hm hml
     have b := hI l hl
     have hu : P.u l = rho P π l + 1 / 2 := by linarith [o3.1, b.1]
     have hu' : P.u' l = rho P π l + 1 / 2 := by linarith [o3.2, b.2.1]

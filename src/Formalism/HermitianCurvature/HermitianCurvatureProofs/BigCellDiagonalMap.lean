@@ -67,7 +67,7 @@ variable {k j ρ : ℕ}
 theorem leviElement_mul_mMap (W Z : Matrix (Fin j) (Fin j) ℂ) (γ : B.Mat k ρ) (hW : IsUnit W.det) :
     muP k j ρ W * mMap k j ρ Z γ = mMap k j ρ (Wᴴ⁻¹ * Z) γ := by
   unfold mMap muP
-  rw [Ux3.block3_mul]
+  rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul]
   have h13 : W * (Zᴴ⁻¹ * G.wMat j) = (Wᴴ⁻¹ * Z)ᴴ⁻¹ * G.wMat j := by
     rw [Matrix.conjTranspose_mul, Matrix.conjTranspose_nonsing_inv, Matrix.conjTranspose_conjTranspose,
       Matrix.mul_inv_rev, Matrix.nonsing_inv_nonsing_inv _ hW, Matrix.mul_assoc]
@@ -82,14 +82,14 @@ theorem leviElement_nset (p : Matrix (Fin j) (Fin j) ℂ) (hp : Formalism.Double
     obtain ⟨x, rfl⟩ := (eB k j ρ).surjective i
     obtain ⟨y, hy⟩ := (eB k j ρ).surjective (eI k (j + ρ) a)
     unfold muP
-    rw [← hy, Ux3.block3_apply]
+    rw [← hy, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
     simp only [(eB k j ρ).apply_eq_iff_eq]
     have hv := congrArg Fin.val hy
     have ha := a.isLt
     simp only [eI] at hv
     rw [← hv] at hai
     rcases x with ((x | x) | x) <;> rcases y with ((y | y) | y) <;>
-      simp only [Ux3.block_index_first_val, Ux3.block_index_middle_val, Ux3.block_index_last_val] at hv hai
+      simp only [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_first_val_eq, Ux3.block_index_middle_val, _root_.Formalism.FourierDecayAlt.P.Ux4.block_index_last_val_eq] at hv hai
     all_goals first
       | (exfalso; have := x.isLt; have := y.isLt; omega)
       | (simp [Matrix.one_apply, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl,
@@ -107,10 +107,10 @@ theorem leviElement_nset (p : Matrix (Fin j) (Fin j) ℂ) (hp : Formalism.Double
     obtain ⟨x, rfl⟩ := (eB k j ρ).surjective i
     obtain ⟨y, rfl⟩ := (eB k j ρ).surjective c
     unfold muP
-    rw [Ux3.block3_apply]
+    rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
     simp only [(eB k j ρ).apply_eq_iff_eq]
     rcases x with ((x | x) | x) <;> rcases y with ((y | y) | y) <;>
-      simp only [Ux3.block_index_first_val, Ux3.block_index_middle_val, Ux3.block_index_last_val] at hc1 hc2 hi <;>
+      simp only [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_first_val_eq, Ux3.block_index_middle_val, _root_.Formalism.FourierDecayAlt.P.Ux4.block_index_last_val_eq] at hc1 hc2 hi <;>
       first
       | (simp [Matrix.one_apply, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl,
           Matrix.fromCols_apply_inr]; done)
@@ -146,10 +146,10 @@ theorem mMap_diag (r : ℕ) (d : Fin r → ℂ) (hd : ∀ a, d a ≠ 0) (γ : B.
   obtain ⟨x, rfl⟩ := (eB k r 0).surjective i
   obtain ⟨y, rfl⟩ := (eB k r 0).surjective l
   unfold mMap
-  rw [Matrix.diagonal_conjTranspose, inv_diag (star d) (fun a => by simpa [Pi.star_apply] using hd a), Ux3.block3_apply]
-  have v1 := @Ux3.block_index_first_val k r 0
+  rw [Matrix.diagonal_conjTranspose, inv_diag (star d) (fun a => by simpa [Pi.star_apply] using hd a), _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
+  have v1 := @_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_first_val_eq k r 0
   have v2 := @Ux3.block_index_middle_val k r 0
-  have v3 := @Ux3.block_index_last_val k r 0
+  have v3 := @_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_last_val_eq k r 0
   rcases x with ((x | x) | x) <;> rcases y with ((y | y) | y) <;>
     simp only [bigCell, v1, v2, v3, Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁,
       Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl,

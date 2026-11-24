@@ -165,7 +165,7 @@ theorem curveSmooth : CurveSmooth := by
   refine cdOn_mat fun p' q' => ?_
   obtain ⟨P, rfl⟩ := cast_eB_surj (k := k) hj p'
   obtain ⟨Q, rfl⟩ := cast_eB_surj (k := k) hj q'
-  simp only [level_point_eq_block_three, LeftFubiniLemmas.castM_apply', Fin.cast_cast, Fin.cast_eq_self, Ux3.block3_apply]
+  simp only [level_point_eq_block_three, LeftFubiniLemmas.castM_apply', Fin.cast_cast, Fin.cast_eq_self, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
   rcases P with ((a | a) | a) <;> rcases Q with ((b | b) | b) <;>
     simp only [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁,
       Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl,
@@ -260,7 +260,7 @@ theorem leading_block_of_base_point {k r j : ℕ} (hj : j + 1 ≤ r) (Z : Matrix
   simp only [Fin.cast_cast]
   have key : ∀ q : Fin (2 * (j + 1 + (r - (j + 1))) + k + 1), q.val = 2 * (j + (r - j)) + k - a.val →
       q = U.eB k (j + 1) (r - (j + 1)) (Sum.inr ⟨j - a.val, by omega⟩) := by
-    intro q hq; ext; rw [Ux3.block_index_last_val]; simp only; omega
+    intro q hq; ext; rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_last_val_eq]; simp only; omega
   rw [key (Fin.cast _ _) (by simp), LeftFubiniLemmas.embedding_map_apply_last_block, dite_eq_left (by simp only [Fin.val_cast]; omega), zfull_apply,
     dite_eq_left (by simp only [Fin.val_rev, Fin.val_cast, Fin.val_mk]; omega)]
   congr 1 <;> ext <;> simp only [Fin.val_rev] <;> omega

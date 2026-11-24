@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.DirectionsInParabolic
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CompactlySupportedBanachModel
 public import Formalism.HermitianCurvature.StatementU
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DilationUnipotentWeylMeasure
@@ -76,7 +77,7 @@ open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.U Formalism.REAL Formal
 
 namespace Formalism.FourierDecayAlt.P.Ux10
 
-alias block2_det_upper_triangular := _root_.Formalism.FourierDecayAlt.P.Ux3.block2_det_upper_triangular
+alias block2_det_upper_triangular := _root_.Formalism.FourierDecayAlt.P.Ux4.block2_det_upper_triangular
 
 alias det_upper := _root_.Formalism.FourierDecayAlt.P.Ux3.det_upper
 

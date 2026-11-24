@@ -181,9 +181,9 @@ private theorem mMap_mem_GV_of_isUnit_det_of_mem_GV {k j ρ : ℕ} (Z : Matrix (
       Matrix.mul_assoc, ← Matrix.mul_assoc (G.wMat j) (G.wMat j) Z, hw, Matrix.one_mul,
       Matrix.mul_assoc, Matrix.nonsing_inv_mul _ hZ, Matrix.mul_one]
   show Matrix.conjTranspose (U.mMap k j ρ Z γ) * Hpk k (j + ρ) * U.mMap k j ρ Z γ = Hpk k (j + ρ)
-  rw [Ux6.hpkBlocks k j ρ]
+  rw [_root_.Formalism.FourierDecayAlt.P.Ux4.hpkBlocks k j ρ]
   unfold U.mMap
-  rw [Ux6.block3_conjTranspose, Ux6.block3_mul, Ux6.block3_mul]
+  rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_conjTranspose, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul]
   simp only [Matrix.zero_mul, Matrix.mul_zero, add_zero, zero_add, Matrix.conjTranspose_zero,
     Matrix.conjTranspose_mul]
   rw [h1, hγ', h3]

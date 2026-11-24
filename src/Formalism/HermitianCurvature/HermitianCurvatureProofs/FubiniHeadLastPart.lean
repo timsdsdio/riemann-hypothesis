@@ -215,7 +215,7 @@ theorem diag_dQ (dh : Fin p → ℂ) (db : Fin s → ℂ) :
 theorem hMat_sigQ (dh : Fin p → ℂ) (db : Fin s → ℂ) :
     U.hMat (sigQ σh σb) (dQ dh db) = U.blk2 (U.hMat σh dh) 0 0 (U.hMat σb db) := by
   unfold U.hMat
-  rw [permutationMatrix_sumCongr, diag_dQ, Ux2.symmetricScalarBlockMatrix_mul]
+  rw [permutationMatrix_sumCongr, diag_dQ, _root_.Formalism.FourierDecayAlt.P.Ux4.symmetricScalarBlockMatrix_mul]
   simp only [Matrix.mul_zero, Matrix.zero_mul, add_zero, zero_add]
 
 def v1 (v : U.LW (sigQ σh σb) → ℂ) : U.LW σh → ℂ := fun q => v (lwIn σh σb (Sum.inl (Sum.inl q)))
@@ -335,7 +335,7 @@ theorem headH_split (v : U.LW (sigQ σh σb) → ℂ) (u : G.UT (p + s) → ℂ)
           U.wP σb * U.lowW σb (v2 σh σb v) * Matrix.diagonal db * G.upper (u2 p s u)) := by
   unfold U.headH
   rw [permutationMatrix_sumCongr, lowW_sigQ, diag_dQ, upper_split]
-  simp only [Ux2.symmetricScalarBlockMatrix_mul, Matrix.mul_zero, Matrix.zero_mul, add_zero, zero_add]
+  simp only [_root_.Formalism.FourierDecayAlt.P.Ux4.symmetricScalarBlockMatrix_mul, Matrix.mul_zero, Matrix.zero_mul, add_zero, zero_add]
 
 theorem zj_split (v : U.LW (sigQ σh σb) → ℂ) (u : G.UT (p + s) → ℂ) :
     U.headH (sigQ σh σb) (dQ dh db) v u =
@@ -386,14 +386,14 @@ theorem conj_split (v : U.LW (sigQ σh σb) → ℂ) :
     rw [← Matrix.mul_assoc (U.wP σh.symm) (U.wP σh), hW, Matrix.one_mul,
       ← Matrix.mul_assoc (U.lowW σh (v1 σh σb v))⁻¹, hL, Matrix.one_mul]
   rw [Ux2.permutationMatrix_inv, sigQ_symm, permutationMatrix_sumCongr, permutationMatrix_sumCongr, lowW_sigQ, Ux2.permutationMatrix_inv, Ux2.permutationMatrix_inv]
-  simp only [Ux2.symmetricScalarBlockMatrix_mul, Matrix.mul_zero, Matrix.zero_mul, add_zero, zero_add, Matrix.one_mul,
+  simp only [_root_.Formalism.FourierDecayAlt.P.Ux4.symmetricScalarBlockMatrix_mul, Matrix.mul_zero, Matrix.zero_mul, add_zero, zero_add, Matrix.one_mul,
     Equiv.apply_symm_apply]
   rw [hC]
 
 theorem upper_fact (u : G.UT (p + s) → ℂ) :
     G.upper u = U.blk2 (G.upper (u1 p s u)) 0 0 (G.upper (u2 p s u)) *
       U.blk2 1 (Matrix.of (Matrix.of.symm (bN p s u))) 0 1 := by
-  rw [upper_split, Ux2.symmetricScalarBlockMatrix_mul]
+  rw [upper_split, _root_.Formalism.FourierDecayAlt.P.Ux4.symmetricScalarBlockMatrix_mul]
   simp only [Matrix.mul_zero, Matrix.zero_mul, add_zero, zero_add, Matrix.mul_one,
     Equiv.apply_symm_apply]
   unfold bN

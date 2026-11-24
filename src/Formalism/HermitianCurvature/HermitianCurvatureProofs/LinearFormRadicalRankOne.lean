@@ -89,14 +89,14 @@ private theorem blk3_unipotent_apply_superdiag_eq_zero {n ρ' : ℕ} (A12 : Matr
     U.blk3 1 A12 A13 0 1 A23 0 0 1 p q = 0 := by
   by_cases hqn : q.val < n
   · have hp : p.val < n := by omega
-    rw [← eX q hqn, ← eX p hp, Ux3.block3_apply]
+    rw [← eX q hqn, ← eX p hp, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
     simp only [Matrix.fromBlocks_apply₁₁]
     exact Matrix.one_apply_ne (by simp only [ne_eq, Fin.mk.injEq]; omega)
   · have hp1 : n ≤ p.val := by omega
     have hp2 : p.val < n + (2 * ρ' + k + 1) := by omega
     have hq1 : n ≤ q.val := by omega
     have hq2 : q.val < n + (2 * ρ' + k + 1) := by omega
-    rw [← eV q hq1 hq2, ← eV p hp1 hp2, Ux3.block3_apply]
+    rw [← eV q hq1 hq2, ← eV p hp1 hp2, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
     simp only [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₂₂]
     exact Matrix.one_apply_ne (by simp only [ne_eq, Fin.mk.injEq]; omega)
 
@@ -109,7 +109,7 @@ private theorem blk3_mulVec_eB_inr_eq_zero_of_inWb {n ρ' : ℕ} (A12 : Matrix (
     hz _ (Or.inr (by simp [U.eB] <;> omega))
   simp only [Matrix.mulVec, dotProduct]
   rw [← (U.eB k n ρ').sum_comp]
-  simp only [Ux3.block3_apply, Fintype.sum_sum_type, Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, Matrix.zero_apply, zero_mul,
+  simp only [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply, Fintype.sum_sum_type, Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, Matrix.zero_apply, zero_mul,
     Finset.sum_const_zero, zero_add, hS, mul_zero, add_zero, Matrix.one_apply, ite_mul, one_mul,
     Finset.sum_ite_eq, Finset.mem_univ, if_true]
   exact hz _ (Or.inl (by simp [U.eB] <;> omega))
@@ -128,7 +128,7 @@ private theorem blk3_mulVec_eB_inl_eq_mulVec_lowV {n ρ' : ℕ} (A12 : Matrix (F
     congr 1
   simp only [Matrix.mulVec, dotProduct]
   rw [← (U.eB k n ρ').sum_comp]
-  simp only [Ux3.block3_apply, Fintype.sum_sum_type, Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, hX, hS, hV, mul_zero,
+  simp only [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply, Fintype.sum_sum_type, Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, hX, hS, hV, mul_zero,
     Finset.sum_const_zero, zero_add, add_zero]
 
 theorem ell_uni {n ρ' : ℕ} (z : Fin (2 * (n + ρ') + k + 1) → ℂ) (hz : inWb k (n + ρ') z)
@@ -150,7 +150,7 @@ theorem ell_uni {n ρ' : ℕ} (z : Fin (2 * (n + ρ') + k + 1) → ℂ) (hz : in
         rw [← eX (Formalism.QuantumDeterminants.eI k (n + ρ') ⟨n - 1, by omega⟩) (by show n - 1 < n; omega),
           ← eV (Formalism.QuantumDeterminants.eI k (n + ρ') ⟨(⟨n - 1, by omega⟩ : Fin (n + ρ')).val + 1, hlt⟩)
             (by show n ≤ n - 1 + 1; omega) (by show n - 1 + 1 < n + (2 * ρ' + k + 1); omega),
-          Ux3.block3_apply]
+          _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
         simp only [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂]
         congr <;> simp [Formalism.QuantumDeterminants.eI] <;> omega
       · have hlt : ¬ ((⟨n - 1, by omega⟩ : Fin (n + ρ')).val + 1 < n + ρ') := by

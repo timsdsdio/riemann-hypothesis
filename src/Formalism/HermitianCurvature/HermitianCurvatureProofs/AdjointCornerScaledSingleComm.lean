@@ -129,9 +129,9 @@ theorem single_eI_blk (hj : j + 1 ≤ r) (x y : Fin (j + 1)) :
   obtain ⟨Q, rfl⟩ := cast_eB_surj (k := k) hj q
   rw [LeftFubiniLemmas.castM_apply']
   simp only [Fin.cast_cast, Fin.cast_eq_self]
-  rw [Ux3.block3_apply]
+  rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
   rcases P with ((a | a) | a) <;> rcases Q with ((b | b) | b) <;>
-    simp [Matrix.single_apply, eI, Fin.ext_iff, Ux3.block_index_first_val, Ux3.block_index_middle_val, Ux3.block_index_last_val] <;> omega
+    simp [Matrix.single_apply, eI, Fin.ext_iff, _root_.Formalism.FourierDecayAlt.P.Ux4.block_index_first_val_eq, Ux3.block_index_middle_val, _root_.Formalism.FourierDecayAlt.P.Ux4.block_index_last_val_eq] <;> omega
 
 theorem single_esI_blk (hj : j + 1 ≤ r) (x y : Fin (j + 1)) :
     Matrix.single (esI k r ⟨x.val, by omega⟩) (esI k r ⟨y.val, by omega⟩) (1 : ℂ) =
@@ -141,9 +141,9 @@ theorem single_esI_blk (hj : j + 1 ≤ r) (x y : Fin (j + 1)) :
   obtain ⟨Q, rfl⟩ := cast_eB_surj (k := k) hj q
   rw [LeftFubiniLemmas.castM_apply']
   simp only [Fin.cast_cast, Fin.cast_eq_self]
-  rw [Ux3.block3_apply]
+  rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
   rcases P with ((a | a) | a) <;> rcases Q with ((b | b) | b) <;>
-    simp [Matrix.single_apply, esI, Fin.ext_iff, Ux3.block_index_first_val, Ux3.block_index_middle_val, Ux3.block_index_last_val, Fin.val_rev] <;>
+    simp [Matrix.single_apply, esI, Fin.ext_iff, _root_.Formalism.FourierDecayAlt.P.Ux4.block_index_first_val_eq, Ux3.block_index_middle_val, _root_.Formalism.FourierDecayAlt.P.Ux4.block_index_last_val_eq, Fin.val_rev] <;>
     (try omega) <;>
     (have := x.isLt; have := y.isLt; have := a.isLt; have := b.isLt; split_ifs <;> first | rfl | omega)
 
@@ -160,7 +160,7 @@ theorem smul_block_three (c : ℂ) (A11 : Matrix (Fin j) (Fin j) ℂ) (A12 : Mat
     c • U.blk3 A11 A12 A13 A21 A22 A23 A31 A32 A33 =
       U.blk3 (c • A11) (c • A12) (c • A13) (c • A21) (c • A22) (c • A23) (c • A31) (c • A32) (c • A33) := by
   refine Ux4.ext_eB fun x y => ?_
-  rw [Matrix.smul_apply, Ux3.block3_apply, Ux3.block3_apply]
+  rw [Matrix.smul_apply, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
   rcases x with ((a | a) | a) <;> rcases y with ((b | b) | b) <;> simp
 
 theorem castM_add' {a b : ℕ} (h : a = b) (M N : B.Mat k a) : D.castM h (M + N) = D.castM h M + D.castM h N := by
@@ -198,7 +198,7 @@ theorem hM_blk (hj : j + 1 ≤ r) (x y : Fin (j + 1)) (s : ℂ) :
   rw [single_eI_blk hj, single_esI_blk hj, ← castM_smul', ← castM_smul', ← castM_sub', smul_block_three, smul_block_three]
   congr 1
   refine Ux4.ext_eB fun p q => ?_
-  rw [Matrix.sub_apply, Ux3.block3_apply, Ux3.block3_apply, Ux3.block3_apply]
+  rw [Matrix.sub_apply, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
   rcases p with ((a | a) | a) <;> rcases q with ((b | b) | b) <;> simp [neg_smul]
 
 def nN (k r j : ℕ) (hj : j + 1 ≤ r) (a : Fin j → ℂ) : B.Mat k r :=
@@ -221,8 +221,8 @@ theorem nN_blk (hj : j + 1 ≤ r) (a : Fin j → ℂ) :
   simp_rw [e1, e2, single_eI_blk hj, single_esI_blk hj, ← castM_smul', ← castM_sub', ← castM_sum']
   congr 1
   refine Ux4.ext_eB fun p q => ?_
-  rw [Ux3.block3_apply, Matrix.sum_apply]
-  simp_rw [Matrix.sub_apply, Matrix.smul_apply, Ux3.block3_apply]
+  rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply, Matrix.sum_apply]
+  simp_rw [Matrix.sub_apply, Matrix.smul_apply, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
   rcases p with ((c | c) | c) <;> rcases q with ((d | d) | d) <;>
     simp [Matrix.sum_apply, Matrix.single_apply]
 
@@ -359,7 +359,7 @@ theorem weyl_corner_scaled_single_comm (Z : Matrix (Fin j) (Fin j) ℂ) (hZ : Z.
   congr 1
   rw [sum_single_last, single_last_eq_block_two, smul_block_two, smul_zero, smul_zero, smul_zero]
   unfold zfull
-  rw [_root_.Formalism.FourierDecayAlt.P.Ux2.symmetricScalarBlockMatrix_mul, _root_.Formalism.FourierDecayAlt.P.Ux2.symmetricScalarBlockMatrix_mul]
+  rw [_root_.Formalism.FourierDecayAlt.P.Ux4.symmetricScalarBlockMatrix_mul, _root_.Formalism.FourierDecayAlt.P.Ux4.symmetricScalarBlockMatrix_mul]
   simp only [Matrix.mul_zero, Matrix.zero_mul, add_zero, zero_add]
   congr 1
   have hinv : Z⁻¹ * Z = 1 := Matrix.nonsing_inv_mul Z (isUnit_iff_ne_zero.mpr hZ)
@@ -392,7 +392,7 @@ theorem adjoint_corner_scaled_single_comm (Z : Matrix (Fin j) (Fin j) ℂ) (hZ :
   congr 2
   rw [zfull_conjTranspose_inv hZ hτ, sum_single_col, single_column_eq_block_two]
   unfold zfull
-  rw [_root_.Formalism.FourierDecayAlt.P.Ux2.symmetricScalarBlockMatrix_mul, smul_block_two, _root_.Formalism.FourierDecayAlt.P.Ux2.symmetricScalarBlockMatrix_mul]
+  rw [_root_.Formalism.FourierDecayAlt.P.Ux4.symmetricScalarBlockMatrix_mul, smul_block_two, _root_.Formalism.FourierDecayAlt.P.Ux4.symmetricScalarBlockMatrix_mul]
   simp only [Matrix.mul_zero, Matrix.zero_mul, add_zero, zero_add, smul_zero]
   congr 1
   ext u v
@@ -419,7 +419,7 @@ theorem level_point_conj_unipotent (hj : j + 1 ≤ r) {Z : Matrix (Fin j) (Fin j
       nN k r j hj (fun c => s * τ * Z⁻¹ b c) * x0 k r j hj Z τ γ := by
   rw [level_point_eq_block_three, hM_blk, nN_blk, ← castM_mul', ← castM_mul']
   congr 1
-  rw [Ux3.block3_mul, Ux3.block3_mul]
+  rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul]
   simp only [Matrix.mul_zero, Matrix.zero_mul, add_zero, zero_add]
   rw [adjoint_corner_scaled_single_comm Z hZ τ s hτ b, weyl_corner_scaled_single_comm Z hZ τ s b]
 

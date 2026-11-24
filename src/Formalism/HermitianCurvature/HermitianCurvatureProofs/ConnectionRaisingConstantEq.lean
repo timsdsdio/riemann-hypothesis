@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.EulerZetaGammaInvIdentity
 public import Formalism.HermitianCurvature.StatementNF
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.IsPFSum
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.InterlaceSignTwo
@@ -207,18 +208,18 @@ open Formalism.FourierDecayAlt.M
 
 theorem rho_succ (P : M.Par) (π : M.Ty P) (i : Fin (P.k - 1)) :
     M.rho P π ((i : ℕ) + 1) = P.lo ((i : ℕ) + 1) + (((π i : Fin _) : ℕ) : ℝ) := by
-  rw [Mx3.rho_eq P π _ ⟨by omega, by omega⟩]; congr 3
+  rw [Mx4.rho_eq P π _ ⟨by omega, by omega⟩]; congr 3
 
 theorem idx_eq (P : M.Par) (hP : P.OK) (π π' : M.Ty P) {i j : ℕ} (hi : i ∈ Icc 1 (P.k - 1))
     (hj : j ∈ Icc 1 (P.k - 1)) (h : M.rho P π i = M.rho P π' j) : i = j := by
-  have hI := Mx3.tyInterlaces P hP π
-  have hI' := Mx3.tyInterlaces P hP π'
+  have hI := Mx4.tyInterlaces P hP π
+  have hI' := Mx4.tyInterlaces P hP π'
   rcases lt_trichotomy i j with hij | hij | hij
-  · have o := (Mx3.ord P.k P.u P.u' (M.rho P π') hI' i hi).2.2.2 j hj hij
+  · have o := (Mx4.ord P.k P.u P.u' (M.rho P π') hI' i hi).2.2.2 j hj hij
     have b := hI i hi
     linarith [o.1, b.2.2.1]
   · exact hij
-  · have o := (Mx3.ord P.k P.u P.u' (M.rho P π) hI j hj).2.2.2 i hi hij
+  · have o := (Mx4.ord P.k P.u P.u' (M.rho P π) hI j hj).2.2.2 i hi hij
     have b := hI' j hj
     linarith [o.1, b.2.2.1]
 
@@ -238,7 +239,7 @@ theorem up_of_rho (P : M.Par) {l : ℕ} {π π' : M.Ty P}
   · simp only [hl, if_false, add_zero]; exact_mod_cast (by linarith : ((((π' i : Fin _) : ℕ) : ℝ)) = (((π i : Fin _) : ℕ) : ℝ))
 
 theorem up_rho (P : M.Par) {l : ℕ} {π π' : M.Ty P} (h : M.Up P l π π') (i : ℕ) (hi : i ∈ Icc 1 (P.k - 1)) :
-    M.rho P π' i = M.rho P π i + if i = l then 1 else 0 := Mx3.rhoUp P l π π' h i hi
+    M.rho P π' i = M.rho P π i + if i = l then 1 else 0 := Mx4.rhoUp P l π π' h i hi
 
 theorem up_ne (P : M.Par) {l : ℕ} (hl : l ∈ Icc 1 (P.k - 1)) {π π' : M.Ty P} (h : M.Up P l π π') : π ≠ π' := by
   rintro rfl
@@ -2600,7 +2601,7 @@ namespace Formalism.FourierDecayAlt.P
 theorem theorem_S_of_steps : Formalism.FourierDecayAlt.NF.ThmSOfSteps := NFx2.thmSOfSteps
 
 theorem theorem_S_ring : Formalism.FourierDecayAlt.NF.ThmSRing :=
-  NFx2.thmSOfSteps Mx3.tyInterlaces Mx3.tyComplete Mx3.rhoUp Mx3.nrmFacts Mx3.realPoints Mx3.wExact
+  NFx2.thmSOfSteps Mx4.tyInterlaces Mx3.tyComplete Mx4.rhoUp Mx4.nrmFacts Mx3.realPoints Mx3.wExact
     NFx2.sb_main NFx2.sc_main NFx2.sn_main NFx2.relIsCoreNorm
 
 end Formalism.FourierDecayAlt.P

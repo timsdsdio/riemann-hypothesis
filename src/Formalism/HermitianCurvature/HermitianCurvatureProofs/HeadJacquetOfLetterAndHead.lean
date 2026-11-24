@@ -1678,12 +1678,12 @@ private theorem mMap_mem_GV {k j ρ : ℕ} (Z : Matrix (Fin j) (Fin j) ℂ) (hZ 
     exact isUnit_iff_ne_zero.mpr (star_ne_zero.mpr hZ)
   have hγ' : γᴴ * Hpk k ρ * γ = Hpk k ρ := hγ
   have hW : ∀ M : Matrix (Fin j) (Fin j) ℂ, G.wMat j * (G.wMat j * M) = M := fun M => by
-    rw [← Matrix.mul_assoc, Ux2.wMat_sq, Matrix.one_mul]
+    rw [← Matrix.mul_assoc, _root_.Formalism.FourierDecayAlt.P.Ux4.wMat_mul_self, Matrix.one_mul]
   show (U.mMap k j ρ Z γ)ᴴ * Hpk k (j + ρ) * U.mMap k j ρ Z γ = Hpk k (j + ρ)
   rw [Ux2.hpkBlocks k j ρ]
-  simp only [U.mMap, Ux2.block3_conjTranspose, Ux2.block3_mul]
+  simp only [U.mMap, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_conjTranspose, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul]
   refine Ux2.block3_congr ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ <;>
-    simp [Matrix.conjTranspose_mul, Ux2.wMat_ct, Matrix.mul_assoc, Matrix.conjTranspose_nonsing_inv, hγ', hW,
+    simp [Matrix.conjTranspose_mul, _root_.Formalism.FourierDecayAlt.P.Ux4.wMat_conjTranspose, Matrix.mul_assoc, Matrix.conjTranspose_nonsing_inv, hγ', hW,
       Matrix.mul_nonsing_inv_cancel_left _ _ hu', Matrix.nonsing_inv_mul _ hu]
 
 theorem base_point_facts_holds : BasePointSmoothAndMem := by

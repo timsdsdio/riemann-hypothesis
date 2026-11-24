@@ -77,7 +77,7 @@ variable {k j ρ : ℕ}
 
 lemma skewOf_gt (q : (G.UT j → ℂ) × (Fin j → ℝ)) {a b : Fin j} (h : b < a) :
     skewOf q a b = -conj (skewOf q b a) := by
-  have := congrFun (congrFun (skewOf_ct q) b) a
+  have := congrFun (congrFun (_root_.Formalism.FourierDecayAlt.P.Ux4.skewOf_conjTranspose q) b) a
   rw [conjTranspose_apply, Matrix.neg_apply] at this
   have h2 : conj (skewOf q a b) = -skewOf q b a := this
   have h3 := congrArg conj h2
@@ -131,7 +131,7 @@ def mulC (x1 x2 : RC k j ρ) : RC k j ρ :=
   (x1.1 + x2.1, x1.2 + x2.2 + kap (Matrix.of x1.1) (Matrix.of x2.1))
 
 theorem rn_mul (x1 x2 : RC k j ρ) : Rn k j ρ x1 * Rn k j ρ x2 = Rn k j ρ (mulC x1 x2) := by
-  rw [Ux3.rn_eq, Ux3.rn_eq, Ux3.rn_eq, block3_mul]
+  rw [Ux3.rn_eq, Ux3.rn_eq, Ux3.rn_eq, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul]
   have hof : (Matrix.of (x1.1 + x2.1) : Matrix (Fin (2 * ρ + k + 1)) (Fin j) ℂ) = Matrix.of x1.1 + Matrix.of x2.1 := rfl
   simp only [mulC, hof, skewOf_add, kap, skewOf_skc (kap_skew _ _)]
   refine block3_congr ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ <;> (try simp only [conjTranspose_add]) <;>
@@ -151,10 +151,10 @@ lemma mulVec_eB (M : B.Mat k (r + 0)) (y : Fin (2 * r + k + 1) → ℂ) (p : Ix 
 def yb (y : Fin (2 * r + k + 1) → ℂ) (v : Fin (2 * 0 + k + 1)) : ℂ := y (eB k r 0 (Sum.inl (Sum.inr v)))
 
 lemma wb_ll {y : Fin (2 * r + k + 1) → ℂ} (hy : inWb k r y) (a : Fin r) : y (eB k r 0 (Sum.inl (Sum.inl a))) = 0 :=
-  hy _ (Or.inl (by rw [eB_ll]; exact a.isLt))
+  hy _ (Or.inl (by rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_first_val_eq]; exact a.isLt))
 
 lemma wb_r {y : Fin (2 * r + k + 1) → ℂ} (hy : inWb k r y) (a : Fin r) : y (eB k r 0 (Sum.inr a)) = 0 :=
-  hy _ (Or.inr (by rw [eB_r]; omega))
+  hy _ (Or.inr (by rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_last_val_eq]; omega))
 
 def a12 (x : RC k r 0) : Matrix (Fin r) (Fin (2 * 0 + k + 1)) ℂ := -(G.wMat r * (Matrix.of x.1)ᴴ * Hpk k 0)
 
@@ -169,7 +169,7 @@ lemma rn_mulVec (x : RC k r 0) {y : Fin (2 * r + k + 1) → ℂ} (hy : inWb k r 
     simp only [wb_ll hy, wb_r hy, mul_zero, Finset.sum_const_zero, zero_add, add_zero]
     rfl
   refine ⟨fun a => ?_, fun v => ?_, fun a => ?_⟩ <;> rw [key] <;>
-    simp [Ux3.rn_eq, block3_apply, a12, Matrix.mulVec, dotProduct, yb, Matrix.one_apply]
+    simp [Ux3.rn_eq, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply, a12, Matrix.mulVec, dotProduct, yb, Matrix.one_apply]
 
 lemma rn_col (x : RC k r 0) (b : Fin r) : Rn k r 0 x *ᵥ bvec (eI k r b) = bvec (eI k r b) := by
   have h := (rn_rset x).2.1
@@ -248,7 +248,7 @@ lemma hb_last_ne {z : Fin (2 * r + k + 1) → ℂ} (hz : C2.StdZ k r z) : hb z (
   rw [hermitian_form_rank_zero_apply, if_pos (by simp)]
   have := wb_last_ne hz
   have e : yb z (Fin.last (2 * 0 + k)) = z ⟨r + k, by omega⟩ := by
-    unfold yb; congr 1; ext; rw [eB_lr]; simp
+    unfold yb; congr 1; ext; rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_middle_val_eq]; simp
   rw [e]; simpa using this
 
 def lastRow (z : Fin (2 * r + k + 1) → ℂ) (c : Fin (2 * 0 + k) → Fin r → ℂ) (a : Fin r) : ℂ :=
@@ -331,7 +331,7 @@ theorem E_mul (z : Fin (2 * r + k + 1) → ℂ) (x1 x2 : X0 k r) : E z x1 * E z 
 
 lemma w_mulVec_inj {d : ℕ} {v : Fin d → ℂ} (h : G.wMat d *ᵥ v = 0) : v = 0 := by
   have := congrArg (G.wMat d *ᵥ ·) h
-  simp only [Matrix.mulVec_mulVec, wMat_sq, Matrix.one_mulVec, Matrix.mulVec_zero] at this
+  simp only [Matrix.mulVec_mulVec, _root_.Formalism.FourierDecayAlt.P.Ux4.wMat_mul_self, Matrix.one_mulVec, Matrix.mulVec_zero] at this
   exact this
 
 theorem rn_fix_z_iff {z : Fin (2 * r + k + 1) → ℂ} (hz : C2.StdZ k r z) (x : RC k r 0) :
@@ -512,12 +512,12 @@ lemma skc_skewOf {j : ℕ} (q : (G.UT j → ℂ) × (Fin j → ℝ)) : _root_.Fo
 
 theorem Rd_Et (z : Fin (2 * r + k + 1) → ℂ) (x : X0 k r) : Rd (Et z x) = x := by
   have hc : cOf (Et z x) = Matrix.of (extC z x.1) := by
-    ext v a; simp [cOf, Et, E, embX, Ux3.rn_eq, block3_apply]
+    ext v a; simp [cOf, Et, E, embX, Ux3.rn_eq, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
   have hs : sOf (Et z x) = skewOf x.2 := by
     have h13 : (Matrix.of fun a b => (Et z x) (eB k r 0 (Sum.inl (Sum.inl a))) (eB k r 0 (Sum.inr b)) :
         Matrix (Fin r) (Fin r) ℂ) = G.wMat r * ((-(1 / 2 : ℂ)) • ((Matrix.of (extC z x.1))ᴴ * Hpk k 0 *
           Matrix.of (extC z x.1)) + skewOf x.2) := by
-      ext a b; simp [Et, E, embX, Ux3.rn_eq, block3_apply]
+      ext a b; simp [Et, E, embX, Ux3.rn_eq, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
     unfold sOf; rw [h13, hc, wMat_sq_assoc]
     module
   unfold Rd; rw [hs, skc_skewOf]

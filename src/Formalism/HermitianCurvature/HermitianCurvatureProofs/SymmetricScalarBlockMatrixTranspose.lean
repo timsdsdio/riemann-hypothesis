@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.DirectionsInParabolic
 public import Formalism.HermitianCurvature.StatementU
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MulDiagOfTriangular
 public import Formalism.FormalDegreeBessel.FinalG
@@ -62,22 +63,8 @@ section blocks3
 
 variable {k j ρ : ℕ}
 
-lemma eB_ll (a : Fin j) : (eB k j ρ (Sum.inl (Sum.inl a))).val = a.val := by simp [eB]
-lemma eB_lr (v : Fin (2 * ρ + k + 1)) : (eB k j ρ (Sum.inl (Sum.inr v))).val = j + v.val := by simp [eB]
-lemma eB_r (a : Fin j) : (eB k j ρ (Sum.inr a)).val = j + (2 * ρ + k + 1) + a.val := by simp [eB]
 
-lemma block3_apply (A11 : Matrix (Fin j) (Fin j) ℂ) (A12 : Matrix (Fin j) (Fin (2 * ρ + k + 1)) ℂ) (A13 : Matrix (Fin j) (Fin j) ℂ)
-    (A21 : Matrix (Fin (2 * ρ + k + 1)) (Fin j) ℂ) (A22 : B.Mat k ρ) (A23 : Matrix (Fin (2 * ρ + k + 1)) (Fin j) ℂ)
-    (A31 : Matrix (Fin j) (Fin j) ℂ) (A32 : Matrix (Fin j) (Fin (2 * ρ + k + 1)) ℂ) (A33 : Matrix (Fin j) (Fin j) ℂ)
-    (x y : Ix k j ρ) :
-    blk3 A11 A12 A13 A21 A22 A23 A31 A32 A33 (eB k j ρ x) (eB k j ρ y) =
-      Matrix.fromBlocks (Matrix.fromBlocks A11 A12 A21 A22) (Matrix.fromRows A13 A23) (Matrix.fromCols A31 A32) A33 x y := by
-  simp [blk3, Matrix.reindex_apply]
 
-lemma mat_ext_eB {M N : B.Mat k (j + ρ)}
-    (h : ∀ x y, M (eB k j ρ x) (eB k j ρ y) = N (eB k j ρ x) (eB k j ρ y)) : M = N := by
-  ext a b
-  simpa using h ((eB k j ρ).symm a) ((eB k j ρ).symm b)
 
 lemma mul_eB (M N : B.Mat k (j + ρ)) (x y : Ix k j ρ) :
     (M * N) (eB k j ρ x) (eB k j ρ y) =
@@ -85,54 +72,21 @@ lemma mul_eB (M N : B.Mat k (j + ρ)) (x y : Ix k j ρ) :
   rw [Matrix.mul_apply]
   exact (Equiv.sum_comp (eB k j ρ) (fun z => M (eB k j ρ x) z * N z (eB k j ρ y))).symm
 
-lemma block3_mul (A11 : Matrix (Fin j) (Fin j) ℂ) (A12 : Matrix (Fin j) (Fin (2 * ρ + k + 1)) ℂ) (A13 : Matrix (Fin j) (Fin j) ℂ)
-    (A21 : Matrix (Fin (2 * ρ + k + 1)) (Fin j) ℂ) (A22 : B.Mat k ρ) (A23 : Matrix (Fin (2 * ρ + k + 1)) (Fin j) ℂ)
-    (A31 : Matrix (Fin j) (Fin j) ℂ) (A32 : Matrix (Fin j) (Fin (2 * ρ + k + 1)) ℂ) (A33 : Matrix (Fin j) (Fin j) ℂ)
-    (ToralGalois : Matrix (Fin j) (Fin j) ℂ) (cocyclesToWachVectorsExponent : Matrix (Fin j) (Fin (2 * ρ + k + 1)) ℂ) (B13 : Matrix (Fin j) (Fin j) ℂ)
-    (B21 : Matrix (Fin (2 * ρ + k + 1)) (Fin j) ℂ) (B22 : B.Mat k ρ) (B23 : Matrix (Fin (2 * ρ + k + 1)) (Fin j) ℂ)
-    (B31 : Matrix (Fin j) (Fin j) ℂ) (B32 : Matrix (Fin j) (Fin (2 * ρ + k + 1)) ℂ) (B33 : Matrix (Fin j) (Fin j) ℂ) :
-    blk3 A11 A12 A13 A21 A22 A23 A31 A32 A33 * blk3 ToralGalois cocyclesToWachVectorsExponent B13 B21 B22 B23 B31 B32 B33 =
-      blk3 (A11 * ToralGalois + A12 * B21 + A13 * B31) (A11 * cocyclesToWachVectorsExponent + A12 * B22 + A13 * B32) (A11 * B13 + A12 * B23 + A13 * B33)
-        (A21 * ToralGalois + A22 * B21 + A23 * B31) (A21 * cocyclesToWachVectorsExponent + A22 * B22 + A23 * B32) (A21 * B13 + A22 * B23 + A23 * B33)
-        (A31 * ToralGalois + A32 * B21 + A33 * B31) (A31 * cocyclesToWachVectorsExponent + A32 * B22 + A33 * B32) (A31 * B13 + A32 * B23 + A33 * B33) := by
-  apply mat_ext_eB; intro x y
-  rw [mul_eB]; simp only [block3_apply, Fintype.sum_sum_type]
-  rcases x with (x|x)|x <;> rcases y with (y|y)|y <;> simp [Matrix.mul_apply, add_assoc]
 
-lemma block3_conjTranspose (A11 : Matrix (Fin j) (Fin j) ℂ) (A12 : Matrix (Fin j) (Fin (2 * ρ + k + 1)) ℂ) (A13 : Matrix (Fin j) (Fin j) ℂ)
-    (A21 : Matrix (Fin (2 * ρ + k + 1)) (Fin j) ℂ) (A22 : B.Mat k ρ) (A23 : Matrix (Fin (2 * ρ + k + 1)) (Fin j) ℂ)
-    (A31 : Matrix (Fin j) (Fin j) ℂ) (A32 : Matrix (Fin j) (Fin (2 * ρ + k + 1)) ℂ) (A33 : Matrix (Fin j) (Fin j) ℂ) :
-    (blk3 A11 A12 A13 A21 A22 A23 A31 A32 A33)ᴴ = blk3 A11ᴴ A21ᴴ A31ᴴ A12ᴴ A22ᴴ A32ᴴ A13ᴴ A23ᴴ A33ᴴ := by
-  apply mat_ext_eB; intro x y
-  rw [conjTranspose_apply, block3_apply, block3_apply]
-  rcases x with (x|x)|x <;> rcases y with (y|y)|y <;> simp
 
-lemma wMat_ct (d : ℕ) : (G.wMat d)ᴴ = G.wMat d := by
-  ext a b
-  by_cases h : b = a.rev
-  · subst h; simp [G.wMat, conjTranspose_apply]
-  · have h' : a ≠ b.rev := fun e => h (by rw [e, Fin.rev_rev])
-    simp [G.wMat, conjTranspose_apply, h, h']
 
 lemma wMat_mul_apply {d : ℕ} (M : Matrix (Fin d) (Fin d) ℂ) (i j : Fin d) :
     (G.wMat d * M) i j = M i.rev j := by
   simp [Matrix.mul_apply, G.wMat]
 
-lemma wMat_sq (d : ℕ) : G.wMat d * G.wMat d = 1 := by
-  ext a b
-  rw [wMat_mul_apply]
-  by_cases h : a = b
-  · subst h; simp [G.wMat]
-  · have h' : b ≠ a.rev.rev := by rw [Fin.rev_rev]; exact Ne.symm h
-    simp [G.wMat, h] <;> exact fun e => h e.symm
 
 theorem hpkBlocks : HpkBlocks := by
   intro k j ρ
-  apply mat_ext_eB; intro x y
-  rw [block3_apply]
+  apply _root_.Formalism.FourierDecayAlt.P.Ux4.ext_eB; intro x y
+  rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
   rcases x with (x|x)|x <;> rcases y with (y|y)|y <;>
     (have hx := x.isLt; have hy := y.isLt
-     simp [Hpk, G.wMat, Fin.ext_iff, eB_ll, eB_lr, eB_r, Fin.val_rev] <;> split_ifs <;> first | rfl | omega)
+     simp [Hpk, G.wMat, Fin.ext_iff, _root_.Formalism.FourierDecayAlt.P.Ux4.block_index_first_val_eq, _root_.Formalism.FourierDecayAlt.P.Ux4.block_index_middle_val_eq, _root_.Formalism.FourierDecayAlt.P.Ux4.block_index_last_val_eq, Fin.val_rev] <;> split_ifs <;> first | rfl | omega)
 
 lemma block3_congr {A11 ToralGalois : Matrix (Fin j) (Fin j) ℂ} {A12 cocyclesToWachVectorsExponent : Matrix (Fin j) (Fin (2 * ρ + k + 1)) ℂ}
     {A13 B13 : Matrix (Fin j) (Fin j) ℂ} {A21 B21 : Matrix (Fin (2 * ρ + k + 1)) (Fin j) ℂ} {A22 B22 : B.Mat k ρ}
@@ -144,7 +98,7 @@ lemma block3_congr {A11 ToralGalois : Matrix (Fin j) (Fin j) ℂ} {A12 cocyclesT
   subst_vars; rfl
 
 lemma wMat_sq_assoc (d : ℕ) {n : Type*} (M : Matrix (Fin d) n ℂ) : G.wMat d * (G.wMat d * M) = M := by
-  rw [← Matrix.mul_assoc, wMat_sq, Matrix.one_mul]
+  rw [← Matrix.mul_assoc, _root_.Formalism.FourierDecayAlt.P.Ux4.wMat_mul_self, Matrix.one_mul]
 
 theorem sliceMem : SliceMem := by
   intro k j ρ
@@ -156,23 +110,23 @@ theorem sliceMem : SliceMem := by
       rw [det_conjTranspose]; exact isUnit_iff_ne_zero.mpr (star_ne_zero.mpr hZ)
     show (mMap k j ρ Z γ)ᴴ * Hpk k (j + ρ) * mMap k j ρ Z γ = Hpk k (j + ρ)
     rw [hpkBlocks k j ρ]; unfold mMap
-    rw [block3_conjTranspose, block3_mul, block3_mul]
+    rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_conjTranspose, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul]
     refine block3_congr ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ <;>
-      simp [Matrix.mul_assoc, wMat_ct, Matrix.conjTranspose_nonsing_inv, wMat_sq_assoc, hγ', Matrix.nonsing_inv_mul _ hZu, Matrix.mul_nonsing_inv_cancel_left _ _ hu]
+      simp [Matrix.mul_assoc, _root_.Formalism.FourierDecayAlt.P.Ux4.wMat_conjTranspose, Matrix.conjTranspose_nonsing_inv, wMat_sq_assoc, hγ', Matrix.nonsing_inv_mul _ hZu, Matrix.mul_nonsing_inv_cancel_left _ _ hu]
   · intro q hq
     have hqu : IsUnit q.det := isUnit_iff_ne_zero.mpr hq
     have hu : IsUnit qᴴ.det := by
       rw [det_conjTranspose]; exact isUnit_iff_ne_zero.mpr (star_ne_zero.mpr hq)
     show (muP k j ρ q)ᴴ * Hpk k (j + ρ) * muP k j ρ q = Hpk k (j + ρ)
     rw [hpkBlocks k j ρ]; unfold muP
-    rw [block3_conjTranspose, block3_mul, block3_mul]
+    rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_conjTranspose, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul]
     refine block3_congr ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ <;>
-      simp [Matrix.mul_assoc, wMat_ct, Matrix.conjTranspose_nonsing_inv, wMat_sq_assoc, Matrix.nonsing_inv_mul _ hqu, Matrix.mul_nonsing_inv_cancel_left _ _ hu]
+      simp [Matrix.mul_assoc, _root_.Formalism.FourierDecayAlt.P.Ux4.wMat_conjTranspose, Matrix.conjTranspose_nonsing_inv, wMat_sq_assoc, Matrix.nonsing_inv_mul _ hqu, Matrix.mul_nonsing_inv_cancel_left _ _ hu]
   · intro y hy
     have hy' : yᴴ * Hpk k ρ * y = Hpk k ρ := hy
     show (embG k j ρ y)ᴴ * Hpk k (j + ρ) * embG k j ρ y = Hpk k (j + ρ)
     rw [hpkBlocks k j ρ]; unfold embG
-    rw [block3_conjTranspose, block3_mul, block3_mul]
+    rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_conjTranspose, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul]
     refine block3_congr ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ <;> simp [hy']
 
 section blocks
@@ -188,7 +142,7 @@ def b32 : Matrix (Fin j) (Fin (2 * ρ + k + 1)) ℂ := Matrix.of fun a b => M (e
 def b33 : Matrix (Fin j) (Fin j) ℂ := Matrix.of fun a b => M (eB k j ρ (Sum.inr a)) (eB k j ρ (Sum.inr b))
 
 lemma block3_eta : M = blk3 (b11 M) (b12 M) (b13 M) (b21 M) (b22 M) (b23 M) (b31 M) (b32 M) (b33 M) := by
-  apply mat_ext_eB; intro x y; rw [block3_apply]
+  apply _root_.Formalism.FourierDecayAlt.P.Ux4.ext_eB; intro x y; rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
   rcases x with (x|x)|x <;> rcases y with (y|y)|y <;> rfl
 end blocks
 
@@ -201,33 +155,33 @@ lemma block3_injective {A11 ToralGalois : Matrix (Fin j) (Fin j) ℂ} {A12 cocyc
   have e : ∀ x y, blk3 A11 A12 A13 A21 A22 A23 A31 A32 A33 (eB k j ρ x) (eB k j ρ y) =
       blk3 ToralGalois cocyclesToWachVectorsExponent B13 B21 B22 B23 B31 B32 B33 (eB k j ρ x) (eB k j ρ y) := fun x y => by rw [h]
   refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩ <;> ext a b
-  · simpa [block3_apply] using e (Sum.inl (Sum.inl a)) (Sum.inl (Sum.inl b))
-  · simpa [block3_apply] using e (Sum.inl (Sum.inl a)) (Sum.inl (Sum.inr b))
-  · simpa [block3_apply] using e (Sum.inl (Sum.inl a)) (Sum.inr b)
-  · simpa [block3_apply] using e (Sum.inl (Sum.inr a)) (Sum.inl (Sum.inl b))
-  · simpa [block3_apply] using e (Sum.inl (Sum.inr a)) (Sum.inl (Sum.inr b))
-  · simpa [block3_apply] using e (Sum.inl (Sum.inr a)) (Sum.inr b)
-  · simpa [block3_apply] using e (Sum.inr a) (Sum.inl (Sum.inl b))
-  · simpa [block3_apply] using e (Sum.inr a) (Sum.inl (Sum.inr b))
-  · simpa [block3_apply] using e (Sum.inr a) (Sum.inr b)
+  · simpa [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply] using e (Sum.inl (Sum.inl a)) (Sum.inl (Sum.inl b))
+  · simpa [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply] using e (Sum.inl (Sum.inl a)) (Sum.inl (Sum.inr b))
+  · simpa [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply] using e (Sum.inl (Sum.inl a)) (Sum.inr b)
+  · simpa [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply] using e (Sum.inl (Sum.inr a)) (Sum.inl (Sum.inl b))
+  · simpa [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply] using e (Sum.inl (Sum.inr a)) (Sum.inl (Sum.inr b))
+  · simpa [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply] using e (Sum.inl (Sum.inr a)) (Sum.inr b)
+  · simpa [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply] using e (Sum.inr a) (Sum.inl (Sum.inl b))
+  · simpa [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply] using e (Sum.inr a) (Sum.inl (Sum.inr b))
+  · simpa [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply] using e (Sum.inr a) (Sum.inr b)
 
 lemma rset_blocks {g : B.Mat k (j + ρ)} (hg : g ∈ Rset k j ρ) :
     b11 g = 1 ∧ b21 g = 0 ∧ b31 g = 0 ∧ b22 g = 1 ∧ b32 g = 0 := by
   obtain ⟨_, h1, h2⟩ := hg
   refine ⟨?_, ?_, ?_, ?_, ?_⟩ <;> ext a b
-  · have := h1 (eB k j ρ (Sum.inl (Sum.inl a))) (eB k j ρ (Sum.inl (Sum.inl b))) (by rw [eB_ll]; exact b.isLt)
+  · have := h1 (eB k j ρ (Sum.inl (Sum.inl a))) (eB k j ρ (Sum.inl (Sum.inl b))) (by rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_first_val_eq]; exact b.isLt)
     simpa [b11, Matrix.one_apply] using this
-  · have := h1 (eB k j ρ (Sum.inl (Sum.inr a))) (eB k j ρ (Sum.inl (Sum.inl b))) (by rw [eB_ll]; exact b.isLt)
+  · have := h1 (eB k j ρ (Sum.inl (Sum.inr a))) (eB k j ρ (Sum.inl (Sum.inl b))) (by rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_first_val_eq]; exact b.isLt)
     simpa [b21] using this
-  · have := h1 (eB k j ρ (Sum.inr a)) (eB k j ρ (Sum.inl (Sum.inl b))) (by rw [eB_ll]; exact b.isLt)
+  · have := h1 (eB k j ρ (Sum.inr a)) (eB k j ρ (Sum.inl (Sum.inl b))) (by rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_first_val_eq]; exact b.isLt)
     simpa [b31] using this
   · have hb := b.isLt
-    have := h2 (eB k j ρ (Sum.inl (Sum.inr a))) (eB k j ρ (Sum.inl (Sum.inr b))) (by rw [eB_lr]; omega)
-      (by rw [eB_lr]; omega) (by rw [eB_lr]; omega)
+    have := h2 (eB k j ρ (Sum.inl (Sum.inr a))) (eB k j ρ (Sum.inl (Sum.inr b))) (by rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_middle_val_eq]; omega)
+      (by rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_middle_val_eq]; omega) (by rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_middle_val_eq]; omega)
     simpa [b22, Matrix.one_apply] using this
   · have hb := b.isLt
-    have := h2 (eB k j ρ (Sum.inr a)) (eB k j ρ (Sum.inl (Sum.inr b))) (by rw [eB_lr]; omega)
-      (by rw [eB_lr]; omega) (by rw [eB_r]; omega)
+    have := h2 (eB k j ρ (Sum.inr a)) (eB k j ρ (Sum.inl (Sum.inr b))) (by rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_middle_val_eq]; omega)
+      (by rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_middle_val_eq]; omega) (by rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_last_val_eq]; omega)
     simpa [b32] using this
 
 lemma rset_of_blocks {g : B.Mat k (j + ρ)} (hG : g ∈ B.GV k (j + ρ)) (h11 : b11 g = 1) (h21 : b21 g = 0)
@@ -241,18 +195,18 @@ lemma rset_of_blocks {g : B.Mat k (j + ρ)} (hG : g ∈ B.GV k (j + ρ)) (h11 : 
       · have := congrFun (congrFun h11 x) y; simpa [b11, Matrix.one_apply] using this
       · have := congrFun (congrFun h21 x) y; simpa [b21] using this
       · have := congrFun (congrFun h31 x) y; simpa [b31] using this
-    · rw [eB_lr] at hb; omega
-    · rw [eB_r] at hb; omega
+    · rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_middle_val_eq] at hb; omega
+    · rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_last_val_eq] at hb; omega
   · intro i b hb1 hb2 hi
     obtain ⟨x, rfl⟩ := (eB k j ρ).surjective i
     obtain ⟨y, rfl⟩ := (eB k j ρ).surjective b
     rcases y with (y|y)|y
-    · rw [eB_ll] at hb1; have := y.isLt; omega
+    · rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_first_val_eq] at hb1; have := y.isLt; omega
     · rcases x with (x|x)|x
-      · rw [eB_ll] at hi; have := x.isLt; omega
+      · rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_first_val_eq] at hi; have := x.isLt; omega
       · have := congrFun (congrFun h22 x) y; simpa [b22, Matrix.one_apply] using this
       · have := congrFun (congrFun h32 x) y; simpa [b32] using this
-    · rw [eB_r] at hb2; omega
+    · rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_last_val_eq] at hb2; omega
 
 lemma rset_sub_nset : Rset k j ρ ⊆ Nset k (j + ρ) := by
   rintro g ⟨hG, h1, h2⟩
@@ -266,11 +220,6 @@ lemma rset_sub_nset : Rset k j ρ ⊆ Nset k (j + ρ) := by
   · intro i b hb1 hb2 hi
     exact h2 i b (by omega) (by omega) (by omega)
 
-lemma skewOf_ct (q : (G.UT j → ℂ) × (Fin j → ℝ)) : (skewOf q)ᴴ = -skewOf q := by
-  ext a b
-  by_cases h : a = b
-  · subst h; simp [skewOf, G.strictUpper, conjTranspose_apply]
-  · simp [skewOf, conjTranspose_apply, h, Ne.symm h]
 
 lemma skewOf_lt (q : (G.UT j → ℂ) × (Fin j → ℝ)) {a b : Fin j} (h : a < b) : skewOf q a b = q.1 ⟨(a, b), h⟩ := by
   simp [skewOf, G.strictUpper, h, not_lt.mpr h.le, ne_of_lt h, conjTranspose_apply]
@@ -280,16 +229,16 @@ lemma skewOf_diag (q : (G.UT j → ℂ) × (Fin j → ℝ)) (a : Fin j) : skewOf
 
 lemma rn_mem (x : RC k j ρ) : Rn k j ρ x ∈ B.GV k (j + ρ) := by
   have hH : (Hpk k ρ)ᴴ = Hpk k ρ := (hpkFacts k ρ).1
-  have hS := skewOf_ct x.2
+  have hS := _root_.Formalism.FourierDecayAlt.P.Ux4.skewOf_conjTranspose x.2
   show (Rn k j ρ x)ᴴ * Hpk k (j + ρ) * Rn k j ρ x = Hpk k (j + ρ)
   rw [hpkBlocks k j ρ]; unfold Rn
-  rw [block3_conjTranspose, block3_mul, block3_mul]
+  rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_conjTranspose, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul]
   refine block3_congr ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ <;>
-    simp [Matrix.mul_assoc, wMat_ct, wMat_sq_assoc, wMat_sq, hH, hS, Matrix.conjTranspose_smul] <;> module
+    simp [Matrix.mul_assoc, _root_.Formalism.FourierDecayAlt.P.Ux4.wMat_conjTranspose, wMat_sq_assoc, _root_.Formalism.FourierDecayAlt.P.Ux4.wMat_mul_self, hH, hS, Matrix.conjTranspose_smul] <;> module
 
 lemma rn_rset (x : RC k j ρ) : Rn k j ρ x ∈ Rset k j ρ :=
-  rset_of_blocks (rn_mem x) (by ext a b; simp [b11, Rn, block3_apply]) (by ext a b; simp [b21, Rn, block3_apply])
-    (by ext a b; simp [b31, Rn, block3_apply]) (by ext a b; simp [b22, Rn, block3_apply]) (by ext a b; simp [b32, Rn, block3_apply])
+  rset_of_blocks (rn_mem x) (by ext a b; simp [b11, Rn, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]) (by ext a b; simp [b21, Rn, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply])
+    (by ext a b; simp [b31, Rn, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]) (by ext a b; simp [b22, Rn, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]) (by ext a b; simp [b32, Rn, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply])
 
 lemma rn_injective : Function.Injective (Rn k j ρ) := by
   intro x y h
@@ -318,25 +267,25 @@ lemma rset_sub_range {g : B.Mat k (j + ρ)} (hg : g ∈ Rset k j ρ) : ∃ x, Rn
   have hG : gᴴ * Hpk k (j + ρ) * g = Hpk k (j + ρ) := hg.1
   have hgeta := block3_eta g
   rw [h11, h21, h31, h22, h32] at hgeta
-  rw [hgeta, hpkBlocks k j ρ, block3_conjTranspose, block3_mul, block3_mul] at hG
+  rw [hgeta, hpkBlocks k j ρ, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_conjTranspose, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul] at hG
   obtain ⟨-, -, e13, -, -, e23, -, -, e33⟩ := block3_injective hG
   simp [Matrix.mul_assoc] at e13 e23 e33
   have hD : b33 g = 1 := by
     have := congrArg (G.wMat j * ·) e13
-    simpa [wMat_sq_assoc, wMat_sq] using this
+    simpa [wMat_sq_assoc, _root_.Formalism.FourierDecayAlt.P.Ux4.wMat_mul_self] using this
   rw [hD] at e23 e33 hgeta
   simp at e23 e33
   have hA1 : (b12 g)ᴴ * G.wMat j = -(Hpk k ρ * b23 g) := eq_neg_of_add_eq_zero_right e23
   have hA2 : (b12 g)ᴴ = -(Hpk k ρ * b23 g * G.wMat j) := by
     have := congrArg (· * G.wMat j) hA1
-    simpa [Matrix.mul_assoc, wMat_sq] using this
+    simpa [Matrix.mul_assoc, _root_.Formalism.FourierDecayAlt.P.Ux4.wMat_mul_self] using this
   have hA : b12 g = -(G.wMat j * (b23 g)ᴴ * Hpk k ρ) := by
     have := congrArg Matrix.conjTranspose hA2
-    simpa [Matrix.mul_assoc, wMat_ct, hH] using this
+    simpa [Matrix.mul_assoc, _root_.Formalism.FourierDecayAlt.P.Ux4.wMat_conjTranspose, hH] using this
   set S : Matrix (Fin j) (Fin j) ℂ := G.wMat j * b13 g + (1 / 2 : ℂ) • ((b23 g)ᴴ * Hpk k ρ * b23 g) with hSdef
   have hS : Sᴴ = -S := by
     rw [eq_neg_iff_add_eq_zero, hSdef]
-    simp only [conjTranspose_add, conjTranspose_mul, conjTranspose_smul, wMat_ct, hH, conjTranspose_conjTranspose]
+    simp only [conjTranspose_add, conjTranspose_mul, conjTranspose_smul, _root_.Formalism.FourierDecayAlt.P.Ux4.wMat_conjTranspose, hH, conjTranspose_conjTranspose]
     have hstar : star (1 / 2 : ℂ) = 1 / 2 := by simp
     rw [hstar]
     rw [← e33]; simp only [Matrix.mul_assoc]; module
@@ -354,7 +303,7 @@ lemma rset_sub_range {g : B.Mat k (j + ρ)} (hg : g ∈ Rset k j ρ) : ∃ x, Rn
         have := congrArg Complex.re (hSe a a)
         simp at this; linarith
       apply Complex.ext <;> simp [q, hre]
-    · have h1 := congrFun (congrFun (skewOf_ct q) a) b
+    · have h1 := congrFun (congrFun (_root_.Formalism.FourierDecayAlt.P.Ux4.skewOf_conjTranspose q) a) b
       simp only [conjTranspose_apply, Matrix.neg_apply] at h1
       rw [skewOf_lt _ h] at h1
       have h2 := hSe a b
@@ -492,11 +441,6 @@ section twoBlocks
 
 variable {p s : ℕ}
 
-lemma symmetricScalarBlockMatrix_mul (A A' : Matrix (Fin p) (Fin p) ℂ) (B B' : Matrix (Fin p) (Fin s) ℂ)
-    (C C' : Matrix (Fin s) (Fin p) ℂ) (D D' : Matrix (Fin s) (Fin s) ℂ) :
-    blk2 A B C D * blk2 A' B' C' D' = blk2 (A * A' + B * C') (A * B' + B * D') (C * A' + D * C') (C * B' + D * D') := by
-  unfold blk2
-  simp only [Matrix.reindex_apply, Matrix.submatrix_mul_equiv, Matrix.fromBlocks_multiply]
 
 lemma symmetricScalarBlockMatrix_transpose (A : Matrix (Fin p) (Fin p) ℂ) (B : Matrix (Fin p) (Fin s) ℂ)
     (C : Matrix (Fin s) (Fin p) ℂ) (D : Matrix (Fin s) (Fin s) ℂ) :
@@ -570,7 +514,7 @@ theorem charBlock : CharBlock := by
   rw [lower_iff] at hlh hl
   rw [upper_iff] at huh hu
   constructor
-  · rw [symmetricScalarBlockMatrix_mul, subdiagonal_sum_block2]
+  · rw [_root_.Formalism.FourierDecayAlt.P.Ux4.symmetricScalarBlockMatrix_mul, subdiagonal_sum_block2]
     simp only [Matrix.one_mul, Matrix.mul_zero, add_zero, zero_add]
     congr 2
     unfold cornerA
@@ -582,7 +526,7 @@ theorem charBlock : CharBlock := by
         rw [hlh.2 c ⟨p - 1, by omega⟩ (kL_lt.mpr (Fin.lt_def.mpr this)), mul_zero]
       · simp
     · rw [dite_eq_right hps, dite_eq_right hps]
-  · rw [symmetricScalarBlockMatrix_mul, supS_eq, supS_eq, supS_eq]
+  · rw [_root_.Formalism.FourierDecayAlt.P.Ux4.symmetricScalarBlockMatrix_mul, supS_eq, supS_eq, supS_eq]
     simp only [Matrix.mul_zero, Matrix.zero_mul, add_zero, zero_add, Matrix.mul_one]
     rw [symmetricScalarBlockMatrix_transpose, subdiagonal_sum_block2]
     congr 2

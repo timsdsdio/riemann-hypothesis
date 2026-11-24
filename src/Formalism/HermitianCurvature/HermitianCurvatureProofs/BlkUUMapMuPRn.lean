@@ -63,7 +63,7 @@ section alg
 variable {k r : ℕ}
 
 theorem eI_eB' (a : Fin r) : eI k r a = eB k r 0 (Sum.inl (Sum.inl a)) := by
-  ext; rw [Ux3.block_index_first_val]; rfl
+  ext; rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_first_val_eq]; rfl
 
 theorem blkU_uMap (z : Fin (2 * r + k + 1) → ℂ) (g : B.Mat k r) :
     blkU (C2.uMap k r z g) = Matrix.of fun a b => g (eI k r a) (eI k r b) := by
@@ -74,7 +74,7 @@ theorem blkU_uMap (z : Fin (2 * r + k + 1) → ℂ) (g : B.Mat k r) :
 
 theorem muP_Rn_blk (W : Matrix (Fin r) (Fin r) ℂ) (y : U.RC k r 0) (a b : Fin r) :
     (U.muP k r 0 W * U.Rn k r 0 y) (eI k r a) (eI k r b) = W a b := by
-  rw [eI_eB', eI_eB', U.muP, Ux3.rn_eq, Ux3.block3_mul, Ux3.block3_apply]
+  rw [eI_eB', eI_eB', U.muP, Ux3.rn_eq, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
   simp
 
 theorem blkU_uMap_muP_Rn (z : Fin (2 * r + k + 1) → ℂ) (W : Matrix (Fin r) (Fin r) ℂ) (y : U.RC k r 0) :
@@ -94,13 +94,13 @@ theorem leviElement_superdiagonal_entry (z : Fin (2 * r + k + 1) → ℂ) (hz : 
     (if h : a.val + 1 < r then (U.muP k r 0 W) (eI k r a) (eI k r ⟨a.val + 1, h⟩)
       else (U.muP k r 0 W *ᵥ z) (eI k r a)) = (if h : a.val + 1 < r then W a ⟨a.val + 1, h⟩ else 0) := by
   split_ifs with h
-  · rw [eI_eB', eI_eB', U.muP, Ux3.block3_apply]; simp
+  · rw [eI_eB', eI_eB', U.muP, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]; simp
   · rw [eI_eB', mulVec_eB, U.muP]
-    simp only [Ux3.block3_apply]
+    simp only [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
     simp only [Fintype.sum_sum_type, Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂,
       Matrix.fromRows_apply_inl, Matrix.zero_apply, zero_mul, Finset.sum_const_zero, add_zero]
     refine Finset.sum_eq_zero fun c _ => ?_
-    rw [hz _ (Or.inl (by rw [Ux3.block_index_first_val]; exact c.isLt)), mul_zero]
+    rw [hz _ (Or.inl (by rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_first_val_eq]; exact c.isLt)), mul_zero]
 
 theorem psi_muP (z : Fin (2 * r + k + 1) → ℂ) (hz : inWb k r z) (c : ℂ) (W : Matrix (Fin r) (Fin r) ℂ) :
     psi k r z c (U.muP k r 0 W) = C2.psiC c (C2.simpleUp W) := by
@@ -208,7 +208,7 @@ theorem mMap_mul_mMap {ρ : ℕ} (Z Y : Matrix (Fin r) (Fin r) ℂ) (hZ : IsUnit
   have hZH : IsUnit Zᴴ.det := by rw [Matrix.det_conjTranspose]; exact hZ.star
   have hYH : IsUnit Yᴴ.det := by rw [Matrix.det_conjTranspose]; exact hY.star
   unfold U.mMap U.muP
-  rw [Ux3.block3_mul]
+  rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul]
   congr 1
   · simp only [Matrix.mul_zero, zero_add, Matrix.conjTranspose_conjTranspose]
     rw [Matrix.mul_assoc, ← Matrix.mul_assoc (G.wMat r), Ux3.wMat_mul_self, Matrix.one_mul]

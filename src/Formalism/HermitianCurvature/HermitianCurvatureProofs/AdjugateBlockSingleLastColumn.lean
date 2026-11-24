@@ -128,7 +128,7 @@ theorem mMap_mulVec_lift (Z : Matrix (Fin j) (Fin j) ℂ) (γ0 : B.Mat k 0) (u :
   funext p
   obtain ⟨x, rfl⟩ := (eB k j 0).surjective p
   rw [mulVec_eB, liftVec_eB]
-  simp only [mMap, Ux3.block3_apply, liftVec_eB]
+  simp only [mMap, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply, liftVec_eB]
   rcases x with (a | i) | a <;>
     simp [Fintype.sum_sum_type, Matrix.fromBlocks, Matrix.fromRows, Matrix.fromCols, Matrix.mulVec, dotProduct]
 
@@ -289,14 +289,14 @@ theorem herm_eB (u v : Fin (2 * (j + 0) + k + 1) → ℂ) :
 
 theorem hpk_mulVec_e (u : Fin (2 * (j + 0) + k + 1) → ℂ) (a : Fin j) :
     (Hpk k (j + 0) *ᵥ u) (eB k j 0 (Sum.inl (Sum.inl a))) = u (eB k j 0 (Sum.inr a.rev)) := by
-  rw [Ux3.hpkBlocks k j 0, mulVec_eB]
-  simp only [Ux3.block3_apply]
+  rw [_root_.Formalism.FourierDecayAlt.P.Ux4.hpkBlocks k j 0, mulVec_eB]
+  simp only [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
   simp [Fintype.sum_sum_type, Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromRows_apply_inl, G.wMat]
 
 theorem hpk_mulVec_es (u : Fin (2 * (j + 0) + k + 1) → ℂ) (a : Fin j) :
     (Hpk k (j + 0) *ᵥ u) (eB k j 0 (Sum.inr a)) = u (eB k j 0 (Sum.inl (Sum.inl a.rev))) := by
-  rw [Ux3.hpkBlocks k j 0, mulVec_eB]
-  simp only [Ux3.block3_apply]
+  rw [_root_.Formalism.FourierDecayAlt.P.Ux4.hpkBlocks k j 0, mulVec_eB]
+  simp only [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
   simp [Fintype.sum_sum_type, Matrix.fromBlocks, Matrix.fromRows, Matrix.fromCols, G.wMat]
 
 theorem mMap_col (Z : Matrix (Fin j) (Fin j) ℂ) (γ0 : B.Mat k 0) (b : Fin j) (x : Ix k j 0) :
@@ -307,7 +307,7 @@ theorem mMap_col (Z : Matrix (Fin j) (Fin j) ℂ) (γ0 : B.Mat k 0) (b : Fin j) 
       if y = Sum.inl (Sum.inl b) then 1 else 0 := by
     intro y; simp only [bvec, Pi.single_apply, EmbeddingLike.apply_eq_iff_eq]
   simp only [hb, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
-  simp only [mMap, Ux3.block3_apply]
+  simp only [mMap, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
   rcases x with (a | i) | a <;> simp [Matrix.fromBlocks, Matrix.fromRows, Matrix.fromCols]
 
 theorem eI_eB (a : Fin j) : eI k (j + 0) ⟨a.val, by omega⟩ = eB k j 0 (Sum.inl (Sum.inl a)) := by

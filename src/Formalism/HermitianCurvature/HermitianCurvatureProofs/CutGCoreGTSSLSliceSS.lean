@@ -154,7 +154,7 @@ theorem second_shift_slice_operator : GTSSLSliceSS := by
         refine Finset.prod_ne_zero_iff.2 fun i hi => ?_
         have hi' := Finset.mem_sdiff.1 hi
         have hil : i ≠ l := fun e => hi'.2 (by simp [e])
-        have hup := Formalism.FourierDecayAlt.P.Mx3.rhoUp P l a b hUp i hi'.1
+        have hup := Formalism.FourierDecayAlt.P.Mx4.rhoUp P l a b hUp i hi'.1
         rw [if_neg hil, add_zero] at hup
         have hne : M.rho P b i ≠ M.rho P b l := rho_ne P hP b hi'.1 hl hil
         intro h0

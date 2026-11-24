@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.EulerZetaGammaInvIdentity
 public import Formalism.HermitianCurvature.StatementNF
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ActualAdjointnessFromHermitian
 public import Mathlib.CategoryTheory.Category.Basic
@@ -118,9 +119,9 @@ open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Form
 
 theorem rho_sep (P : M.Par) (hP : P.OK) (π σ : M.Ty P) {i j : ℕ} (hi : i ∈ Icc 1 (P.k - 1))
     (hj : j ∈ Icc 1 (P.k - 1)) (hij : i < j) : M.rho P π j < M.rho P σ i := by
-  have hIπ := Mx3.tyInterlaces P hP π
-  have hIσ := Mx3.tyInterlaces P hP σ
-  have o := (Mx3.ord P.k P.u P.u' (M.rho P π) hIπ i hi).2.2.2 j hj hij
+  have hIπ := Mx4.tyInterlaces P hP π
+  have hIσ := Mx4.tyInterlaces P hP σ
+  have o := (Mx4.ord P.k P.u P.u' (M.rho P π) hIπ i hi).2.2.2 j hj hij
   have b := hIσ i hi
   linarith [o.1, b.2.2.1]
 

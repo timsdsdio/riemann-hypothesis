@@ -180,15 +180,15 @@ theorem embG_nset {k p ρ : ℕ} {y : B.Mat k ρ} (hy : y ∈ QuantumDeterminant
   refine ⟨?_, ?_⟩
   · show (U.embG k p ρ y)ᴴ * Hpk k (p + ρ) * U.embG k p ρ y = Hpk k (p + ρ)
     have hy1 : yᴴ * Hpk k ρ * y = Hpk k ρ := hy.1
-    rw [Formalism.FourierDecayAlt.P.hermitian_group_blocks k p ρ, U.embG, Ux3.block3_conjTranspose, Ux3.block3_mul, Ux3.block3_mul]
+    rw [Formalism.FourierDecayAlt.P.hermitian_group_blocks k p ρ, U.embG, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_conjTranspose, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul]
     congr 1 <;> simp [hy1]
   · intro i c hc hi
     obtain ⟨x, rfl⟩ := (U.eB k p ρ).surjective i
     obtain ⟨w, rfl⟩ := (U.eB k p ρ).surjective c
-    rw [U.embG, Ux3.block3_apply]
+    rw [U.embG, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
     simp only [(U.eB k p ρ).apply_eq_iff_eq]
     rcases x with ((x | x) | x) <;> rcases w with ((w | w) | w) <;>
-      simp only [Ux3.block_index_first_val, Ux3.block_index_middle_val, Ux3.block_index_last_val] at hc hi <;>
+      simp only [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_first_val_eq, Ux3.block_index_middle_val, _root_.Formalism.FourierDecayAlt.P.Ux4.block_index_last_val_eq] at hc hi <;>
       first
       | (simp [Matrix.one_apply]; done)
       | (exfalso; have := x.isLt; have := w.isLt; omega)

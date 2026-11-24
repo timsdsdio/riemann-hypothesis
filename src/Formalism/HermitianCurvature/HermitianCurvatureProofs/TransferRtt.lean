@@ -561,8 +561,8 @@ theorem cz_cc : cz P * cc P = cc P * cz P := by
   rw [cc_sc, cz_sc, sc_mul, sc_mul]
   congr 1
   simp only [zP, zbP, ggiP]
-  rw [Mx2.multiplierPair_mul, Mx2.multiplierPair_mul]
-  exact Mx2.multiplierPair_comm _ _ _ _
+  rw [Mx4.multiplierPair_mul, Mx4.multiplierPair_mul]
+  exact Mx4.multiplierPair_comm _ _ _ _
 
 theorem G_sc : ggiA P = sc P (ggiP P.TT) := rfl
 

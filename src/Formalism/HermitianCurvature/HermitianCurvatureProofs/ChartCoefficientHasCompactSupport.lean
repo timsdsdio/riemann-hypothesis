@@ -268,14 +268,14 @@ variable (A11 : Matrix (Fin j) (Fin j) ℂ) (A12 : Matrix (Fin j) (Fin (2 * ρ +
   (A21 : Matrix (Fin (2 * ρ + k + 1)) (Fin j) ℂ) (A22 : B.Mat k ρ) (A23 : Matrix (Fin (2 * ρ + k + 1)) (Fin j) ℂ)
   (A31 : Matrix (Fin j) (Fin j) ℂ) (A32 : Matrix (Fin j) (Fin (2 * ρ + k + 1)) ℂ) (A33 : Matrix (Fin j) (Fin j) ℂ)
 
-theorem block_three_top_left : bk11 (blk3 A11 A12 A13 A21 A22 A23 A31 A32 A33) = A11 := by ext a b; simp [bk11, block3_apply]
-theorem block_three_middle_left : bk21 (blk3 A11 A12 A13 A21 A22 A23 A31 A32 A33) = A21 := by ext a b; simp [bk21, block3_apply]
-theorem block_three_center : bk22 (blk3 A11 A12 A13 A21 A22 A23 A31 A32 A33) = A22 := by ext a b; simp [bk22, block3_apply]
+theorem block_three_top_left : bk11 (blk3 A11 A12 A13 A21 A22 A23 A31 A32 A33) = A11 := by ext a b; simp [bk11, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
+theorem block_three_middle_left : bk21 (blk3 A11 A12 A13 A21 A22 A23 A31 A32 A33) = A21 := by ext a b; simp [bk21, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
+theorem block_three_center : bk22 (blk3 A11 A12 A13 A21 A22 A23 A31 A32 A33) = A22 := by ext a b; simp [bk22, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
 theorem block_three_bottom_left : bk31 (blk3 A11 A12 A13 A21 A22 A23 A31 A32 A33) = A31 := by
-  ext a b; simp [bk31, block3_apply, Matrix.fromCols_apply_inl]
+  ext a b; simp [bk31, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply, Matrix.fromCols_apply_inl]
 theorem block_three_bottom_center : bk32 (blk3 A11 A12 A13 A21 A22 A23 A31 A32 A33) = A32 := by
-  ext a b; simp [bk32, block3_apply, Matrix.fromCols_apply_inr]
-theorem block_three_bottom_right : bk33 (blk3 A11 A12 A13 A21 A22 A23 A31 A32 A33) = A33 := by ext a b; simp [bk33, block3_apply]
+  ext a b; simp [bk32, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply, Matrix.fromCols_apply_inr]
+theorem block_three_bottom_right : bk33 (blk3 A11 A12 A13 A21 A22 A23 A31 A32 A33) = A33 := by ext a b; simp [bk33, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
 
 end blocks
 
@@ -310,7 +310,7 @@ theorem chart_spec (g : B.Mat k (j + ρ)) (hg : g ∈ B.GV k (j + ρ)) (hD : DjU
       (G.wMat j * Z * (G.wMat j * (-(1 / 2 : ℂ) • ((Matrix.of x'.1)ᴴ * Hpk k ρ * Matrix.of x'.1) + skewOf x'.2))) := by
     rw [hgeq, rn_eq, rn_eq, uni_inv]
     unfold mMap
-    rw [block3_mul, block3_mul]
+    rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul]
     simp only [Matrix.one_mul, Matrix.mul_one, Matrix.zero_mul, Matrix.mul_zero, add_zero, zero_add]
   have hu : IsUnit (G.wMat j * Z).det := by
     rw [Matrix.det_mul]; exact (wMat_det j).mul (isUnit_iff_ne_zero.mpr hZ)
@@ -328,7 +328,7 @@ theorem chart_spec (g : B.Mat k (j + ρ)) (hg : g ∈ B.GV k (j + ρ)) (hD : DjU
   have eC' : chC' g = Matrix.of x'.1 := by
     unfold chC'
     rw [e31, hb, block_three_bottom_center, ← Matrix.mul_assoc, i2, Matrix.one_mul]
-    simp only [Matrix.conjTranspose_neg, Matrix.conjTranspose_mul, wMat_conjTranspose, hpk_herm,
+    simp only [Matrix.conjTranspose_neg, Matrix.conjTranspose_mul, wMat_conjTranspose, _root_.Formalism.FourierDecayAlt.P.Ux4.hpk_conjTranspose,
       Matrix.conjTranspose_conjTranspose, Matrix.mul_neg, Matrix.neg_mul, neg_neg, ← Matrix.mul_assoc, hHH,
       Matrix.one_mul]
     rw [Matrix.mul_assoc, hWW, Matrix.mul_one]
@@ -351,7 +351,7 @@ theorem chart_spec (g : B.Mat k (j + ρ)) (hg : g ∈ B.GV k (j + ρ)) (hD : DjU
   unfold chMu
   rw [eX, eX']
   conv_lhs => rw [hgeq]
-  rw [← Matrix.mul_assoc, ← Matrix.mul_assoc, rn_mul_inv, Matrix.one_mul, Matrix.mul_assoc, rn_mul_inv,
+  rw [← Matrix.mul_assoc, ← Matrix.mul_assoc, _root_.Formalism.FourierDecayAlt.P.Ux4.Rn_mul_inv, Matrix.one_mul, Matrix.mul_assoc, _root_.Formalism.FourierDecayAlt.P.Ux4.Rn_mul_inv,
     Matrix.mul_one]
   unfold mMap
   rw [block_three_center]

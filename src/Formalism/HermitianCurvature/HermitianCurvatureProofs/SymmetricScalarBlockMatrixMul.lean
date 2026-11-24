@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.DirectionsInParabolic
 public import Formalism.HermitianCurvature.StatementU
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GroupFactorizationHolds
 public import Formalism.FormalDegreeBessel.FinalG
@@ -63,22 +64,6 @@ namespace Formalism.FourierDecayAlt.P.Ux3
 
 variable {k j ρ : ℕ}
 
-theorem block3_mul
-    (A11 : Matrix (Fin j) (Fin j) ℂ) (A12 : Matrix (Fin j) (Fin (2 * ρ + k + 1)) ℂ) (A13 : Matrix (Fin j) (Fin j) ℂ)
-    (A21 : Matrix (Fin (2 * ρ + k + 1)) (Fin j) ℂ) (A22 : B.Mat k ρ) (A23 : Matrix (Fin (2 * ρ + k + 1)) (Fin j) ℂ)
-    (A31 : Matrix (Fin j) (Fin j) ℂ) (A32 : Matrix (Fin j) (Fin (2 * ρ + k + 1)) ℂ) (A33 : Matrix (Fin j) (Fin j) ℂ)
-    (ToralGalois : Matrix (Fin j) (Fin j) ℂ) (cocyclesToWachVectorsExponent : Matrix (Fin j) (Fin (2 * ρ + k + 1)) ℂ) (B13 : Matrix (Fin j) (Fin j) ℂ)
-    (B21 : Matrix (Fin (2 * ρ + k + 1)) (Fin j) ℂ) (B22 : B.Mat k ρ) (B23 : Matrix (Fin (2 * ρ + k + 1)) (Fin j) ℂ)
-    (B31 : Matrix (Fin j) (Fin j) ℂ) (B32 : Matrix (Fin j) (Fin (2 * ρ + k + 1)) ℂ) (B33 : Matrix (Fin j) (Fin j) ℂ) :
-    blk3 (k := k) (j := j) (ρ := ρ) A11 A12 A13 A21 A22 A23 A31 A32 A33 * blk3 ToralGalois cocyclesToWachVectorsExponent B13 B21 B22 B23 B31 B32 B33 =
-      blk3 (A11 * ToralGalois + A12 * B21 + A13 * B31) (A11 * cocyclesToWachVectorsExponent + A12 * B22 + A13 * B32) (A11 * B13 + A12 * B23 + A13 * B33)
-        (A21 * ToralGalois + A22 * B21 + A23 * B31) (A21 * cocyclesToWachVectorsExponent + A22 * B22 + A23 * B32) (A21 * B13 + A22 * B23 + A23 * B33)
-        (A31 * ToralGalois + A32 * B21 + A33 * B31) (A31 * cocyclesToWachVectorsExponent + A32 * B22 + A33 * B32) (A31 * B13 + A32 * B23 + A33 * B33) := by
-  simp only [blk3, Matrix.reindex_apply]
-  rw [Matrix.submatrix_mul_equiv]
-  congr 1
-  ext ((a | a) | a) ((b | b) | b) <;>
-    simp [Matrix.mul_apply, Fintype.sum_sum_type, Finset.sum_add_distrib]
 
 theorem block3_one : blk3 (k := k) (j := j) (ρ := ρ) 1 0 0 0 1 0 0 0 1 = 1 := by
   unfold blk3
@@ -89,19 +74,8 @@ theorem block3_one : blk3 (k := k) (j := j) (ρ := ρ) 1 0 0 0 1 0 0 0 1 = 1 := 
   rw [h1, h2, Matrix.fromBlocks_one, Matrix.fromBlocks_one]
   simp [Matrix.reindex_apply, Matrix.submatrix_one_equiv]
 
-theorem block3_apply (A11 : Matrix (Fin j) (Fin j) ℂ) (A12 : Matrix (Fin j) (Fin (2 * ρ + k + 1)) ℂ) (A13 : Matrix (Fin j) (Fin j) ℂ)
-    (A21 : Matrix (Fin (2 * ρ + k + 1)) (Fin j) ℂ) (A22 : B.Mat k ρ) (A23 : Matrix (Fin (2 * ρ + k + 1)) (Fin j) ℂ)
-    (A31 : Matrix (Fin j) (Fin j) ℂ) (A32 : Matrix (Fin j) (Fin (2 * ρ + k + 1)) ℂ) (A33 : Matrix (Fin j) (Fin j) ℂ)
-    (x y : Ix k j ρ) :
-    blk3 A11 A12 A13 A21 A22 A23 A31 A32 A33 (eB k j ρ x) (eB k j ρ y) =
-      Matrix.fromBlocks (Matrix.fromBlocks A11 A12 A21 A22) (Matrix.fromRows A13 A23) (Matrix.fromCols A31 A32) A33 x y := by
-  simp [blk3, Matrix.reindex_apply, Matrix.submatrix_apply]
 
-theorem block_index_first_val (a : Fin j) : (eB k j ρ (Sum.inl (Sum.inl a))).val = a.val := by
-  simp [eB]
 theorem block_index_middle_val (i : Fin (2 * ρ + k + 1)) : (eB k j ρ (Sum.inl (Sum.inr i))).val = j + i.val := by
-  simp [eB]
-theorem block_index_last_val (a : Fin j) : (eB k j ρ (Sum.inr a)).val = j + (2 * ρ + k + 1) + a.val := by
   simp [eB]
 
 theorem wMat_mul_apply {n : ℕ} {m : Type*} (A : Matrix (Fin n) m ℂ) (a : Fin n) (b : m) :
@@ -124,20 +98,20 @@ theorem hat_z_of_block3 (A11 : Matrix (Fin j) (Fin j) ℂ) (A12 : Matrix (Fin j)
   rw [wMat_mul_apply]
   have h1 : (⟨2 * (j + ρ) + k - a.val, by omega⟩ : Fin (2 * (j + ρ) + k + 1)) = eB k j ρ (Sum.inr a.rev) := by
     apply Fin.ext
-    rw [block_index_last_val]
+    rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_last_val_eq]
     simp only [Fin.val_rev]
     omega
   have h2 : (⟨b.val, by omega⟩ : Fin (2 * (j + ρ) + k + 1)) = eB k j ρ (Sum.inl (Sum.inl b)) := by
     apply Fin.ext
-    rw [block_index_first_val]
+    rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_first_val_eq]
   simp only [Zh]
-  rw [h1, h2, block3_apply]
+  rw [h1, h2, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
   simp
 
 theorem uni_mul_inv (a : Matrix (Fin j) (Fin (2 * ρ + k + 1)) ℂ) (b : Matrix (Fin j) (Fin j) ℂ)
     (c : Matrix (Fin (2 * ρ + k + 1)) (Fin j) ℂ) :
     blk3 1 a b 0 1 c 0 0 1 * blk3 1 (-a) (a * c - b) 0 1 (-c) 0 0 1 = 1 := by
-  rw [block3_mul, ← block3_one]
+  rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul, ← block3_one]
   congr 1 <;> simp <;> abel
 
 theorem uni_inv (a : Matrix (Fin j) (Fin (2 * ρ + k + 1)) ℂ) (b : Matrix (Fin j) (Fin j) ℂ)
@@ -152,7 +126,7 @@ theorem zhSlice : ZhSlice := by
   intro k j ρ x x' Z γ
   rw [rn_eq, rn_eq, uni_inv]
   simp only [mMap]
-  rw [block3_mul, block3_mul, hat_z_of_block3]
+  rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul, hat_z_of_block3]
   simp [← Matrix.mul_assoc, wMat_mul_self]
 
 theorem hpk_row (k r : ℕ) (a : ℕ) (ha : a < r) (c : Fin (2 * r + k + 1)) :
@@ -199,21 +173,12 @@ theorem zhDmin : ZhDmin := by
   · simp; omega
   · simp; omega
 
-theorem symmetricScalarBlockMatrix_mul {p s : ℕ} (A A' : Matrix (Fin p) (Fin p) ℂ) (B B' : Matrix (Fin p) (Fin s) ℂ)
-    (C C' : Matrix (Fin s) (Fin p) ℂ) (D D' : Matrix (Fin s) (Fin s) ℂ) :
-    blk2 A B C D * blk2 A' B' C' D' = blk2 (A * A' + B * C') (A * B' + B * D') (C * A' + D * C') (C * B' + D * D') := by
-  simp only [blk2, Matrix.reindex_apply]
-  rw [Matrix.submatrix_mul_equiv, Matrix.fromBlocks_multiply]
 
 theorem block2_det_lower_triangular {p s : ℕ} (A : Matrix (Fin p) (Fin p) ℂ) (C : Matrix (Fin s) (Fin p) ℂ)
     (D : Matrix (Fin s) (Fin s) ℂ) : (blk2 A 0 C D).det = A.det * D.det := by
   simp only [blk2]
   rw [Matrix.det_reindex_self, Matrix.det_fromBlocks_zero₁₂]
 
-theorem block2_det_upper_triangular {p s : ℕ} (A : Matrix (Fin p) (Fin p) ℂ) (B : Matrix (Fin p) (Fin s) ℂ)
-    (D : Matrix (Fin s) (Fin s) ℂ) : (blk2 A B 0 D).det = A.det * D.det := by
-  simp only [blk2]
-  rw [Matrix.det_reindex_self, Matrix.det_fromBlocks_zero₂₁]
 
 theorem det_upper {p : ℕ} (u : G.UT p → ℂ) : (G.upper u).det = 1 := by
   rw [Matrix.det_of_upperTriangular]
@@ -234,31 +199,11 @@ theorem det_lowW {p : ℕ} (σ : Equiv.Perm (Fin p)) (v : LW σ → ℂ) : (lowW
 theorem detZj : DetZj := by
   intro p s σ d η Z
   unfold ZjH Zj headH hMat G.detM
-  rw [Matrix.det_mul, Matrix.det_mul, block2_det_lower_triangular, block2_det_lower_triangular, block2_det_upper_triangular]
+  rw [Matrix.det_mul, Matrix.det_mul, block2_det_lower_triangular, block2_det_lower_triangular, _root_.Formalism.FourierDecayAlt.P.Ux4.block2_det_upper_triangular]
   simp only [Matrix.det_mul, det_upper, det_lowW, Matrix.det_one]
   ring
 
-theorem block3_conjTranspose (A11 : Matrix (Fin j) (Fin j) ℂ) (A12 : Matrix (Fin j) (Fin (2 * ρ + k + 1)) ℂ) (A13 : Matrix (Fin j) (Fin j) ℂ)
-    (A21 : Matrix (Fin (2 * ρ + k + 1)) (Fin j) ℂ) (A22 : B.Mat k ρ) (A23 : Matrix (Fin (2 * ρ + k + 1)) (Fin j) ℂ)
-    (A31 : Matrix (Fin j) (Fin j) ℂ) (A32 : Matrix (Fin j) (Fin (2 * ρ + k + 1)) ℂ) (A33 : Matrix (Fin j) (Fin j) ℂ) :
-    (blk3 A11 A12 A13 A21 A22 A23 A31 A32 A33)ᴴ =
-      blk3 A11ᴴ A21ᴴ A31ᴴ A12ᴴ A22ᴴ A32ᴴ A13ᴴ A23ᴴ A33ᴴ := by
-  unfold blk3
-  rw [Matrix.conjTranspose_reindex]
-  congr 1
-  ext ((a | a) | a) ((b | b) | b) <;> simp
 
-theorem hpkBlocks : HpkBlocks := by
-  intro k j ρ
-  ext i l
-  rcases h : (eB k j ρ).symm i with ((a | a) | a) <;> rcases h' : (eB k j ρ).symm l with ((b | b) | b) <;>
-    (rw [← (eB k j ρ).apply_symm_apply i, ← (eB k j ρ).apply_symm_apply l, h, h']) <;>
-    (rw [block3_apply]; simp only [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁,
-      Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr,
-      Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, Matrix.zero_apply, G.wMat, Matrix.of_apply]
-     unfold Hpk
-     simp only [Fin.ext_iff, block_index_first_val, block_index_middle_val, block_index_last_val, Fin.val_rev]
-     split_ifs <;> first | rfl | (exfalso; omega))
 
 theorem wMat_conjTranspose (n : ℕ) : (G.wMat n)ᴴ = G.wMat n := by
   ext a b
@@ -279,16 +224,11 @@ theorem skewOf_conjTranspose {n : ℕ} (q : (G.UT n → ℂ) × (Fin n → ℝ))
   · simp [h, Ne.symm h]
     try ring
 
-theorem hpk_herm (k r : ℕ) : (Hpk k r)ᴴ = Hpk k r := (hpkFacts k r).1
 theorem hpk_sq (k r : ℕ) : Hpk k r * Hpk k r = 1 := (hpkFacts k r).2.1
 
 theorem mul_wMat_wMat {m : Type*} (n : ℕ) (M : Matrix m (Fin n) ℂ) : M * G.wMat n * G.wMat n = M := by
   rw [Matrix.mul_assoc, wMat_mul_self, Matrix.mul_one]
 
-theorem rn_unitary (x : RC k j ρ) : (Rn k j ρ x)ᴴ * Hpk k (j + ρ) * Rn k j ρ x = Hpk k (j + ρ) := by
-  rw [rn_eq, hpkBlocks, block3_conjTranspose, block3_mul, block3_mul]
-  congr 1 <;> simp [wMat_conjTranspose, hpk_herm, skewOf_conjTranspose, ← Matrix.mul_assoc, wMat_mul_self, mul_wMat_wMat] <;>
-    (ext a b; simp [Matrix.add_apply, Matrix.smul_apply, Matrix.neg_apply]; ring)
 
 theorem uni_nset (A12 : Matrix (Fin j) (Fin (2 * ρ + k + 1)) ℂ) (A13 : Matrix (Fin j) (Fin j) ℂ)
     (A23 : Matrix (Fin (2 * ρ + k + 1)) (Fin j) ℂ)
@@ -298,14 +238,14 @@ theorem uni_nset (A12 : Matrix (Fin j) (Fin (2 * ρ + k + 1)) ℂ) (A13 : Matrix
   · intro a i hai
     obtain ⟨x, rfl⟩ := (eB k j ρ).surjective i
     obtain ⟨y, hy⟩ := (eB k j ρ).surjective (eI k (j + ρ) a)
-    rw [← hy, block3_apply]
+    rw [← hy, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
     simp only [(eB k j ρ).apply_eq_iff_eq]
     have hv := congrArg Fin.val hy
     have ha := a.isLt
     simp only [eI] at hv
     rw [← hv] at hai
     rcases x with ((x | x) | x) <;> rcases y with ((y | y) | y) <;>
-      simp only [block_index_first_val, block_index_middle_val, block_index_last_val] at hv hai <;>
+      simp only [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_first_val_eq, block_index_middle_val, _root_.Formalism.FourierDecayAlt.P.Ux4.block_index_last_val_eq] at hv hai <;>
       first
       | (simp [Matrix.one_apply, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl,
           Matrix.fromCols_apply_inr]; done)
@@ -313,17 +253,17 @@ theorem uni_nset (A12 : Matrix (Fin j) (Fin (2 * ρ + k + 1)) ℂ) (A13 : Matrix
   · intro i c hc1 hc2 hi
     obtain ⟨x, rfl⟩ := (eB k j ρ).surjective i
     obtain ⟨y, rfl⟩ := (eB k j ρ).surjective c
-    rw [block3_apply]
+    rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
     simp only [(eB k j ρ).apply_eq_iff_eq]
     rcases x with ((x | x) | x) <;> rcases y with ((y | y) | y) <;>
-      simp only [block_index_first_val, block_index_middle_val, block_index_last_val] at hc1 hc2 hi <;>
+      simp only [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_first_val_eq, block_index_middle_val, _root_.Formalism.FourierDecayAlt.P.Ux4.block_index_last_val_eq] at hc1 hc2 hi <;>
       first
       | (simp [Matrix.one_apply, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl,
           Matrix.fromCols_apply_inr]; done)
       | (exfalso; have := x.isLt; have := y.isLt; omega)
 
 theorem rn_nset (x : RC k j ρ) : Rn k j ρ x ∈ Nset k (j + ρ) := by
-  have h := rn_unitary x
+  have h := _root_.Formalism.FourierDecayAlt.P.Ux4.Rn_unitary x
   rw [rn_eq] at h ⊢
   exact uni_nset _ _ _ h
 
@@ -352,9 +292,9 @@ theorem fm_eq (z : Fin (2 * (j + ρ) + k + 1) → ℂ) (hz : inWb k (j + ρ) z) 
   obtain ⟨y, rfl⟩ := (eC j ρ).surjective c
   simp only [Matrix.reindex_apply, Matrix.submatrix_apply, Equiv.symm_apply_apply, Formalism.QuantumDeterminants.Fm, Matrix.of_apply, F0]
   rcases x with ((x | x) | x) <;> rcases y with (y | y)
-  · rw [fvec_apply_lt z hz _ _ (by rw [block_index_first_val]; omega), block_index_first_val, column_index_first_val]
+  · rw [fvec_apply_lt z hz _ _ (by rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_first_val_eq]; omega), _root_.Formalism.FourierDecayAlt.P.Ux4.block_index_first_val_eq, column_index_first_val]
     simp [Matrix.one_apply, Fin.ext_iff, eq_comm]
-  · rw [fvec_apply_lt z hz _ _ (by rw [block_index_first_val]; omega), block_index_first_val, column_index_second_val, if_neg (by omega)]
+  · rw [fvec_apply_lt z hz _ _ (by rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_first_val_eq]; omega), _root_.Formalism.FourierDecayAlt.P.Ux4.block_index_first_val_eq, column_index_second_val, if_neg (by omega)]
     simp
   · by_cases hlt : j + x.val < j + ρ
     · rw [fvec_apply_lt z hz _ _ (by rw [block_index_middle_val]; omega), block_index_middle_val, column_index_first_val, if_neg (by omega)]
@@ -373,9 +313,9 @@ theorem fm_eq (z : Fin (2 * (j + ρ) + k + 1) → ℂ) (hz : inWb k (j + ρ) z) 
     · rw [dite_eq_right (by omega), dite_eq_right hc]
       simp only [lowV]
       congr 1
-  · rw [fvec_apply_ge z _ _ (by rw [block_index_last_val]; omega), hz _ (Or.inr (by rw [block_index_last_val]; omega))]
+  · rw [fvec_apply_ge z _ _ (by rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_last_val_eq]; omega), hz _ (Or.inr (by rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_last_val_eq]; omega))]
     simp
-  · rw [fvec_apply_ge z _ _ (by rw [block_index_last_val]; omega), hz _ (Or.inr (by rw [block_index_last_val]; omega))]
+  · rw [fvec_apply_ge z _ _ (by rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_last_val_eq]; omega), hz _ (Or.inr (by rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block_index_last_val_eq]; omega))]
     simp
 
 theorem fq_of_block3 (Fj Fj' : Matrix (Fin (2 * ρ + k + 1)) (Fin (ρ + 1)) ℂ)
@@ -402,7 +342,7 @@ theorem z_hat_of_block3 (z z' : Fin (2 * (j + ρ) + k + 1) → ℂ) (hz : inWb k
         (G.wMat j * SumRepresentations * Formalism.QuantumDeterminants.Fm k ρ (lowV k j ρ z'))
         ((Formalism.QuantumDeterminants.Fm k ρ (lowV k j ρ z))ᴴ * (Hpk k ρ * placeRankTwoOne))
         ((Formalism.QuantumDeterminants.Fm k ρ (lowV k j ρ z))ᴴ * (Hpk k ρ * TaylorLogMetric) * Formalism.QuantumDeterminants.Fm k ρ (lowV k j ρ z'))) := by
-  rw [Formalism.QuantumDeterminants.Zhat_eq, Matrix.mul_assoc ((Formalism.QuantumDeterminants.Fm k (j + ρ) z)ᴴ), hpkBlocks, block3_mul, fm_eq z hz, fm_eq z' hz',
+  rw [Formalism.QuantumDeterminants.Zhat_eq, Matrix.mul_assoc ((Formalism.QuantumDeterminants.Fm k (j + ρ) z)ᴴ), _root_.Formalism.FourierDecayAlt.P.Ux4.hpkBlocks, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul, fm_eq z hz, fm_eq z' hz',
     fq_of_block3]
   congr 1
   simp
@@ -485,7 +425,7 @@ theorem block3_eq_iff
         (Matrix.fromCols A31 A32) A33 x y = Matrix.fromBlocks (Matrix.fromBlocks ToralGalois cocyclesToWachVectorsExponent B21 B22) (Matrix.fromRows B13 B23)
         (Matrix.fromCols B31 B32) B33 x y := by
       intro x y
-      rw [← block3_apply, ← block3_apply, h]
+      rw [← _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply, ← _root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply, h]
     refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩ <;> ext a b
     · simpa using e (Sum.inl (Sum.inl a)) (Sum.inl (Sum.inl b))
     · simpa using e (Sum.inl (Sum.inl a)) (Sum.inl (Sum.inr b))
@@ -499,13 +439,11 @@ theorem block3_eq_iff
   · rintro ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
     rfl
 
-theorem rn_mul_inv (x : RC k j ρ) : Rn k j ρ x * (Rn k j ρ x)⁻¹ = 1 := by
-  rw [rn_eq, uni_inv, uni_mul_inv]
 
 theorem uni_inv_mul (a : Matrix (Fin j) (Fin (2 * ρ + k + 1)) ℂ) (b : Matrix (Fin j) (Fin j) ℂ)
     (c : Matrix (Fin (2 * ρ + k + 1)) (Fin j) ℂ) :
     blk3 1 (-a) (a * c - b) 0 1 (-c) 0 0 1 * blk3 1 a b 0 1 c 0 0 1 = 1 := by
-  rw [block3_mul, ← block3_one]
+  rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul, ← block3_one]
   congr 1 <;> simp <;> abel
 
 theorem rn_inv_mul (x : RC k j ρ) : (Rn k j ρ x)⁻¹ * Rn k j ρ x = 1 := by
@@ -570,13 +508,13 @@ theorem bigCell_uniq (x1 x1' x2 x2' : RC k j ρ) (Z1 Z2 : Matrix (Fin j) (Fin j)
       mMap k j ρ Z2 γ2 * (Rn k j ρ x2' * (Rn k j ρ x1')⁻¹) := by
     calc Rn k j ρ x2 * (Rn k j ρ x1)⁻¹ * mMap k j ρ Z1 γ1
         = Rn k j ρ x2 * ((Rn k j ρ x1)⁻¹ * mMap k j ρ Z1 γ1 * Rn k j ρ x1') * (Rn k j ρ x1')⁻¹ := by
-          simp only [Matrix.mul_assoc, rn_mul_inv, Matrix.mul_one]
+          simp only [Matrix.mul_assoc, _root_.Formalism.FourierDecayAlt.P.Ux4.Rn_mul_inv, Matrix.mul_one]
       _ = Rn k j ρ x2 * ((Rn k j ρ x2)⁻¹ * mMap k j ρ Z2 γ2 * Rn k j ρ x2') * (Rn k j ρ x1')⁻¹ := by rw [h]
       _ = mMap k j ρ Z2 γ2 * (Rn k j ρ x2' * (Rn k j ρ x1')⁻¹) := by
-          simp only [← Matrix.mul_assoc, rn_mul_inv, Matrix.one_mul]
+          simp only [← Matrix.mul_assoc, _root_.Formalism.FourierDecayAlt.P.Ux4.Rn_mul_inv, Matrix.one_mul]
   rw [rn_eq x2, rn_eq x1, uni_inv, rn_eq x2', rn_eq x1', uni_inv] at key
   unfold mMap at key
-  rw [block3_mul, block3_mul, block3_mul, block3_mul, block3_eq_iff] at key
+  rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul, block3_eq_iff] at key
   obtain ⟨e11, -, -, e21, e22, e23, e31, -, e33⟩ := key
   simp at e11 e21 e22 e23 e31 e33
   have hW1 : IsUnit (G.wMat j * Z1).det := by
@@ -630,7 +568,7 @@ theorem block3_eta (M : B.Mat k (j + ρ)) : M = blk3
   ext x y
   obtain ⟨x', rfl⟩ := (eB k j ρ).surjective x
   obtain ⟨y', rfl⟩ := (eB k j ρ).surjective y
-  rw [block3_apply]
+  rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_apply]
   rcases x' with ((a | a) | a) <;> rcases y' with ((b | b) | b) <;> simp
 
 theorem hpk_det (k r : ℕ) : IsUnit (Hpk k r).det := isUnit_of_mul_self _ (hpk_sq k r)
@@ -695,11 +633,11 @@ theorem bigCell_exists (g : B.Mat k (j + ρ)) (hg : g ∈ B.GV k (j + ρ)) (hD :
   have hg2 := unitary_right _ hg1
   have e11 : G31ᴴ * G.wMat j * FourierUniquenessMirabolic + G21ᴴ * Hpk k ρ * G21 + FourierUniquenessMirabolicᴴ * G.wMat j * G31 = 0 := by
     have h := hg1
-    rw [block3_conjTranspose, hpkBlocks, block3_mul, block3_mul, block3_eq_iff] at h
+    rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_conjTranspose, _root_.Formalism.FourierDecayAlt.P.Ux4.hpkBlocks, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul, block3_eq_iff] at h
     simpa using h.1
   have f33 : G33 * G.wMat j * G31ᴴ + ContDiffOnLocalExtension * Hpk k ρ * ContDiffOnLocalExtensionᴴ + G31 * G.wMat j * G33ᴴ = 0 := by
     have h := hg2
-    rw [block3_conjTranspose, hpkBlocks, block3_mul, block3_mul, block3_eq_iff] at h
+    rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_conjTranspose, _root_.Formalism.FourierDecayAlt.P.Ux4.hpkBlocks, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul, block3_eq_iff] at h
     simpa using h.2.2.2.2.2.2.2.2
   have hC : IsUnit G31.det := by
     have : DjU k j ρ (blk3 FourierUniquenessMirabolic WeakApproximationGL WhittakerVanishingImpliesZero G21 G22 G23 G31 ContDiffOnLocalExtension G33) = (G.wMat j * G31).det := by
@@ -727,7 +665,7 @@ theorem bigCell_exists (g : B.Mat k (j + ρ)) (hg : g ∈ B.GV k (j + ρ)) (hD :
     have h0 : G.wMat j * (Ci * ((G33 * G.wMat j * G31ᴴ + ContDiffOnLocalExtension * Hpk k ρ * ContDiffOnLocalExtensionᴴ + G31 * G.wMat j * G33ᴴ) *
         (Ciᴴ * G.wMat j))) = 0 := by rw [f33]; simp
     rw [← h0, hS'_def, hb', hc', ha']
-    simp only [Matrix.conjTranspose_add, Matrix.conjTranspose_smul, Matrix.conjTranspose_mul, Matrix.conjTranspose_neg, Matrix.conjTranspose_conjTranspose, wMat_conjTranspose, hpk_herm, Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc, Matrix.neg_mul, Matrix.mul_neg, neg_neg, Matrix.smul_mul, Matrix.mul_smul, wMat_mul_wMat_mul, hpk_mul_hpk_mul, wMat_mul_self, hpk_sq, Matrix.mul_one, Matrix.one_mul, hCi, hCiH]
+    simp only [Matrix.conjTranspose_add, Matrix.conjTranspose_smul, Matrix.conjTranspose_mul, Matrix.conjTranspose_neg, Matrix.conjTranspose_conjTranspose, wMat_conjTranspose, _root_.Formalism.FourierDecayAlt.P.Ux4.hpk_conjTranspose, Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc, Matrix.neg_mul, Matrix.mul_neg, neg_neg, Matrix.smul_mul, Matrix.mul_smul, wMat_mul_wMat_mul, hpk_mul_hpk_mul, wMat_mul_self, hpk_sq, Matrix.mul_one, Matrix.one_mul, hCi, hCiH]
     have h2 : star (1 / 2 : ℂ) = 1 / 2 := by simp
     rw [h2]
     module
@@ -735,7 +673,7 @@ theorem bigCell_exists (g : B.Mat k (j + ρ)) (hg : g ∈ B.GV k (j + ρ)) (hD :
     rw [rn_of c' S' hS']
     congr 1
     · rw [hc']
-      simp only [Matrix.conjTranspose_add, Matrix.conjTranspose_smul, Matrix.conjTranspose_mul, Matrix.conjTranspose_neg, Matrix.conjTranspose_conjTranspose, wMat_conjTranspose, hpk_herm, Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc, Matrix.neg_mul, Matrix.mul_neg, neg_neg, Matrix.smul_mul, Matrix.mul_smul, wMat_mul_wMat_mul, hpk_mul_hpk_mul, wMat_mul_self, hpk_sq, Matrix.mul_one, Matrix.one_mul]
+      simp only [Matrix.conjTranspose_add, Matrix.conjTranspose_smul, Matrix.conjTranspose_mul, Matrix.conjTranspose_neg, Matrix.conjTranspose_conjTranspose, wMat_conjTranspose, _root_.Formalism.FourierDecayAlt.P.Ux4.hpk_conjTranspose, Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc, Matrix.neg_mul, Matrix.mul_neg, neg_neg, Matrix.smul_mul, Matrix.mul_smul, wMat_mul_wMat_mul, hpk_mul_hpk_mul, wMat_mul_self, hpk_sq, Matrix.mul_one, Matrix.one_mul]
     · rw [hS'_def]
       simp only [Matrix.mul_add, Matrix.mul_smul, wMat_mul_wMat_mul]
       module
@@ -753,7 +691,7 @@ theorem bigCell_exists (g : B.Mat k (j + ρ)) (hg : g ∈ B.GV k (j + ρ)) (hD :
     have h0 : -(Ciᴴ * ((G31ᴴ * G.wMat j * FourierUniquenessMirabolic + G21ᴴ * Hpk k ρ * G21 + FourierUniquenessMirabolicᴴ * G.wMat j * G31) * Ci)) = 0 := by
       rw [e11]; simp
     rw [← h0, hS_def, hb, ha, hc]
-    simp only [Matrix.conjTranspose_add, Matrix.conjTranspose_smul, Matrix.conjTranspose_mul, Matrix.conjTranspose_neg, Matrix.conjTranspose_conjTranspose, wMat_conjTranspose, hpk_herm, Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc, Matrix.neg_mul, Matrix.mul_neg, neg_neg, Matrix.smul_mul, Matrix.mul_smul, wMat_mul_wMat_mul, hpk_mul_hpk_mul, wMat_mul_self, hpk_sq, Matrix.mul_one, Matrix.one_mul, Matrix.mul_sub, Matrix.sub_mul, Matrix.conjTranspose_sub, hCi, hCiH, hCi', hCiH', hC1, hC2, hC3, hC4]
+    simp only [Matrix.conjTranspose_add, Matrix.conjTranspose_smul, Matrix.conjTranspose_mul, Matrix.conjTranspose_neg, Matrix.conjTranspose_conjTranspose, wMat_conjTranspose, _root_.Formalism.FourierDecayAlt.P.Ux4.hpk_conjTranspose, Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc, Matrix.neg_mul, Matrix.mul_neg, neg_neg, Matrix.smul_mul, Matrix.mul_smul, wMat_mul_wMat_mul, hpk_mul_hpk_mul, wMat_mul_self, hpk_sq, Matrix.mul_one, Matrix.one_mul, Matrix.mul_sub, Matrix.sub_mul, Matrix.conjTranspose_sub, hCi, hCiH, hCi', hCiH', hC1, hC2, hC3, hC4]
     have h2 : star (1 / 2 : ℂ) = 1 / 2 := by simp
     rw [h2]
     module
@@ -771,33 +709,33 @@ theorem bigCell_exists (g : B.Mat k (j + ρ)) (hg : g ∈ B.GV k (j + ρ)) (hD :
   have hmU : (blk3 product_first_partition sizeConstantAtParamsWeight flipOneThree placeRankTwoOne TaylorLogMetric flipTwoThree BlochKatoReduction SumRepresentations ArithmeticCylinders)ᴴ * Hpk k (j + ρ) * blk3 product_first_partition sizeConstantAtParamsWeight flipOneThree placeRankTwoOne TaylorLogMetric flipTwoThree BlochKatoReduction SumRepresentations ArithmeticCylinders =
       Hpk k (j + ρ) := by
     have hU := Formalism.QuantumDeterminants.uHGroup _ (Hpk k (j + ρ)) (hpk_det k (j + ρ))
-    have h1 := hU.2.1 _ (rn_unitary (Matrix.of.symm c, skewCoords S)) _ hg
-    have h2 := hU.2.1 _ h1 _ (hU.2.2 _ (rn_unitary (Matrix.of.symm c', skewCoords S'))).2
+    have h1 := hU.2.1 _ (_root_.Formalism.FourierDecayAlt.P.Ux4.Rn_unitary (Matrix.of.symm c, skewCoords S)) _ hg
+    have h2 := hU.2.1 _ h1 _ (hU.2.2 _ (_root_.Formalism.FourierDecayAlt.P.Ux4.Rn_unitary (Matrix.of.symm c', skewCoords S'))).2
     rw [hm] at h2
     exact h2
   have hm2 := hm
-  rw [hRx, hRx', uni_inv, block3_mul, block3_mul, block3_eq_iff] at hm2
+  rw [hRx, hRx', uni_inv, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul, block3_eq_iff] at hm2
   obtain ⟨h11, h12, h13, h21, h22, h23, h31, h32, h33⟩ := hm2
   simp at h11 h21 h31 h32 h33
   have hP11 : product_first_partition = 0 := by
     rw [← h11, hb, hc]
-    simp only [Matrix.conjTranspose_add, Matrix.conjTranspose_smul, Matrix.conjTranspose_mul, Matrix.conjTranspose_neg, Matrix.conjTranspose_conjTranspose, wMat_conjTranspose, hpk_herm, Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc, Matrix.neg_mul, Matrix.mul_neg, neg_neg, Matrix.smul_mul, Matrix.mul_smul, wMat_mul_wMat_mul, hpk_mul_hpk_mul, wMat_mul_self, hpk_sq, Matrix.mul_one, Matrix.one_mul, Matrix.mul_sub, Matrix.sub_mul, Matrix.conjTranspose_sub, hC1]
+    simp only [Matrix.conjTranspose_add, Matrix.conjTranspose_smul, Matrix.conjTranspose_mul, Matrix.conjTranspose_neg, Matrix.conjTranspose_conjTranspose, wMat_conjTranspose, _root_.Formalism.FourierDecayAlt.P.Ux4.hpk_conjTranspose, Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc, Matrix.neg_mul, Matrix.mul_neg, neg_neg, Matrix.smul_mul, Matrix.mul_smul, wMat_mul_wMat_mul, hpk_mul_hpk_mul, wMat_mul_self, hpk_sq, Matrix.mul_one, Matrix.one_mul, Matrix.mul_sub, Matrix.sub_mul, Matrix.conjTranspose_sub, hC1]
     abel
   have hP21 : placeRankTwoOne = 0 := by
     rw [← h21, hc]
-    simp only [Matrix.conjTranspose_add, Matrix.conjTranspose_smul, Matrix.conjTranspose_mul, Matrix.conjTranspose_neg, Matrix.conjTranspose_conjTranspose, wMat_conjTranspose, hpk_herm, Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc, Matrix.neg_mul, Matrix.mul_neg, neg_neg, Matrix.smul_mul, Matrix.mul_smul, wMat_mul_wMat_mul, hpk_mul_hpk_mul, wMat_mul_self, hpk_sq, Matrix.mul_one, Matrix.one_mul, Matrix.mul_sub, Matrix.sub_mul, Matrix.conjTranspose_sub, hC1]
+    simp only [Matrix.conjTranspose_add, Matrix.conjTranspose_smul, Matrix.conjTranspose_mul, Matrix.conjTranspose_neg, Matrix.conjTranspose_conjTranspose, wMat_conjTranspose, _root_.Formalism.FourierDecayAlt.P.Ux4.hpk_conjTranspose, Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc, Matrix.neg_mul, Matrix.mul_neg, neg_neg, Matrix.smul_mul, Matrix.mul_smul, wMat_mul_wMat_mul, hpk_mul_hpk_mul, wMat_mul_self, hpk_sq, Matrix.mul_one, Matrix.one_mul, Matrix.mul_sub, Matrix.sub_mul, Matrix.conjTranspose_sub, hC1]
     abel
   have hP32 : SumRepresentations = 0 := by
     rw [← h32, ha']
-    simp only [Matrix.conjTranspose_add, Matrix.conjTranspose_smul, Matrix.conjTranspose_mul, Matrix.conjTranspose_neg, Matrix.conjTranspose_conjTranspose, wMat_conjTranspose, hpk_herm, Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc, Matrix.neg_mul, Matrix.mul_neg, neg_neg, Matrix.smul_mul, Matrix.mul_smul, wMat_mul_wMat_mul, hpk_mul_hpk_mul, wMat_mul_self, hpk_sq, Matrix.mul_one, Matrix.one_mul, Matrix.mul_sub, Matrix.sub_mul, Matrix.conjTranspose_sub, hCi']
+    simp only [Matrix.conjTranspose_add, Matrix.conjTranspose_smul, Matrix.conjTranspose_mul, Matrix.conjTranspose_neg, Matrix.conjTranspose_conjTranspose, wMat_conjTranspose, _root_.Formalism.FourierDecayAlt.P.Ux4.hpk_conjTranspose, Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc, Matrix.neg_mul, Matrix.mul_neg, neg_neg, Matrix.smul_mul, Matrix.mul_smul, wMat_mul_wMat_mul, hpk_mul_hpk_mul, wMat_mul_self, hpk_sq, Matrix.mul_one, Matrix.one_mul, Matrix.mul_sub, Matrix.sub_mul, Matrix.conjTranspose_sub, hCi']
     abel
   have hP33 : ArithmeticCylinders = 0 := by
     rw [← h33, ha', hb']
-    simp only [Matrix.conjTranspose_add, Matrix.conjTranspose_smul, Matrix.conjTranspose_mul, Matrix.conjTranspose_neg, Matrix.conjTranspose_conjTranspose, wMat_conjTranspose, hpk_herm, Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc, Matrix.neg_mul, Matrix.mul_neg, neg_neg, Matrix.smul_mul, Matrix.mul_smul, wMat_mul_wMat_mul, hpk_mul_hpk_mul, wMat_mul_self, hpk_sq, Matrix.mul_one, Matrix.one_mul, Matrix.mul_sub, Matrix.sub_mul, Matrix.conjTranspose_sub, hCi']
+    simp only [Matrix.conjTranspose_add, Matrix.conjTranspose_smul, Matrix.conjTranspose_mul, Matrix.conjTranspose_neg, Matrix.conjTranspose_conjTranspose, wMat_conjTranspose, _root_.Formalism.FourierDecayAlt.P.Ux4.hpk_conjTranspose, Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc, Matrix.neg_mul, Matrix.mul_neg, neg_neg, Matrix.smul_mul, Matrix.mul_smul, wMat_mul_wMat_mul, hpk_mul_hpk_mul, wMat_mul_self, hpk_sq, Matrix.mul_one, Matrix.one_mul, Matrix.mul_sub, Matrix.sub_mul, Matrix.conjTranspose_sub, hCi']
     abel
   subst hP11 hP21 hP32 hP33 h31
   have hmU2 := hmU
-  rw [block3_conjTranspose, hpkBlocks, block3_mul, block3_mul, block3_eq_iff] at hmU2
+  rw [_root_.Formalism.FourierDecayAlt.P.Ux4.block3_conjTranspose, _root_.Formalism.FourierDecayAlt.P.Ux4.hpkBlocks, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul, _root_.Formalism.FourierDecayAlt.P.Ux4.block3_mul, block3_eq_iff] at hmU2
   obtain ⟨u11, u12, u13, u21, u22, u23, u31, u32, u33⟩ := hmU2
   simp at u11 u12 u13 u21 u22 u23 u31 u32 u33
   have hW : IsUnit (G31ᴴ * G.wMat j).det := by
