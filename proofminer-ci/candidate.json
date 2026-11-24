@@ -1,6 +1,6 @@
 {
   "baseline": "9282d3a102c4aff0e6026746db2a8990f5d9cddd",
-  "candidate": "371515d342acc4237a3a9a0c8501e40144aac62d",
-  "candidate_tree": "96fe89152ef180863615bbb3c04cea4a7cdde30f",
-  "purpose": "Matrix proof families experiment 001; static verification only; full build and Comparator pending"
+  "candidate": "61d3db2bb939f2d4bb1ce4e777134236cd908e9e",
+  "candidate_tree": "e11314eea61dc46a9f1f982fb04d6f263d1ffc4c",
+  "purpose": "Matrix families experiment 001, visibility repair; core and alias regression pass; full build and Comparator pending"
 }
