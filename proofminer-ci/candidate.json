@@ -1,6 +1,6 @@
 {
   "baseline": "9282d3a102c4aff0e6026746db2a8990f5d9cddd",
-  "candidate": "9282d3a102c4aff0e6026746db2a8990f5d9cddd",
-  "candidate_tree": "ee8d7fa36c7f780b0ccce801001b093aa11c8b0d",
-  "purpose": "Establish the zero-change staging control"
+  "candidate": "371515d342acc4237a3a9a0c8501e40144aac62d",
+  "candidate_tree": "96fe89152ef180863615bbb3c04cea4a7cdde30f",
+  "purpose": "Matrix proof families experiment 001; static verification only; full build and Comparator pending"
 }
