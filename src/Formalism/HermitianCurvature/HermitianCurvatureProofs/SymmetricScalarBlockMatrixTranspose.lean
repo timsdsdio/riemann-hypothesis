@@ -1,6 +1,6 @@
 module
 
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.DirectionsInParabolic
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DirectionsInParabolic
 public import Formalism.HermitianCurvature.StatementU
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MulDiagOfTriangular
 public import Formalism.FormalDegreeBessel.FinalG

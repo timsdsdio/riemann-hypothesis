@@ -1,6 +1,6 @@
 module
 
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.DirectionsInParabolic
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DirectionsInParabolic
 public import Formalism.HermitianCurvature.StatementU
 public import Formalism.FormalDegreeBessel.FinalG
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaSesquilinearity

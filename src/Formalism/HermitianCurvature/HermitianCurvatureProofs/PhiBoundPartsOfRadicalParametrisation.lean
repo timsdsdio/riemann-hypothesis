@@ -1,6 +1,5 @@
 module
 
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.DirectionsInParabolic
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CompactlySupportedBanachModel
 public import Formalism.HermitianCurvature.StatementU
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DilationUnipotentWeylMeasure
